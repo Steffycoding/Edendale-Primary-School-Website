@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Contact &amp; Donors – Edendale Primary School</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/images/logo.svg" alt="Logo">
+        <span>Edendale Primary School</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="grades.html">Admissions &amp; Subjects</a></li>
+        <li><a href="grade-detail.html?grade=R">Grade R</a></li>
+        <li><a href="extracurriculars.html">Extra &amp; Co-Curriculars</a></li>
+        <li><a href="events.html">Events Calendar</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="container">
+      <h1 data-editable data-field="contact_page_title">Contact &amp; Donors</h1>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       CONTACT + SUPPORTERS LAYOUT
+       ══════════════════════════════════ -->
+  <section class="section contact-section">
+    <div class="container contact-layout">
+
+      <!-- LEFT: Contact Info Card -->
+      <div class="contact-info-card card">
+        <div class="card-body">
+
+          <h3 data-editable data-field="contact_school_name_label">🔵 School:</h3>
+          <p data-editable data-field="contact_school_name">Edendale Primary School<br>Primary school</p>
+
+          <h3 style="margin-top:20px;" data-editable data-field="contact_address_label">📍 Address:</h3>
+          <address data-editable data-field="contact_address">
+            100 Philippi Ring Road &amp; Manenburg Ave<br>
+            Manenburg, Cape Town, 7764<br>
+            South Africa
+          </address>
+
+          <h3 style="margin-top:20px;" data-editable data-field="contact_phone_label">📞 Phone / Office:</h3>
+          <p>
+            <a href="tel:0218000111" data-editable data-field="contact_phone">021 800 0111</a>
+          </p>
+
+          <h3 style="margin-top:20px;" data-editable data-field="contact_mobile_label">📱 Alternate / Mobile:</h3>
+          <p>
+            <a href="tel:0828291000" data-editable data-field="contact_mobile">082 829 1000</a>
+          </p>
+
+          <h3 style="margin-top:20px;" data-editable data-field="contact_email_label">✉ Email:</h3>
+          <p>
+            <a href="mailto:edendaleprimary@gmail.com" data-editable data-field="contact_email">
+              edendaleprimary@gmail.com
+            </a>
+          </p>
+
+          <h3 style="margin-top:20px;" data-editable data-field="contact_emis_label">📋 EMIS No.:</h3>
+          <p data-editable data-field="contact_emis">1054821000</p>
+
+        </div>
+      </div><!-- /.contact-info-card -->
+
+      <!-- RIGHT: Supporters & Donors -->
+      <div class="donors-column">
+
+        <!-- Government Support -->
+        <div class="donor-block">
+          <h4 data-editable data-field="gov_support_label">🔵 Government Support</h4>
+          <p data-editable data-field="gov_support_value">Western Cape Education Department</p>
+        </div>
+
+        <!-- Community & Parent Support -->
+        <div class="donor-block">
+          <h4 data-editable data-field="community_support_label">🟢 Community &amp; Parent Support</h4>
+          <p data-editable data-field="community_support_value">School Governing Body + Parents</p>
+        </div>
+
+        <!-- External Support -->
+        <div class="donor-block">
+          <h4 data-editable data-field="external_support_label">🟡 External Support</h4>
+          <p data-editable data-field="external_support_value">
+            NGOs / Literacy programmes / youth upliftment groups
+          </p>
+        </div>
+
+        <!-- Interested in Supporting -->
+        <div class="support-cta card" style="margin-top:24px;">
+          <div class="card-body">
+            <h3 data-editable data-field="support_cta_title">Interested in supporting our learners?</h3>
+            <ul style="margin-top:12px; padding-left:20px; list-style:disc; color: var(--text-dark);">
+              <li data-editable data-field="support_opt1">Sponsor resources</li>
+              <li data-editable data-field="support_opt2">Volunteer time</li>
+              <li data-editable data-field="support_opt3">Donate books</li>
+              <li data-editable data-field="support_opt4">Partner with the school</li>
+            </ul>
+            <a href="mailto:edendaleprimary@gmail.com" class="btn btn-primary" style="margin-top:20px;">
+              Get in Touch
+            </a>
+          </div>
+        </div>
+
+      </div><!-- /.donors-column -->
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       CONTACT FORM (optional / future)
+       ══════════════════════════════════ -->
+  <!-- TODO: Wire up to Java Servlet for form submission -->
+  <!--
+  <section class="section contact-form-section" style="padding-top:0;">
+    <div class="container" style="max-width:600px;">
+      <h2 class="section-title">Send us a Message</h2>
+      <span class="gold-underline"></span>
+      <div class="contact-form">
+        <input type="text" placeholder="Your Name" class="form-input">
+        <input type="email" placeholder="Your Email" class="form-input">
+        <textarea placeholder="Your Message" rows="5" class="form-input"></textarea>
+        <button class="btn btn-primary">Send Message</button>
+      </div>
+    </div>
+  </section>
+  -->
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="footer-year"></span> Edendale Primary School. All rights reserved. |
+        <a href="mailto:edendaleprimary@gmail.com">edendaleprimary@gmail.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

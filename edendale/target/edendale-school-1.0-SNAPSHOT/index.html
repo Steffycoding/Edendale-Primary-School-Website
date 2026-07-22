@@ -1,0 +1,296 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Edendale Primary School – About</title>
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/global.css">
+  <link rel="stylesheet" href="css/admin.css">
+  <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- ══════════════════════════════════
+       HIDDEN ADMIN TOGGLE (top-right)
+       ══════════════════════════════════ -->
+  <button id="admin-toggle-btn" title="Admin">
+    <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+      <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5
+               0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08
+               s-.03-.74-.07-1.08l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22
+               l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4
+               c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1
+               c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65
+               c-.04.34-.07.69-.07 1.08s.03.74.07 1.08l-2.11 1.65c-.19.15-.24.42-.12.64
+               l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65
+               c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65
+               c.61-.25 1.17-.58 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46
+               c.12-.22.07-.49-.12-.64l-2.11-1.65z"/>
+    </svg>
+  </button>
+
+  <!-- ══════════════════════════════════
+       NAVIGATION
+       ══════════════════════════════════ -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="index.html" class="nav-logo">
+        <img src="assets/images/logo.svg">
+        <span>Edendale Primary School</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="index.html" class="active">About</a></li>
+        <li><a href="pages/grades.html">Admissions &amp; Subjects</a></li>
+        <li><a href="pages/grade-detail.html?grade=R">Grade R</a></li>
+        <li><a href="pages/extracurriculars.html">Extra &amp; Co-Curriculars</a></li>
+        <li><a href="pages/events.html">Events Calendar</a></li>
+        <li><a href="pages/contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════
+       HERO SECTION
+       ══════════════════════════════════ -->
+  <section class="hero">
+    <div class="container">
+      <div class="hero-content">
+
+        <!-- School Name & Tagline -->
+        <h1 class="hero-title" data-editable data-field="hero_title">
+          Edendale Primary School
+        </h1>
+        <p class="hero-tagline" data-editable data-field="hero_tagline">
+          Kennis is lig
+        </p>
+
+        <!-- About blurb -->
+        <p class="hero-description" data-editable data-field="hero_description">
+          <!-- TODO: Replace with actual school description -->
+          Edendale Primary School has been serving the Manenburg community with dedication,
+          compassion, and a commitment to excellence in education.
+        </p>
+
+        <a href="pages/grades.html" class="btn btn-primary" data-editable data-field="hero_cta">
+          Admissions Enquiry
+        </a>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       ABOUT / INTRO SECTION
+       ══════════════════════════════════ -->
+  <section class="section about-section">
+    <div class="container">
+      <h2 class="section-title" data-editable data-field="about_title">
+        A Place of Learning, Growth &amp; Community
+      </h2>
+      <span class="gold-underline"></span>
+      <p class="about-description" data-editable data-field="about_description">
+        <!-- TODO: Replace with full about text -->
+        Edendale Primary School is a public primary school situated in Manenburg in Cape Town.
+        We offer Grades R through 7, providing a safe and nurturing learning environment for every child.
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       STATS ROW (400+ Learners, 70+ Teachers, Gr R–7)
+       ══════════════════════════════════ -->
+  <section class="section stats-section">
+    <div class="container">
+      <div class="stats-grid">
+
+        <div class="stat-box">
+          <div class="stat-number" data-editable data-field="stat_learners">400+</div>
+          <div class="stat-label" data-editable data-field="stat_learners_label">Learners</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number" data-editable data-field="stat_teachers">70+</div>
+          <div class="stat-label" data-editable data-field="stat_teachers_label">Teachers</div>
+        </div>
+
+        <div class="stat-box">
+          <div class="stat-number" data-editable data-field="stat_grades">Gr R–7</div>
+          <div class="stat-label" data-editable data-field="stat_grades_label">Grades Offered</div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+      MISSION & VISION SECTION
+       ══════════════════════════════════ -->
+  <section class="section mission-section">
+  <div class="container">
+    <h2 class="section-title">Our Purpose</h2>
+
+    <div class="mission-grid">
+
+      <div class="card mission-card">
+        <div class="card-body">
+          <h3>Our Mission</h3>
+          <p>
+            To provide every learner with a high-quality, inclusive education
+            that fosters intellectual curiosity, personal growth, and lifelong
+            love of learning — equipping them with the skills and values they
+            need to thrive in a changing world.
+          </p>
+        </div>
+      </div>
+
+      <div class="card mission-card vision-card">
+        <div class="card-body">
+          <h3>Our Vision</h3>
+          <p>
+            To be a beacon of excellence in our community — a school where every
+            child, regardless of background or circumstance, is empowered to
+            reach their full potential and contribute meaningfully to society.
+          </p>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+  <!-- ══════════════════════════════════
+       WHY WE EXIST SECTION
+       ══════════════════════════════════ -->
+  <section class="section values-section">
+    <div class="container">
+      <h2 class="section-title">What we stand for</h2>
+
+      <div class="why-grid">
+
+        <div class="card why-card">
+          <div class="card-body">
+            <h4>Academic Excellence</h4>
+            <p>
+              We hold every learner to high standards while providing the support they need to meet them.
+            </p>
+          </div>
+        </div>
+
+        <div class="card why-card">
+          <div class="card-body">
+            <h4>Inclusivity</h4>
+            <p>
+              Every child belongs here. We celebrate diversity and create space for every voice to be heard.
+            </p>
+          </div>
+        </div>
+
+        <div class="card why-card">
+          <div class="card-body">
+            <h4>Compassion</h4>
+            <p>
+              We lead with empathy — understanding the realities our learners face and responding with care.
+            </p>
+          </div>
+        </div>
+
+        <div class="card why-card">
+          <div class="card-body">
+            <h4>Growth</h4>
+            <p>
+              We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.
+            </p>
+          </div>
+        </div>
+
+        <div class="card why-card">
+          <div class="card-body">
+            <h4>Safety & Respect</h4>
+            <p>
+              A safe, respectful environment is the foundation on which all meaningful learning is built.
+            </p>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       OUR JOURNEY / COMMUNITY SECTION
+       ══════════════════════════════════ -->
+  <section class="section journey-section">
+    <div class="container">
+      <h2 class="section-title" data-editable data-field="journey_title">
+        Rooted in Manenburg, Reaching Beyond
+      </h2>
+      <span class="gold-underline"></span>
+      <p data-editable data-field="journey_body">
+        <!-- TODO: Add community/history text -->
+      </p>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       FOOTER
+       ══════════════════════════════════ -->
+  <footer class="site-footer">
+    <div class="container">
+      <p data-editable data-field="footer_text">
+        &copy; <span id="footer-year"></span> Edendale Primary School. All rights reserved. |
+        100 Philippi Ring Road &amp; Manenburg Ave, Manenburg, Cape Town, 7764
+      </p>
+    </div>
+  </footer>
+
+  <!-- ══════════════════════════════════
+       ADMIN LOGIN MODAL
+       ══════════════════════════════════ -->
+<div id="admin-login-modal">
+  <div class="admin-modal-box">
+    <button id="admin-close-btn" aria-label="Close Admin Login">&times;</button>
+      <h2>Admin Login</h2>
+      <input type="text" id="admin-username" placeholder="Username">
+      <input type="password" id="admin-password" placeholder="Password">
+      <button class="btn btn-primary" id="admin-login-btn">Login</button>
+      <p id="admin-login-error" style="color:#ff6b6b; margin-top:10px; font-size:0.85rem;"></p>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       ADMIN EDIT BAR (bottom)
+       ══════════════════════════════════ -->
+  <div id="admin-bar">
+    <span>✏ Admin Edit Mode Active</span>
+    <div class="admin-bar-actions">
+      <button id="admin-save-btn">Save All Changes</button>
+      <button id="admin-logout-btn">Logout</button>
+    </div>
+  </div>
+
+  <!-- ══════════════════════════════════
+       INLINE EDIT POPUP
+       ══════════════════════════════════ -->
+  <div id="edit-popup">
+    <h4>Edit Content</h4>
+    <textarea id="edit-popup-text" rows="4"></textarea>
+    <!-- Image URL edit (shown only for data-type="image") -->
+    <div id="edit-popup-image-row" style="display:none;">
+      <input type="url" id="edit-popup-image-url" placeholder="Paste image URL or upload path">
+    </div>
+    <div class="popup-actions">
+      <button class="btn btn-primary" id="edit-popup-save">Save</button>
+      <button class="btn btn-outline" id="edit-popup-cancel">Cancel</button>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script>
+    // Auto set footer year
+    document.getElementById('footer-year').textContent = new Date().getFullYear();
+  </script>
+  <script src="js/admin.js"></script>
+  <script src="js/main.js"></script>
+</body>
+</html>

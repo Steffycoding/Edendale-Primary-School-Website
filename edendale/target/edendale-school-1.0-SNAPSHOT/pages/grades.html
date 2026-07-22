@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admissions &amp; Subjects | Edendale Primary School</title>
+  <link rel="stylesheet" href="../css/global.css">
+  <link rel="stylesheet" href="../css/admin.css">
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/images/logo.svg" alt="Logo">
+        <span>Edendale Primary School</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="grades.html" class="active">Admissions &amp; Subjects</a></li>
+        <li><a href="grade-detail.html?grade=R">Grade R</a></li>
+        <li><a href="extracurriculars.html">Extra &amp; Co-Curriculars</a></li>
+        <li><a href="events.html">Events Calendar</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- ══════════════════════════════════
+       PAGE HEADER
+       ══════════════════════════════════ -->
+  <section class="page-header">
+    <div class="container">
+      <h1 class="page-header-title" data-editable data-field="grades_page_title">
+        Admissions &amp; Subjects
+      </h1>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       GRADES GRID — R, 1, 2, 3, 4, 5, 6, 7 (as cards)
+       Layout: 2 columns like the design
+       ══════════════════════════════════ -->
+  <section class="section grades-section">
+    <div class="container">
+      <div class="grades-grid">
+
+        <!-- ── GRADE R ── -->
+        <div class="card grade-card" data-grade="R">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="gradeR_title">Grade R</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="gradeR_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="gradeR_ages">5 – 6</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="gradeR_phase">Foundation Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=R" class="btn btn-outline" style="margin-top:14px;">View Grade R</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 1 ── -->
+        <div class="card grade-card" data-grade="1">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade1_title">Grade 1</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade1_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade1_ages">6 – 7</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade1_phase">Foundation Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=1" class="btn btn-outline" style="margin-top:14px;">View Grade 1</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 2 ── -->
+        <div class="card grade-card" data-grade="2">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade2_title">Grade 2</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade2_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade2_ages">7 – 8</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade2_phase">Foundation Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=2" class="btn btn-outline" style="margin-top:14px;">View Grade 2</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 3 ── -->
+        <div class="card grade-card" data-grade="3">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade3_title">Grade 3</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade3_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade3_ages">8 – 9</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade3_phase">Foundation Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=3" class="btn btn-outline" style="margin-top:14px;">View Grade 3</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 4 ── -->
+        <div class="card grade-card" data-grade="4">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade4_title">Grade 4</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade4_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade4_ages">9 – 10</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade4_phase">Intermediate Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=4" class="btn btn-outline" style="margin-top:14px;">View Grade 4</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 5 ── -->
+        <div class="card grade-card" data-grade="5">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade5_title">Grade 5</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade5_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade5_ages">10 – 11</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade5_phase">Intermediate Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=5" class="btn btn-outline" style="margin-top:14px;">View Grade 5</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 6 ── -->
+        <div class="card grade-card" data-grade="6">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade6_title">Grade 6</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade6_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade6_ages">11 – 12</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade6_phase">Intermediate Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=6" class="btn btn-outline" style="margin-top:14px;">View Grade 6</a>
+          </div>
+        </div>
+
+        <!-- ── GRADE 7 ── -->
+        <div class="card grade-card" data-grade="7">
+          <div class="card-body">
+            <h3 class="grade-card-title" data-editable data-field="grade7_title">Grade 7</h3>
+            <ul class="grade-details">
+              <li><strong>Subjects:</strong>
+                <span data-editable data-field="grade7_subjects"><!-- TODO --></span>
+              </li>
+              <li><strong>Ages:</strong>
+                <span data-editable data-field="grade7_ages">12 – 13</span>
+              </li>
+              <li><strong>Phase:</strong>
+                <span data-editable data-field="grade7_phase">Intermediate Phase</span>
+              </li>
+            </ul>
+            <a href="grade-detail.html?grade=7" class="btn btn-outline" style="margin-top:14px;">View Grade 7</a>
+          </div>
+        </div>
+
+      </div><!-- /.grades-grid -->
+
+      <!-- ADMISSIONS CTA -->
+      <div class="admissions-cta" style="text-align:center; margin-top:48px;">
+        <p data-editable data-field="admissions_cta_text">
+          Come to the school in person or:
+        </p>
+        <a href="https://wcedonline.westerncape.gov.za/admissions"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="btn btn-primary">
+          Apply for Admissions
+        </a>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       GRADE DETAIL PAGE — grade-detail.html
+       NOTE: This page is loaded dynamically via URL param ?grade=R
+       and content is fetched from the Java backend.
+       See /pages/grade-detail.html for the detail template.
+       ══════════════════════════════════ -->
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <p data-editable data-field="footer_text">
+        &copy; <span id="footer-year"></span> Edendale Primary School. All rights reserved.
+      </p>
+    </div>
+  </footer>
+
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

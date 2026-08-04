@@ -1,0 +1,444 @@
+/* ============================================================
+   EDENDALE PRIMARY SCHOOL — GLOBAL CSS
+   ============================================================ */
+
+:root {
+  --navy: #14008f;
+  --navy-dark: #0f0066;
+  --gold: #d9a300;
+  --gold-dark: #b8860b;
+  --white: #ffffff;
+  --light-bg: #ececec;
+  --text-dark: #1d1d1d;
+  --text-muted: #666;
+  --border: rgba(217, 163, 0, 0.35);
+
+  --shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.18);
+
+  --radius: 18px;
+  --radius-lg: 28px;
+
+  --max-width: 1200px;
+  --transition: 0.3s ease;
+}
+
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background: var(--light-bg);
+  color: var(--text-dark);
+  font-family: Georgia, serif;
+  line-height: 1.7;
+}
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(20, 0, 143, 0.14), transparent 35%),
+    radial-gradient(circle at 80% 25%, rgba(217, 163, 0, 0.14), transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(20, 0, 143, 0.08), transparent 40%);
+  filter: blur(90px);
+}
+
+img {
+  width: 100%;
+  display: block;
+}
+
+a {
+  text-decoration: none;
+}
+
+.container {
+  width: min(92%, var(--max-width));
+  margin: auto;
+}
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  background: var(--navy);
+  border-top: 4px solid var(--gold);
+  padding: 18px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 200px;
+}
+
+.nav-logo img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+.nav-logo span {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+}
+
+.nav-links a {
+  color: white;
+  font-size: 0.95rem;
+}
+
+.nav-links a.active,
+.nav-links a:hover {
+  color: var(--gold);
+}
+
+.nav-centered {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.nav-left,
+.nav-right {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+.nav-left a,
+.nav-right a {
+  color: white;
+  font-size: 0.9rem;
+}
+
+.nav-logo-center img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+}
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: var(--navy);
+  color: white;
+  text-align: center;
+  padding: 90px 0 110px;
+  border-bottom: 4px solid var(--gold);
+}
+
+.hero-content {
+  max-width: 760px;
+  margin: auto;
+}
+
+.hero-title {
+  font-size: 3rem;
+  color: var(--gold);
+  margin-bottom: 30px;
+}
+
+.hero-tagline {
+  font-size: 2rem;
+  margin-bottom: 24px;
+}
+
+.hero-description {
+  font-size: 1.2rem;
+  max-width: 680px;
+  margin: auto;
+  line-height: 1.8;
+}
+
+.btn {
+  display: inline-block;
+  padding: 15px 36px;
+  border-radius: 999px;
+  margin-top: 35px;
+  font-weight: bold;
+  transition: var(--transition);
+}
+
+.btn-primary {
+  background: #8f6800;
+  color: white;
+}
+
+.btn-primary:hover {
+  background: var(--gold-dark);
+}
+
+/* ============================================================
+   GENERAL SECTIONS
+   ============================================================ */
+.section {
+  padding: 80px 0;
+}
+
+.section-title {
+  font-size: 2.3rem;
+  margin-bottom: 16px;
+}
+
+.gold-underline {
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--gold);
+  margin: 0 0 30px;
+  border-radius: 20px;
+}
+
+.about-description {
+  max-width: 760px;
+  font-size: 1.08rem;
+}
+
+/* ============================================================
+   STATS SECTION
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+}
+
+.stat-box {
+  background: white;
+  border: 2px solid var(--gold);
+  border-radius: 24px;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+}
+
+.stat-label {
+  font-size: 1rem;
+}
+
+/* ============================================================
+   CARD GRIDS
+   ============================================================ */
+.news-grid,
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.card {
+  background: white;
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+}
+
+.card-body {
+  padding: 24px;
+}
+
+.news-card-image img {
+  height: 220px;
+  object-fit: cover;
+}
+
+.why-card {
+  min-height: 180px;
+  width: 100%;
+}
+
+/* ============================================================
+   COMMUNITY / JOURNEY SECTION
+   ============================================================ */
+.journey-section {
+  background: var(--navy);
+  color: white;
+  border-top: 4px solid var(--gold);
+  border-radius: 30px 30px 0 0;
+}
+
+.journey-section .section-title {
+  color: white;
+}
+
+.journey-section p {
+  font-size: 1.1rem;
+  max-width: 850px;
+}
+
+/* ============================================================
+    PAGE HEADER
+    ============================================================ */
+.page-header {
+  background: var(--navy);
+  color: var(--gold);
+  text-align: center;
+  padding: 60px 0;
+  border-bottom: 4px solid var(--gold);
+}
+
+.page-header-title {
+  font-size: 2.8rem;
+  color: var(--gold);
+  margin: 0;
+}
+
+/* ============================================================
+    GRADES GRID
+    ============================================================ */
+.grades-section {
+  background: var(--light-bg);
+  padding: 60px 0;
+}
+
+.grades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+.grade-card {
+  background: var(--navy);
+  border: 3px solid var(--gold);
+  border-radius: 28px;
+  padding: 0;
+  color: var(--white);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.grade-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.grade-card .card-body {
+  padding: 32px;
+  text-align: center;
+}
+
+.grade-card-title {
+  font-size: 2rem;
+  color: var(--gold);
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+.grade-details {
+  list-style: none;
+  margin-bottom: 24px;
+}
+
+.grade-details li {
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+.grade-details strong {
+  color: black;
+  display: block;
+  font-weight: bold;
+}
+
+.grade-details span {
+  color: black;
+  font-weight: bold;
+  display: inline;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 12px 28px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: var(--transition);
+  display: inline-block;
+}
+
+.btn-outline:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+.admissions-cta {
+  margin-top: 48px;
+  padding: 32px;
+  background: white;
+  border-radius: 18px;
+  text-align: center;
+}
+
+.admissions-cta p {
+  font-size: 1.3rem;
+  color: var(--navy);
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* ============================================================
+   RESPONSIVE
+   ============================================================ */
+@media (max-width: 768px) {
+  .hero-title {
+    font-size: 2.2rem;
+  }
+
+  .hero-tagline {
+    font-size: 1.5rem;
+  }
+
+  .stats-grid, .why-grid {
+    grid-template-columns: 1fr;
+  }
+  .why-grid {
+    justify-items: center;
+  }
+
+  .section-title {
+    font-size: 1.8rem;
+  }
+}

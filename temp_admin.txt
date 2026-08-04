@@ -1,0 +1,16 @@
+   2. LOGIN FORM SUBMIT
+   ══════════════════════════════════════════ */
+
+
+// Allow Enter key in password field
+if (adminPasswordEl) {
+  adminPasswordEl.addEventListener('keydown', e => {
+    if (e.key === 'Enter') handleLogin();
+  });
+}
+
+async function handleLogin() {
+  const adminUsernameEl = document.getElementById('admin-username');
+  const adminPasswordEl = document.getElementById('admin-password');
+  const adminLoginError = document.getElementById('admin-login-error');
+  const adminBar        = document.getElementById('admin-bar');

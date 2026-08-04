@@ -1,0 +1,6 @@
+{
+  "name": "Empty Project",
+  "description": "A blank workspace ready for a ZIP file upload.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

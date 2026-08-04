@@ -95,7 +95,7 @@ a {
 .nav-logo {
   display: flex;
   align-items: center;
-  gap: 200px;
+  gap: 14px;
 }
 
 .nav-logo img {
@@ -239,7 +239,7 @@ a {
 }
 
 .stat-box {
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #bbdefb 60%, #64b5f6 100%);
   border: 2px solid var(--gold);
   border-radius: 24px;
   padding: 40px 20px;
@@ -267,7 +267,8 @@ a {
 }
 
 .card {
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #bbdefb 60%, #64b5f6 100%);
+  border: 2px solid var(--gold);
   border-radius: 18px;
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -407,9 +408,11 @@ a {
 .admissions-cta {
   margin-top: 48px;
   padding: 32px;
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #bbdefb 60%, #64b5f6 100%);
+  border: 2px solid var(--gold);
   border-radius: 18px;
   text-align: center;
+  box-shadow: var(--shadow);
 }
 
 .admissions-cta p {

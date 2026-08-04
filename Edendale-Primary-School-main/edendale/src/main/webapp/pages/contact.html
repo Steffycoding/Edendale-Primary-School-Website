@@ -104,26 +104,6 @@
       <!-- RIGHT: Supporters & Donors -->
       <div class="donors-column">
 
-        <!-- Government Support -->
-        <div class="donor-block">
-          <h4 data-editable data-field="gov_support_label">🔵 Government Support</h4>
-          <p data-editable data-field="gov_support_value">Western Cape Education Department</p>
-        </div>
-
-        <!-- Community & Parent Support -->
-        <div class="donor-block">
-          <h4 data-editable data-field="community_support_label">🟢 Community &amp; Parent Support</h4>
-          <p data-editable data-field="community_support_value">School Governing Body + Parents</p>
-        </div>
-
-        <!-- External Support -->
-        <div class="donor-block">
-          <h4 data-editable data-field="external_support_label">🟡 External Support</h4>
-          <p data-editable data-field="external_support_value">
-            NGOs / Literacy programmes / youth upliftment groups
-          </p>
-        </div>
-
         <!-- Interested in Supporting -->
         <div class="support-cta card" style="margin-top:24px;">
           <div class="card-body">
@@ -194,8 +174,11 @@
   <h4>Edit Content</h4>
   <textarea id="edit-popup-text" rows="4"></textarea>
   <div id="edit-popup-image-row" style="display:none;">
-    <input type="url" id="edit-popup-image-url" placeholder="Paste image URL or upload path">
-  </div>
+      <input type="url" id="edit-popup-image-url" placeholder="Paste image URL or upload path">
+    </div>
+    <div id="edit-popup-link-row" style="display:none;">
+      <input type="url" id="edit-popup-link-url" placeholder="Paste destination link URL">
+    </div>
   <div class="popup-actions">
     <button class="btn btn-primary" id="edit-popup-save">Save</button>
     <button class="btn btn-outline" id="edit-popup-cancel">Cancel</button>

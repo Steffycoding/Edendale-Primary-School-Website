@@ -229,12 +229,7 @@
         <p data-editable data-field="admissions_cta_text">
           Come to the school in person or:
         </p>
-        <a href="https://wcedonline.westerncape.gov.za/admissions"
-          target="_blank"
-          rel="noopener noreferrer"
-          class="btn btn-primary">
-          Apply for Admissions
-        </a>
+        <a href="https://wcedonline.westerncape.gov.za/admissions" target="_blank" rel="noopener noreferrer" class="btn btn-primary" data-editable data-type="link" data-field="admissions_cta_link">Apply for Admissions</a>
       </div>
 
     </div>
@@ -277,8 +272,11 @@
   <h4>Edit Content</h4>
   <textarea id="edit-popup-text" rows="4"></textarea>
   <div id="edit-popup-image-row" style="display:none;">
-    <input type="url" id="edit-popup-image-url" placeholder="Paste image URL or upload path">
-  </div>
+      <input type="url" id="edit-popup-image-url" placeholder="Paste image URL or upload path">
+    </div>
+    <div id="edit-popup-link-row" style="display:none;">
+      <input type="url" id="edit-popup-link-url" placeholder="Paste destination link URL">
+    </div>
   <div class="popup-actions">
     <button class="btn btn-primary" id="edit-popup-save">Save</button>
     <button class="btn btn-outline" id="edit-popup-cancel">Cancel</button>

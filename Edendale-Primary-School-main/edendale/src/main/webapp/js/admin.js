@@ -160,19 +160,31 @@ function handleEditClick(e) {
   e.preventDefault();
   currentEditTarget = e.currentTarget;
   const isImage = currentEditTarget.dataset.type === 'image';
-  const currentVal = isImage ? currentEditTarget.getAttribute('src') : currentEditTarget.innerHTML;
+  const isLink = currentEditTarget.dataset.type === 'link';
+  let currentVal = currentEditTarget.innerHTML;
+  if (isImage) currentVal = currentEditTarget.getAttribute('src');
+  if (isLink) currentVal = currentEditTarget.getAttribute('href');
   
   const editPopupImgRow = document.getElementById('edit-popup-image-row');
+  const editPopupLinkRow = document.getElementById('edit-popup-link-row');
   const editPopupText   = document.getElementById('edit-popup-text');
   const editPopupImgUrl = document.getElementById('edit-popup-image-url');
+  const editPopupLinkUrl = document.getElementById('edit-popup-link-url');
   const editPopup       = document.getElementById('edit-popup');
   
   if (isImage) {
     if (editPopupImgRow) editPopupImgRow.style.display = 'block';
+    if (editPopupLinkRow) editPopupLinkRow.style.display = 'none';
     if (editPopupText) editPopupText.style.display = 'none';
     if (editPopupImgUrl) editPopupImgUrl.value = currentVal;
+  } else if (isLink) {
+    if (editPopupImgRow) editPopupImgRow.style.display = 'none';
+    if (editPopupLinkRow) editPopupLinkRow.style.display = 'block';
+    if (editPopupText) editPopupText.style.display = 'none';
+    if (editPopupLinkUrl) editPopupLinkUrl.value = currentVal;
   } else {
     if (editPopupImgRow) editPopupImgRow.style.display = 'none';
+    if (editPopupLinkRow) editPopupLinkRow.style.display = 'none';
     if (editPopupText) {
       editPopupText.style.display = 'block';
       editPopupText.value = currentVal;
@@ -180,6 +192,40 @@ function handleEditClick(e) {
   }
 
   if (editPopup) editPopup.classList.add('active');
+}
+
+
+function saveEdit() {
+  if (!currentEditTarget) return;
+
+  const isImage = currentEditTarget.dataset.type === 'image';
+  const isLink = currentEditTarget.dataset.type === 'link';
+  const fieldName = currentEditTarget.dataset.field;
+  let newValue = '';
+
+  if (isImage) {
+    const input = document.getElementById('edit-popup-image-url');
+    if (input) newValue = input.value.trim();
+  } else if (isLink) {
+    const input = document.getElementById('edit-popup-link-url');
+    if (input) newValue = input.value.trim();
+  } else {
+    const textarea = document.getElementById('edit-popup-text');
+    if (textarea) newValue = textarea.value.trim();
+  }
+
+  // Update UI immediately
+  if (isImage) {
+    currentEditTarget.setAttribute('src', newValue);
+  } else if (isLink) {
+    currentEditTarget.setAttribute('href', newValue);
+  } else {
+    currentEditTarget.innerHTML = newValue;
+  }
+
+  // Save to pending changes
+  pendingChanges[fieldName] = newValue;
+  hideEditPopup();
 }
 
 function hideEditPopup() {

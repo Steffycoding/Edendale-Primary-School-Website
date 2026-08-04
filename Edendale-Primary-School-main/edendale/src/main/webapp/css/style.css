@@ -68,13 +68,13 @@ a {
   position: sticky;
   top: 0;
   z-index: 1000;
-  margin-left:auto
 }
 
 .nav-inner {
   display: flex;
   justify-content: space-between;
   align-items: center;
+  position: relative;
 }
 
 .nav-logo {
@@ -98,18 +98,37 @@ a {
 
 .nav-links {
   display: flex;
-  gap: 28px;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  right: -300px;
+  width: 280px;
+  height: 100vh;
+  background: var(--white);
+  padding: 100px 20px 20px 20px;
+  box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+  z-index: 1000;
+  transition: right 0.3s ease;
+  overflow-y: auto;
   list-style: none;
+  gap: 0;
+}
+.nav-links.show {
+  right: 0;
 }
 
 .nav-links a {
-  color: white;
-  font-size: 0.95rem;
+  display: block;
+  color: var(--text-dark) !important;
+  font-size: 1.1rem;
+  padding: 12px 0;
+  border-bottom: 1px solid #eaeaea;
+  width: 100%;
 }
 
 .nav-links a.active,
 .nav-links a:hover {
-  color: var(--gold);
+  color: var(--primary);
 }
 .nav-centered {
   display: flex;
@@ -228,7 +247,7 @@ a {
 }
 
 .stat-box {
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #bbdefb 60%, #64b5f6 100%) !important;
   border: 2px solid var(--gold);
   border-radius: 24px;
   padding: 40px 20px;
@@ -257,7 +276,8 @@ a {
 }
 
 .card {
-  background: white;
+  background: linear-gradient(135deg, #ffffff 0%, #bbdefb 60%, #64b5f6 100%) !important;
+  border: 2px solid var(--gold);
   border-radius: 18px;
   box-shadow: var(--shadow);
   overflow: hidden;
@@ -315,42 +335,20 @@ a {
 
 #admin-toggle-btn {
   position: fixed;
-  top: 20px;
+  top: 16px;
   right: 16px;
   width: 42px;
   height: 42px;
-  padding: 0;
   border: none;
-  border-radius: 0;
-  background: transparent;
-  box-shadow: none;
+  border-radius: 50%;
+  background: var(--gold);
   cursor: pointer;
-  opacity: 0;
-  pointer-events: auto;
-  transition: opacity 0.25s ease, transform 0.25s ease;
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
   z-index: 9999;
-}
-
-#admin-toggle-btn:hover,
-#admin-toggle-btn:focus-visible {
-  opacity: 1;
-  transform: scale(1.05);
 }
 
 #admin-toggle-btn svg {
   width: 22px;
-  height: 22px;
-  fill: var(--gold);
-}
-
-@media (max-width: 768px) {
-  #admin-toggle-btn {
-    right: 80px;
-    top: 18px;
-  }
+  fill: white;
 }
 
 /* ============================================================
@@ -380,91 +378,49 @@ a {
 }
 /* Mobile Menu Additions */
 .mobile-menu-btn {
-  display: none;
-  background: none;
-  border: none;
+  position: static;
+  transform: none;
+  margin: 0;
+  background: var(--navy);
+  border: 1px solid var(--gold);
+  padding: 6px;
+  border-radius: 4px;
+  z-index: 1001;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   color: white;
   cursor: pointer;
 }
-@media (max-width: 768px) {
-  .mobile-menu-btn {
-    position: static;
-    transform: none;
-    margin: 0;
-    background: var(--navy);
-    border: 1px solid var(--gold);
-    padding: 6px;
-    border-radius: 4px;
-    z-index: 1001;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-  }
-  .navbar {
-    min-height: unset;
-  }
-  .nav-links {
-    display: flex;
-    flex-direction: column;
-    position: fixed;
-    top: 0;
-    right: -300px;
-    width: 280px;
-    height: 100vh;
-    background-color: white;
-    padding: 100px 20px 20px 20px;
-    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-    z-index: 1000;
-    transition: right 0.3s ease;
-    overflow-y: auto;
-  }
-  .nav-links.show {
-    right: 0;
-  }
-  .nav-links.show + .mobile-menu-btn {
-    color: var(--navy);
-    background: transparent;
-    border-color: transparent;
-    position: fixed;
-    top: 20px;
-    right: 20px;
-  }
-  .nav-links a {
-    display: block;
-    color: var(--text-dark) !important;
-    font-size: 1.1rem;
-    padding: 12px 0;
-    border-bottom: 1px solid #eaeaea;
-    width: 100%;
-  }
-  .nav-links a.active,
-  .nav-links a:hover {
-    color: var(--primary);
-  }
+.nav-links.show + .mobile-menu-btn {
+  color: var(--navy);
+  background: transparent;
+  border-color: transparent;
+  position: fixed;
+  top: 20px;
+  right: 20px;
 }
+
 
 .mobile-menu-overlay {
   display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100vw;
+  height: 100vh;
+  background: rgba(0,0,0,0.5);
+  z-index: 999;
+  opacity: 0;
+  transition: opacity 0.3s ease;
+  pointer-events: none;
 }
-@media (max-width: 768px) {
-  .mobile-menu-overlay {
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100vw;
-    height: 100vh;
-    background: rgba(0,0,0,0.5);
-    z-index: 999;
-    opacity: 0;
-    transition: opacity 0.3s ease;
-    pointer-events: none;
-  }
-  .mobile-menu-overlay.show {
-    display: block;
-    opacity: 1;
-    pointer-events: auto;
-  }
+.mobile-menu-overlay.show {
+  display: block;
+  opacity: 1;
+  pointer-events: auto;
 }
+
 
 body.no-scroll {
   overflow: hidden;

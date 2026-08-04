@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import bcrypt from 'bcryptjs';
-import { loadDb, saveDb } from './db-json.js';
+import { loadDb, saveDb } from './Edendale-Primary-School-main/edendale/src/main/webapp/js/db-json.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

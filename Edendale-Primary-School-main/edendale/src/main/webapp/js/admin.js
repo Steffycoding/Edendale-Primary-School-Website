@@ -98,6 +98,15 @@ function showLoginModal() {
   }
 }
 
+function showLoginModal() {
+  const adminLoginModal = document.getElementById("admin-login-modal");
+  const adminUsernameEl = document.getElementById("admin-username");
+  if (adminLoginModal) {
+    adminLoginModal.classList.add("active");
+    if (adminUsernameEl) adminUsernameEl.focus();
+  }
+}
+
 function hideLoginModal() {
   const adminLoginModal = document.getElementById('admin-login-modal');
   const adminLoginError = document.getElementById('admin-login-error');

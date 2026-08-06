@@ -1,0 +1,46 @@
+services:
+  # Node.js Express service
+  node-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.node
+    container_name: express-node-service
+    ports:
+      - "3000:3000"
+    environment:
+      - PORT=3000
+      - MONGO_URI=mongodb://database:2717/mydb
+    depends_on:
+      - database
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  # Bun Express service
+  bun-app:
+    build:
+      context: .
+      dockerfile: Dockerfile.bun
+    container_name: express-bun-service
+    ports:
+      - "3001:3001"
+    environment:
+      - PORT=3001
+      - MONGO_URI=mongodb://database:2717/mydb
+    depends_on:
+      - database
+    volumes:
+      - .:/app
+      - /app/node_modules
+
+  # Database Dependency
+  database:
+    image: mongo:7.0
+    container_name: app-database
+    ports:
+      - "27017:27017"
+    volumes:
+      - mongo-data:/data/db
+
+volumes:
+  mongo-data:

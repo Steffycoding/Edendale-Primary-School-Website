@@ -4,7 +4,7 @@ import { fileURLToPath } from 'url';
 import session from 'express-session';
 import bcrypt from 'bcryptjs';
 import { loadDb, saveDb } from './Edendale-Primary-School-main/edendale/src/main/webapp/js/db-json.js';
-
+import log from './Edendale-Primary-School-main/edendale/src/main/webapp/js/log.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
@@ -13,7 +13,7 @@ const PORT = 3000;
 
 app.use(express.json());
 app.use(session({
-  secret: 'edendale-secret-key-xyz',
+  secret: process.env.SECRETE_KEY || 'default_secret',
   resave: false,
   saveUninitialized: false,
 }));
@@ -175,5 +175,7 @@ app.get('*', (req, res) => {
 });
 
 app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
+
+    log.info(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT}`);
 });

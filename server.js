@@ -3,7 +3,7 @@ import path from 'path';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
 import bcrypt from 'bcryptjs';
-import { loadDb, saveDb } from './Edendale-Primary-School-main/edendale/src/main/webapp/js/db-json.js';
+import { loadDb, saveDb } from './db-json.js';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -12,11 +12,30 @@ const app = express();
 const PORT = 3000;
 
 app.use(express.json());
+app.set('trust proxy', 1);
 app.use(session({
   secret: 'edendale-secret-key-xyz',
   resave: false,
   saveUninitialized: false,
+  cookie: {
+    secure: true,
+    sameSite: 'none',
+    partitioned: true
+  }
 }));
+
+
+const adminTokens = new Set();
+
+function checkIsAdmin(req) {
+  const auth = req.headers.authorization;
+  if (auth && auth.startsWith('Bearer ')) {
+    const token = auth.split(' ')[1];
+    if (adminTokens.has(token)) return true;
+  }
+  if (req.session && req.session.admin) return true;
+  return false;
+}
 
 // API Routes
 app.post('/api/admin/login', async (req, res) => {
@@ -26,7 +45,11 @@ app.post('/api/admin/login', async (req, res) => {
     const user = db.admin_users.find(u => u.username === username);
     if (user && await bcrypt.compare(password, user.password_hash)) {
       req.session.admin = true;
-      res.json({ success: true });
+      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
+      adminTokens.add(token);
+      req.session.save((err) => {
+        res.json({ success: true, token });
+      });
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -35,7 +58,44 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
+app.get('/api/admin/status', (req, res) => {
+  res.json({ admin: checkIsAdmin(req) });
+});
+
+
+app.post('/api/admin/change-password', async (req, res) => {
+  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
+  try {
+    const { newPassword } = req.body;
+    if (!newPassword) return res.status(400).json({ error: 'Password required' });
+    if (newPassword.length < 12) return res.status(400).json({ error: 'Password must be at least 12 characters' });
+    if (!/[A-Z]/.test(newPassword)) return res.status(400).json({ error: 'Password must contain at least one capital letter' });
+    if (!/[0-9]/.test(newPassword)) return res.status(400).json({ error: 'Password must contain at least one digit' });
+    if (!/[^A-Za-z0-9]/.test(newPassword)) return res.status(400).json({ error: 'Password must contain at least one special character' });
+    
+    const db = await loadDb();
+    // In our case we just update all admin_users or the first one. Let's update all for simplicity since there's only 1.
+    if (db.admin_users.length > 0) {
+      const isSame = await bcrypt.compare(newPassword, db.admin_users[0].password_hash);
+      if (isSame) return res.status(400).json({ error: 'New password must be different from the existing password' });
+
+      const hash = await bcrypt.hash(newPassword, 10);
+      db.admin_users.forEach(u => u.password_hash = hash);
+      await saveDb();
+      res.json({ success: true });
+    } else {
+      res.status(404).json({ error: 'User not found' });
+    }
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
 app.post('/api/admin/logout', (req, res) => {
+  const auth = req.headers.authorization;
+  if (auth && auth.startsWith('Bearer ')) {
+    adminTokens.delete(auth.split(' ')[1]);
+  }
   req.session.destroy();
   res.json({ success: true });
 });
@@ -58,7 +118,7 @@ app.get('/api/content', async (req, res) => {
 });
 
 app.patch('/api/content', async (req, res) => {
-  if (!req.session.admin) return res.status(403).json({ error: 'Unauthorized' });
+  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const { page, changes } = req.body;
@@ -109,7 +169,7 @@ app.get('/api/events', async (req, res) => {
 });
 
 app.post('/api/events', async (req, res) => {
-  if (!req.session.admin) return res.status(403).json({ error: 'Unauthorized' });
+  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const { title, date, time, description } = req.body;
@@ -129,7 +189,7 @@ app.post('/api/events', async (req, res) => {
 });
 
 app.put('/api/events/:id', async (req, res) => {
-  if (!req.session.admin) return res.status(403).json({ error: 'Unauthorized' });
+  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
@@ -151,7 +211,7 @@ app.put('/api/events/:id', async (req, res) => {
 });
 
 app.delete('/api/events/:id', async (req, res) => {
-  if (!req.session.admin) return res.status(403).json({ error: 'Unauthorized' });
+  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
@@ -163,7 +223,7 @@ app.delete('/api/events/:id', async (req, res) => {
   }
 });
 
-const staticPath = path.join(__dirname, 'Edendale-Primary-School-main', 'edendale', 'src', 'main', 'webapp');
+const staticPath = path.join(__dirname, 'public');
 app.use(express.static(staticPath));
 
 // For SPA routing if there is any, fallback to pages folder or index

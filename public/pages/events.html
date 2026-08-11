@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Events Calendar – Edendale Primary School</title>
+  
+  
+  <link rel="stylesheet" href="../css/main.css">
+  <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
+</head>
+<body>
+
+  <!-- NAVIGATION -->
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="../index.html" class="nav-logo">
+        <img src="../assets/images/logo.svg" alt="Logo">
+        <span>Edendale Primary School</span>
+      </a>
+      
+      <ul class="nav-links">
+        <li><a href="about.html">About</a></li>
+        <li><a href="grades.html">Admissions &amp; Subjects</a></li>
+        <li><a href="grade-detail.html?grade=R">Grade R</a></li>
+        <li><a href="extracurriculars.html">Extra &amp; Co-Curriculars</a></li>
+        <li><a href="events.html" class="active">Events Calendar</a></li>
+        <li><a href="contact.html">Contact</a></li>
+            </ul>
+      
+      <!-- Hidden Admin Cog -->
+      <a href="/admin-login.html" id="admin-toggle-btn" title="Admin Login">
+        <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 15.5A3.5 3.5 0 0 1 8.5 12 3.5 3.5 0 0 1 12 8.5a3.5 3.5 0 0 1 3.5 3.5 3.5 3.5 0 0 1-3.5 3.5m7.43-2.92c.04-.34.07-.68.07-1.08s-.03-.74-.07-1.08l2.11-1.65c.19-.15.24-.42.12-.64l-2-3.46c-.12-.22-.39-.3-.61-.22l-2.49 1c-.52-.4-1.08-.73-1.69-.98l-.38-2.65C14.46 2.18 14.25 2 14 2h-4c-.25 0-.46.18-.49.42l-.38 2.65c-.61.25-1.17.58-1.69.98l-2.49-1c-.23-.09-.49 0-.61.22l-2 3.46c-.13.22-.07.49.12.64l2.11 1.65c-.04.34-.07.69-.07 1.08s.03.74.07 1.08l-2.11 1.65c-.19.15-.24.42-.12.64l2 3.46c.12.22.39.3.61.22l2.49-1c.52.4 1.08.73 1.69.98l.38 2.65c.03.24.24.42.49.42h4c.25 0 .46-.18.49-.42l.38-2.65c.61-.25 1.17-.58 1.69-.98l2.49 1c.23.09.49 0 .61-.22l2-3.46c.12-.22.07-.49-.12-.64l-2.11-1.65z"/>
+        </svg>
+      </a>
+      <button class="mobile-menu-btn" aria-label="Toggle Navigation">
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <line x1="3" y1="12" x2="21" y2="12"></line>
+          <line x1="3" y1="6" x2="21" y2="6"></line>
+          <line x1="3" y1="18" x2="21" y2="18"></line>
+        </svg>
+      </button>
+    </div>
+  </nav>
+
+  <!-- PAGE HEADER -->
+  <section class="page-header">
+    <div class="container">
+      <h1 data-editable data-field="events_page_title">Events Calendar</h1>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       CALENDAR CONTROLS
+       ══════════════════════════════════ -->
+  <section class="section events-section">
+    <div class="container">
+
+      <!-- Month/Year Navigation -->
+      <div class="calendar-nav">
+        <button class="btn btn-outline" id="prev-month">&laquo; Prev</button>
+        <h2 class="calendar-month-title" id="calendar-month-title">April 2026</h2>
+        <button class="btn btn-outline" id="next-month">Next &raquo;</button>
+      </div>
+
+      <!-- ══ CALENDAR GRID ══
+           JS will generate the days dynamically.
+           Events are loaded from the Java backend via fetch/AJAX.
+      ══════════════════════ -->
+      <div class="calendar-grid-wrapper">
+        <!-- Day headers -->
+        <div class="calendar-day-headers">
+          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+          <span>Thu</span><span>Fri</span><span>Sat</span>
+        </div>
+        <!-- Day cells rendered by calendar.js -->
+        <div class="calendar-grid" id="calendar-grid">
+          <!-- TODO: Populated by js/calendar.js -->
+        </div>
+      </div>
+
+      <!-- ══ EVENT LIST / SIDEBAR ══ -->
+      <div class="events-list-section" style="margin-top:40px;">
+        <h3 class="section-title" style="text-align:left;">Upcoming Events</h3>
+        <span class="gold-underline" style="margin-left:0;"></span>
+        <div class="events-list" id="events-list">
+          <!-- TODO: Populated by calendar.js from Java API -->
+          <!-- SKELETON EVENT ITEM STRUCTURE:
+          <div class="event-item">
+            <div class="event-date-badge">
+              <span class="event-day">15</span>
+              <span class="event-month">Apr</span>
+            </div>
+            <div class="event-details">
+              <h4 class="event-title" data-editable data-field="event1_title">Event Name</h4>
+              <p class="event-description" data-editable data-field="event1_desc">Description…</p>
+              <span class="event-time" data-editable data-field="event1_time">08:00 – 10:00</span>
+            </div>
+            [Admin: Delete button shown in edit mode]
+          </div>
+          -->
+          <p class="events-empty-msg">No upcoming events. Check back soon!</p>
+        </div>
+
+        <!-- ADD EVENT BUTTON — visible in admin mode only -->
+        <button class="btn btn-primary admin-only" id="add-event-btn" style="margin-top:24px; display:none;">
+          + Add New Event
+        </button>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       ADD/EDIT EVENT MODAL (admin only)
+       ══════════════════════════════════ -->
+  <div id="event-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+       z-index:10001; align-items:center; justify-content:center;">
+    <div class="admin-modal-box" style="width:400px;">
+      <h2>Add / Edit Event</h2>
+      <input type="hidden" id="event-modal-id">
+      <input type="text" id="event-modal-title" placeholder="Event Title">
+      <input type="date" id="event-modal-date" style="width:100%; padding:10px; margin-bottom:14px;
+             border-radius:8px; border:1px solid rgba(245,166,35,0.25);">
+      <input type="text" id="event-modal-time" placeholder="Time (e.g. 08:00 – 10:00)">
+      <textarea id="event-modal-desc" placeholder="Event Description" rows="3"
+                style="width:100%; padding:10px; margin-bottom:14px; border-radius:8px;
+                border:1px solid rgba(245,166,35,0.25); background:rgba(255,255,255,0.07);
+                color:#fff;"></textarea>
+      <div style="display:flex; gap:12px;">
+        <button class="btn btn-primary" id="event-modal-save" style="flex:1;">Save Event</button>
+        <button class="btn btn-outline" id="event-modal-cancel" style="flex:1;">Cancel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="container">
+      <p>&copy; <span id="footer-year"></span> Edendale Primary School. All rights reserved.</p>
+    </div>
+  </footer>
+
+  <div id="admin-login-modal">
+  <div class="admin-modal-box">
+    <button id="admin-close-btn" aria-label="Close Admin Login">&times;</button>
+    <h2>Admin Login</h2>
+    <input type="text" id="admin-username" placeholder="Username">
+    <input type="password" id="admin-password" placeholder="Password">
+    <button class="btn btn-primary" id="admin-login-btn">Login</button>
+    <p id="admin-login-error" style="color:#ff6b6b; margin-top:10px; font-size:0.85rem;"></p>
+  </div>
+</div>
+<div id="admin-bar">
+  <span>✏ Admin Edit Mode Active</span>
+  <div class="admin-bar-actions">
+    <button id="admin-undo-btn" style="margin-right:8px; background:var(--text-muted); border-color:var(--text-muted);">Undo</button>
+      <button id="admin-save-btn">Save All Changes</button>
+    <button id="admin-logout-btn">Logout</button>
+  </div>
+</div>
+<div id="edit-popup">
+  <h4>Edit Content</h4>
+  <div id="edit-popup-toolbar" style="display:none; gap: 6px; margin-bottom: 8px;">
+      <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" data-cmd="bold" title="Bold"><b>B</b></button>
+      <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" data-cmd="italic" title="Italic"><i>I</i></button>
+      <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" data-cmd="insertUnorderedList" title="Bullet List">• List</button>
+    </div>
+    <div id="edit-popup-text" contenteditable="true" style="border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; min-height: 100px; font-size: 0.9rem; margin-bottom: 12px; overflow-y: auto; background: var(--white);"></div>
+  <div id="edit-popup-image-row" style="display:none;">
+      <input type="url" id="edit-popup-image-url" placeholder="Paste image URL or upload path">
+    </div>
+    <div id="edit-popup-link-row" style="display:none;">
+      <input type="url" id="edit-popup-link-url" placeholder="Paste destination link URL">
+    </div>
+  <div class="popup-actions">
+    <button class="btn btn-primary" id="edit-popup-save">Save</button>
+    <button class="btn btn-outline" id="edit-popup-cancel">Cancel</button>
+  </div>
+</div>
+
+  
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
+  <script src="../js/calendar.js"></script>
+  <script src="../js/admin.js"></script>
+  <script src="../js/main.js"></script>
+</body>
+</html>

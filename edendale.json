@@ -3,12 +3,12 @@
     {
       "id": 1,
       "username": "admin",
-      "password_hash": "$2b$10$JzPmKe9nPNi/vU1h.haT6.v8r3WdzsC99ryDzLSe93B4qBAry8jCO"
+      "password_hash": "$2b$10$t0snCabVaz4LGxAnM4w4y.nulNNDrqvp8yhmkwnhCFXz/m1fXxbpa"
     },
     {
       "id": 2,
       "username": "teacher",
-      "password_hash": "$2b$10$322FvWN8yENKW1vwlyw6s.1/3PC0xj35JVUgOHAYps3wYiBe1TtAi"
+      "password_hash": "$2b$10$t0snCabVaz4LGxAnM4w4y.nulNNDrqvp8yhmkwnhCFXz/m1fXxbpa"
     }
   ],
   "content": [
@@ -109,6 +109,20 @@
       "field_name": "contact_emis",
       "value": "1054821000",
       "type": "text"
+    },
+    {
+      "id": 15,
+      "page": "home",
+      "field_name": "hero_cta_link",
+      "value": "pages/grades.html",
+      "type": "link"
+    },
+    {
+      "id": 16,
+      "page": "grades",
+      "field_name": "admissions_cta_link",
+      "value": "https://wcedonline.westerncape.gov.za/admissions",
+      "type": "link"
     }
   ],
   "events": [

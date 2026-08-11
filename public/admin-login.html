@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Admin Login — Edendale Primary School</title>
+  <link rel="stylesheet" href="/css/main.css">
+  <style>
+    .admin-login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: calc(100vh - 200px);
+      padding: 40px 20px;
+    }
+    .admin-modal-box {
+      display: block;
+      position: relative;
+      inset: auto;
+      transform: none;
+      margin: 0 auto;
+    }
+  </style>
+</head>
+<body>
+  <nav class="navbar">
+    <div class="container nav-inner">
+      <a href="/" class="nav-logo">
+        <img src="/assets/images/logo.svg" alt="Edendale Primary School Logo">
+        <span>Edendale Primary School</span>
+      </a>
+      <ul class="nav-links">
+        <li><a href="/">Home</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <main class="admin-login-page">
+    <div class="admin-modal-box" id="login-box">
+      <h2>Admin Login</h2>
+      <input type="text" id="admin-username" placeholder="Username">
+      <input type="password" id="admin-password" placeholder="Password">
+      <button class="btn btn-primary" id="admin-login-btn">Login</button>
+      <p id="admin-login-error" style="color:#ff6b6b; margin-top:10px; font-size:0.85rem;"></p>
+    </div>
+
+    <div class="admin-modal-box" id="change-password-box" style="display:none; max-width: 400px;">
+      <h2>Change Password</h2>
+      <p style="font-size: 0.9rem; margin-bottom: 15px; color: var(--text-muted);">Please update your password.</p>
+      <input type="password" id="new-password" placeholder="New Password">
+      <input type="password" id="confirm-password" placeholder="Confirm Password">
+      <ul style="font-size: 0.8rem; color: var(--text-muted); text-align: left; margin-bottom: 15px; padding-left: 20px;">
+        <li id="rule-length">At least 12 characters</li>
+        <li id="rule-special">At least 1 special character</li>
+        <li id="rule-digit">At least 1 digit</li>
+        <li id="rule-capital">At least 1 capital letter</li>
+      </ul>
+      <div style="display: flex; gap: 10px;">
+        <button class="btn btn-primary" id="save-password-btn" style="flex:1;">Save password</button>
+        <button class="btn btn-outline" id="next-time-btn" style="flex:1;">Next time</button>
+      </div>
+      <p id="change-password-error" style="color:#ff6b6b; margin-top:10px; font-size:0.85rem;"></p>
+    </div>
+  </main>
+  
+  <footer class="site-footer">
+    <p>&copy; <span id="footer-year"></span> Edendale Primary School. All rights reserved.</p>
+  </footer>
+
+  <script src="/js/admin-login.js"></script>
+</body>
+</html>

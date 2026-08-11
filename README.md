@@ -1,20 +1,43 @@
-<div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://ai.google.dev/static/site-assets/images/share-ais-513315318.png" />
-</div>
+# Edendale Primary School Website
 
-# Run and deploy your AI Studio app
+## Architecture Overview
 
-This contains everything you need to run your app locally.
+This is a full-stack web application built using **Node.js, Express, and Vanilla JavaScript/HTML/CSS**. The system handles static content serving as well as an authenticated admin editing mode, enabling easy on-page content updates.
 
-View your app in AI Studio: https://ai.studio/apps/d53e454a-422f-463d-b0f8-e333425e8aac
+### Frontend
+- **Static Pages:** Pure HTML/CSS pages located in the `public/` and `public/pages/` directories.
+- **Styling:** Vanilla CSS in `public/css/main.css`, implementing a responsive, mobile-first design.
+- **Scripts:** 
+  - `public/js/main.js`: Handles dynamic content loading from the API for rendering text/images into the HTML.
+  - `public/js/admin.js`: Manages the inline edit mode functionality when an admin is authenticated.
+  - `public/js/admin-login.js`: Handles the login logic on the `/admin-login.html` page.
 
-## Run Locally
+### Backend & Database
+- **Server:** Node.js Express server (`server.js`).
+- **Database:** A lightweight JSON-based data store (`edendale.json`), managed by `db-json.js`.
+- **Authentication:** Sessions are managed using `express-session`, and passwords are cryptographically hashed via `bcryptjs`.
+- **API Routes:**
+  - `/api/content` (GET, PATCH): Fetches and updates editable content fields for different pages.
+  - `/api/admin/login` (POST): Validates admin credentials and establishes a session.
+  - `/api/admin/logout` (POST): Destroys the current admin session.
+  - `/api/admin/status` (GET): Returns whether the current session is authenticated as an admin.
 
-**Prerequisites:**  Node.js
+## Running the Application
 
+### Development
+\`\`\`bash
+npm run dev
+\`\`\`
+The server will start on port 3000.
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+### Production
+\`\`\`bash
+npm start
+\`\`\`
+
+## Admin System Workflow
+1. The admin user clicks the hidden **cog icon** in the top-right corner, or navigates to `/admin-login.html`.
+2. The user enters their credentials. Upon success, an Express session is established.
+3. The user is redirected back to the site, where `admin.js` detects the session via `/api/admin/status`.
+4. Elements with the `data-editable` attribute receive a gold outline. Clicking them opens the inline edit popup.
+5. Edits are accumulated and saved back to the server via the "Save All Changes" action in the floating admin bar.

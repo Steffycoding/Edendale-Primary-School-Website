@@ -348,6 +348,7 @@ a {
 .journey-section p {
   font-size: 1.1rem;
   max-width: 850px;
+  align-items: left;
 }
 
 
@@ -551,42 +552,44 @@ body {
 }
 
 
-.nav-links {
-  display: flex;
-  flex-direction: column;
-  position: fixed;
-  top: 0;
-  right: -300px;
-  width: 280px;
-  height: 100vh;
-  background: var(--white);
-  padding: 100px 20px 20px 20px;
-  box-shadow: -4px 0 15px rgba(0,0,0,0.1);
-  z-index: 1000;
-  transition: right 0.3s ease;
-  overflow-y: auto;
-  list-style: none;
-  gap: 0;
-}
+@media (max-width: 768px) {
+  .nav-links {
+    display: flex;
+    flex-direction: column;
+    position: fixed;
+    top: 0;
+    right: -300px;
+    width: 280px;
+    height: 100vh;
+    background: var(--white);
+    padding: 100px 20px 20px 20px;
+    box-shadow: -4px 0 15px rgba(0,0,0,0.1);
+    z-index: 1000;
+    transition: right 0.3s ease;
+    overflow-y: auto;
+    list-style: none;
+    gap: 0;
+  }
 
-.nav-links.show {
-  right: 0;
-}
-
-
-.nav-links a {
-  display: block;
-  color: var(--text-dark) !important;
-  font-size: 1.1rem;
-  padding: 12px 0;
-  border-bottom: 1px solid #eaeaea;
-  width: 100%;
-}
+  .nav-links.show {
+    right: 0;
+  }
 
 
-.nav-links a.active,
-.nav-links a:hover {
-  color: var(--primary);
+  .nav-links a {
+    display: block;
+    color: var(--text-dark) !important;
+    font-size: 1.1rem;
+    padding: 12px 0;
+    border-bottom: 1px solid #eaeaea;
+    width: 100%;
+  }
+
+
+  .nav-links a.active,
+  .nav-links a:hover {
+    color: var(--gold);
+  }
 }
 
 
@@ -614,6 +617,7 @@ body {
 
 /* Mobile Menu Additions */
 .mobile-menu-btn {
+  display: none;
   position: static;
   transform: none;
   margin: 0;
@@ -622,11 +626,16 @@ body {
   padding: 6px;
   border-radius: 4px;
   z-index: 1001;
-  display: flex;
   align-items: center;
   justify-content: center;
   color: white;
   cursor: pointer;
+}
+
+@media (max-width: 768px) {
+  .mobile-menu-btn {
+    display: flex;
+  }
 }
 
 .nav-links.show ~ .mobile-menu-btn {
@@ -1087,10 +1096,8 @@ body.admin-mode [data-editable]:hover::after {
 
 /* Admin hidden cog */
 #admin-toggle-btn {
-  position: absolute;
-  right: 60px;
-  top: 50%;
-  transform: translateY(-50%);
+  position: relative;
+  margin-left: 24px;
   width: 32px;
   height: 32px;
   background: transparent;
@@ -1101,13 +1108,39 @@ body.admin-mode [data-editable]:hover::after {
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-shrink: 0;
   z-index: 9999;
 }
-#admin-toggle-btn:hover {
+.nav-inner:hover #admin-toggle-btn,
+#admin-toggle-btn:hover,
+#admin-toggle-btn:focus-visible {
   opacity: 1;
 }
 #admin-toggle-btn svg {
   width: 24px;
   height: 24px;
   fill: var(--gold);
+}
+
+@media (max-width: 768px) {
+  #admin-toggle-btn {
+    position: absolute;
+    right: 50px;
+    top: 50%;
+    transform: translateY(-50%);
+    margin-left: 0;
+  }
+
+  .nav-logo {
+    gap: 8px;
+  }
+
+  .nav-logo img {
+    width: 40px;
+    height: 40px;
+  }
+
+  .nav-logo span {
+    font-size: 0.85rem;
+  }
 }

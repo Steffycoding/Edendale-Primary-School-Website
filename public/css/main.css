@@ -1144,3 +1144,770 @@ body.admin-mode [data-editable]:hover::after {
     font-size: 0.85rem;
   }
 }
+
+/* ============================================================
+   EXTRAS, ACTIVITY CARDS & GALLERY
+   Ported from the Java webapp's global.css during the move to
+   the Node/public layout. Rules already in main.css (nav, hero,
+   .card, .btn, .page-header, .learn-*, .grade-detail-layout,
+   edit popup, admin bar) are deliberately not repeated.
+   ============================================================ */
+
+.extras-intro {
+  position: relative;
+  font-size: 1.4rem;
+  font-weight: bold;
+  text-align: center;
+  max-width: 880px;
+  margin: 0 auto;
+  padding-top: 30px;
+  color: var(--navy);
+  line-height: 1.75;
+}
+
+.extras-intro::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 90px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 20px;
+}
+
+.extras-section {
+  padding-top: 40px;
+  padding-bottom: 40px;
+}
+
+/* Alternating background band for a neat section rhythm */
+.extras-alt {
+  padding-top: 56px;
+  padding-bottom: 56px;
+  background: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Category heading (Extra-Curricular / Co-Curricular) */
+.extras-category-title {
+  color: var(--navy);
+  font-size: 2rem;
+  text-align: center;
+}
+
+.extras-category-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 20px;
+  margin: 12px auto 0;
+}
+
+.extras-category-intro {
+  text-align: center;
+  color: var(--text-muted);
+  max-width: 640px;
+  margin: 14px auto 36px;
+}
+
+/* Activity cards grid */
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.activity-card {
+  border-top: 5px solid var(--gold);
+  text-align: center;
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.activity-card .card-body {
+  padding: 32px 26px;
+}
+
+.activity-card:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.activity-icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 96px;
+  height: 96px;
+  margin-bottom: 20px;
+  border-radius: 50%;
+  background: rgba(217, 163, 0, 0.14);
+  font-size: 3.2rem;
+  line-height: 1;
+}
+
+.activity-name {
+  color: var(--navy);
+  font-size: 1.25rem;
+  line-height: 1.35;
+  margin-bottom: 12px;
+}
+
+.activity-desc {
+  color: var(--text-muted);
+  font-size: 0.98rem;
+  line-height: 1.7;
+}
+
+/* Call-to-action band */
+.extras-cta-section {
+  background: var(--navy);
+  color: var(--white);
+  border-top: 4px solid var(--gold);
+  text-align: center;
+}
+
+.extras-cta-section h2 {
+  color: var(--gold);
+  font-size: 1.9rem;
+  margin-bottom: 14px;
+}
+
+.extras-cta-section p {
+  max-width: 680px;
+  margin: 0 auto;
+  font-size: 1.1rem;
+}
+
+.extras-disclaimer {
+  font-size: 0.9rem;
+  font-style: italic;
+  color: var(--text-muted);
+  max-width: 700px;
+  margin: 24px auto 0;
+}
+
+
+.grade-facts-card {
+  border-top: 5px solid var(--gold);
+  margin-bottom: 20px;
+}
+
+.grade-facts-title {
+  color: var(--navy);
+  font-size: 1.3rem;
+  margin-bottom: 16px;
+  padding-bottom: 10px;
+  border-bottom: 2px solid var(--border);
+}
+
+.grade-facts-list {
+  list-style: none;
+  margin-bottom: 20px;
+}
+
+.grade-facts-list li {
+  display: flex;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.06);
+}
+
+.grade-facts-list li span {
+  color: var(--text-muted);
+}
+
+.grade-facts-list li strong {
+  color: var(--navy);
+  text-align: right;
+}
+
+
+/* Centred section headings with underline accent */
+.grade-activities-section .section-title,
+.grade-gallery-section .section-title {
+  margin-bottom: 0;
+}
+
+.grade-activities-section .section-title::after,
+.grade-gallery-section .section-title::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--gold);
+  border-radius: 20px;
+  margin: 14px auto 0;
+}
+
+/* Shared centred intro for grade sections */
+.grade-section-intro {
+  text-align: center;
+  color: var(--text-muted);
+  max-width: 680px;
+  margin: 16px auto 44px;
+}
+
+/* Activities section background */
+.grade-activities-section {
+  background: rgba(255, 255, 255, 0.5);
+  border-top: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+}
+
+/* Gallery */
+.gallery-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+  gap: 20px;
+}
+
+.gallery-item {
+  margin: 0;
+  background: white;
+  border-radius: var(--radius);
+  overflow: hidden;
+  box-shadow: var(--shadow);
+  transition: transform var(--transition), box-shadow var(--transition);
+}
+
+.gallery-item:hover {
+  transform: translateY(-6px);
+  box-shadow: var(--shadow-lg);
+}
+
+.gallery-media {
+  position: relative;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: 200px;
+  object-fit: cover;
+  display: block;
+}
+
+/* "Photo coming soon" badge shown over placeholder images */
+.gallery-soon {
+  position: absolute;
+  bottom: 12px;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(15, 0, 102, 0.88);
+  color: var(--gold);
+  font-size: 0.75rem;
+  font-style: italic;
+  letter-spacing: 0.5px;
+  padding: 5px 14px;
+  border-radius: 999px;
+  white-space: nowrap;
+  border: 1px solid rgba(217, 163, 0, 0.5);
+}
+
+.gallery-item figcaption {
+  padding: 12px 16px;
+  text-align: center;
+  color: var(--navy);
+  font-weight: bold;
+}
+
+/* ============================================================
+   GRADE "COMING SOON" PANEL
+   Shown on grade-detail.html for a grade that has no content
+   yet, in place of another grade's text.
+   ============================================================ */
+.grade-coming-soon {
+  padding: 64px 0;
+}
+
+.coming-soon-panel {
+  max-width: 620px;
+  margin: 0 auto;
+  text-align: center;
+  background: var(--white);
+  border: 2px dashed var(--border);
+  border-radius: var(--radius-lg);
+  padding: 48px 32px;
+  box-shadow: var(--shadow);
+}
+
+.coming-soon-icon {
+  font-size: 2.6rem;
+  display: block;
+  margin-bottom: 12px;
+}
+
+.coming-soon-panel h2 {
+  color: var(--navy);
+  font-family: var(--font-heading, inherit);
+  font-size: 1.5rem;
+  margin-bottom: 14px;
+}
+
+.coming-soon-panel p {
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  line-height: 1.65;
+}
+
+/* Only meaningful to a logged-in admin */
+.coming-soon-admin {
+  display: none;
+  font-size: 0.88rem;
+  color: var(--gold-dark);
+  font-weight: 600;
+}
+
+body.admin-mode .coming-soon-admin {
+  display: block;
+}
+
+.coming-soon-actions {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-top: 22px;
+}
+
+@media (max-width: 600px) {
+  .coming-soon-panel { padding: 34px 20px; }
+  .coming-soon-actions .btn { width: 100%; }
+}
+
+/* The `hidden` attribute is a low-specificity UA rule that any `display`
+   declaration overrides. grade-detail.js relies on these staying hidden to
+   keep one grade's content off another grade's page, so make it explicit. */
+[data-grade-content][hidden] {
+  display: none !important;
+}
+
+/* Only the new rule from global.css's 768px block — the rest of that
+   block (.nav-links, .hero-*, .page-header) is already handled by
+   main.css, including the recent mobile navbar fix. */
+@media (max-width: 768px) {
+  .extras-category-title {
+    font-size: 1.7rem;
+  }
+}
+
+/* ============================================================
+   CARD ADMIN CONTROLS
+   Add / edit / remove cards, and image drag-and-drop.
+   All of this is hidden unless body.admin-mode is set.
+   ============================================================ */
+
+/* ── Per-card action buttons (edit / remove) ── */
+.card-admin-actions {
+  display: none;
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  gap: 6px;
+  z-index: 5;
+}
+
+body.admin-mode .card-admin-actions {
+  display: flex;
+}
+
+/* The card must be a positioning context for the buttons */
+body.admin-mode .activity-card,
+body.admin-mode .gallery-item {
+  position: relative;
+}
+
+.card-action-btn {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  border: 2px solid var(--navy-dark);
+  background: var(--gold);
+  color: var(--navy-dark);
+  font-size: 0.85rem;
+  line-height: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  padding: 0;
+}
+
+.card-action-btn:hover {
+  background: var(--navy-dark);
+  color: var(--gold);
+  transform: scale(1.1);
+}
+
+.card-action-btn.remove:hover {
+  background: #c0392b;
+  color: var(--white);
+  border-color: #c0392b;
+}
+
+/* ── Editable card highlight ── */
+body.admin-mode .activity-card,
+body.admin-mode .gallery-item {
+  outline: 2px dashed var(--border);
+  outline-offset: 4px;
+  cursor: pointer;
+  transition: outline-color var(--transition);
+}
+
+body.admin-mode .activity-card:hover,
+body.admin-mode .gallery-item:hover {
+  outline-color: var(--gold);
+}
+
+/* ── "Add card" ghost tile ── */
+.card-ghost {
+  display: none;
+  min-height: 180px;
+  border: 2px dashed var(--gold);
+  border-radius: var(--radius-lg);
+  background: rgba(217, 163, 0, 0.05);
+  color: var(--gold-dark);
+  font-family: var(--font-heading, inherit);
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  align-items: center;
+  justify-content: center;
+  flex-direction: column;
+  gap: 8px;
+  transition: var(--transition);
+  width: 100%;
+}
+
+body.admin-mode .card-ghost {
+  display: flex;
+}
+
+.card-ghost:hover {
+  background: rgba(217, 163, 0, 0.14);
+  border-color: var(--gold-dark);
+  transform: translateY(-3px);
+}
+
+.card-ghost .ghost-plus {
+  font-size: 2.2rem;
+  line-height: 1;
+  font-weight: 300;
+}
+
+/* ── Drag-over state on a gallery grid ── */
+.gallery-grid.drag-active,
+.activity-grid.drag-active {
+  outline: 3px dashed var(--gold);
+  outline-offset: 10px;
+  background: rgba(217, 163, 0, 0.07);
+  border-radius: var(--radius-lg);
+}
+
+/* ============================================================
+   CARD EDITOR POPUP
+   Edits a whole card at once — icon, title and description
+   together — rather than one field at a time.
+   ============================================================ */
+#card-editor {
+  display: none;
+  position: fixed;
+  z-index: 10001;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: var(--white);
+  border: 2px solid var(--gold);
+  border-radius: var(--radius-lg);
+  padding: 26px;
+  box-shadow: var(--shadow-lg);
+  width: 460px;
+  max-width: 92vw;
+  max-height: 88vh;
+  overflow-y: auto;
+}
+
+#card-editor.active {
+  display: block;
+}
+
+#card-editor h4 {
+  color: var(--navy);
+  margin-bottom: 16px;
+  font-family: var(--font-heading, inherit);
+  font-size: 1.15rem;
+}
+
+.card-editor-field {
+  margin-bottom: 16px;
+}
+
+.card-editor-field label {
+  display: block;
+  font-size: 0.78rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+}
+
+.card-editor-field input[type="text"],
+.card-editor-field textarea {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  font-size: 0.92rem;
+  font-family: var(--font-body, inherit);
+  color: var(--text-dark);
+  background: var(--white);
+  resize: vertical;
+}
+
+.card-editor-field input:focus,
+.card-editor-field textarea:focus {
+  outline: none;
+  border-color: var(--gold);
+  box-shadow: 0 0 0 3px rgba(217, 163, 0, 0.18);
+}
+
+/* ── Emoji quick-pick row ── */
+.icon-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.icon-row input {
+  width: 64px !important;
+  text-align: center;
+  font-size: 1.3rem !important;
+}
+
+.icon-suggestions {
+  display: flex;
+  gap: 4px;
+  flex-wrap: wrap;
+}
+
+.icon-suggestion {
+  width: 32px;
+  height: 32px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--white);
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: var(--transition);
+  padding: 0;
+  line-height: 1;
+}
+
+.icon-suggestion:hover {
+  background: rgba(217, 163, 0, 0.15);
+  border-color: var(--gold);
+  transform: scale(1.12);
+}
+
+/* ── Character counter (length constraints) ── */
+.char-counter {
+  display: block;
+  text-align: right;
+  font-size: 0.75rem;
+  color: var(--text-muted);
+  margin-top: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.char-counter.warn  { color: var(--gold-dark); font-weight: 600; }
+.char-counter.over  { color: #c0392b;          font-weight: 700; }
+
+/* ── Image dropzone ── */
+.image-dropzone {
+  border: 2px dashed var(--border);
+  border-radius: var(--radius);
+  padding: 18px;
+  text-align: center;
+  cursor: pointer;
+  transition: var(--transition);
+  background: rgba(217, 163, 0, 0.04);
+  color: var(--text-muted);
+  font-size: 0.85rem;
+}
+
+.image-dropzone:hover,
+.image-dropzone.drag-active {
+  border-color: var(--gold);
+  background: rgba(217, 163, 0, 0.13);
+  color: var(--navy);
+}
+
+.image-dropzone.has-image {
+  padding: 8px;
+}
+
+.image-dropzone img {
+  max-width: 100%;
+  max-height: 160px;
+  border-radius: var(--radius);
+  display: block;
+  margin: 0 auto 8px;
+}
+
+.dropzone-hint {
+  display: block;
+  font-size: 0.78rem;
+  margin-top: 4px;
+  opacity: 0.8;
+}
+
+.upload-status {
+  font-size: 0.8rem;
+  margin-top: 8px;
+  min-height: 1.1em;
+}
+
+.upload-status.error   { color: #c0392b; }
+.upload-status.success { color: #1e8449; }
+
+/* ── Editor action buttons ── */
+.card-editor-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 20px;
+}
+
+.card-editor-actions button {
+  flex: 1;
+}
+
+.card-editor-actions button[disabled] {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+#card-editor-error {
+  color: #c0392b;
+  font-size: 0.83rem;
+  margin-top: 10px;
+  min-height: 1.1em;
+}
+
+/* ── Confirm dialog (card removal) ── */
+#card-confirm {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.6);
+  z-index: 10002;
+  align-items: center;
+  justify-content: center;
+}
+
+#card-confirm.active {
+  display: flex;
+}
+
+.card-confirm-box {
+  background: var(--white);
+  border: 2px solid #c0392b;
+  border-radius: var(--radius-lg);
+  padding: 28px;
+  width: 380px;
+  max-width: 90vw;
+  text-align: center;
+  box-shadow: var(--shadow-lg);
+}
+
+.card-confirm-box h4 {
+  color: var(--navy);
+  margin-bottom: 10px;
+  font-size: 1.1rem;
+}
+
+.card-confirm-box p {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+
+.card-confirm-actions {
+  display: flex;
+  gap: 10px;
+}
+
+.card-confirm-actions button {
+  flex: 1;
+  padding: 10px;
+  border-radius: var(--radius);
+  cursor: pointer;
+  font-weight: 600;
+  font-size: 0.9rem;
+  transition: var(--transition);
+}
+
+.btn-danger {
+  background: #c0392b;
+  color: var(--white);
+  border: 2px solid #c0392b;
+}
+
+.btn-danger:hover { background: #a93226; }
+
+.btn-cancel {
+  background: var(--white);
+  color: var(--text-dark);
+  border: 2px solid var(--border);
+}
+
+.btn-cancel:hover { background: var(--light-bg); }
+
+/* ── Toast (save / delete feedback) ── */
+#admin-toast {
+  position: fixed;
+  bottom: 68px;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  background: var(--navy-dark);
+  color: var(--white);
+  padding: 12px 22px;
+  border-radius: var(--radius);
+  font-size: 0.88rem;
+  box-shadow: var(--shadow-lg);
+  z-index: 10003;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.25s ease, transform 0.25s ease;
+  max-width: 90vw;
+}
+
+#admin-toast.active {
+  opacity: 1;
+  transform: translateX(-50%) translateY(0);
+}
+
+#admin-toast.error   { background: #c0392b; }
+#admin-toast.success { background: #1e8449; }
+
+/* ── Mobile ── */
+@media (max-width: 600px) {
+  .card-action-btn {
+    width: 36px;
+    height: 36px;      /* larger tap target for thumbs */
+    font-size: 0.95rem;
+  }
+
+  #card-editor {
+    padding: 20px;
+    width: 94vw;
+  }
+}

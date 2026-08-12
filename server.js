@@ -1,7 +1,10 @@
 import express from 'express';
 import path from 'path';
+import fs from 'fs';
+import crypto from 'crypto';
 import { fileURLToPath } from 'url';
 import session from 'express-session';
+import multer from 'multer';
 import bcrypt from 'bcryptjs';
 import { loadDb, saveDb } from './db-json.js';
 
@@ -221,6 +224,234 @@ app.delete('/api/events/:id', async (req, res) => {
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
+});
+
+// Sections the frontend knows how to render. Anything else is rejected.
+const VALID_SECTIONS = new Set(['extracurricular', 'cocurricular', 'activities', 'gallery']);
+
+const MAX_TITLE_LENGTH = 200;
+const MAX_ICON_LENGTH = 16;
+const MAX_IMAGE_URL_LENGTH = 255;
+
+// Field-length and per-section shape checks.
+// Returns an error message, or null when the card is valid.
+function validateCard(card) {
+  if (card.title.length > MAX_TITLE_LENGTH) {
+    return `Title must be ${MAX_TITLE_LENGTH} characters or fewer.`;
+  }
+  if (card.icon && card.icon.length > MAX_ICON_LENGTH) {
+    return `Icon must be ${MAX_ICON_LENGTH} characters or fewer.`;
+  }
+  if (card.imageUrl && card.imageUrl.length > MAX_IMAGE_URL_LENGTH) {
+    return `Image URL must be ${MAX_IMAGE_URL_LENGTH} characters or fewer.`;
+  }
+  // A gallery item with no picture would render as an empty tile.
+  if (card.section === 'gallery' && !card.imageUrl) {
+    return 'Gallery items need an image.';
+  }
+  return null;
+}
+
+// Reads a trimmed string field, or '' when absent or null.
+function cardString(body, key) {
+  const value = body[key];
+  if (value === undefined || value === null) return '';
+  return String(value).trim();
+}
+
+function emptyToNull(value) {
+  return value === '' ? null : value;
+}
+
+// Stands in for the schema's uq_page_section_title unique key.
+function duplicateTitleExists(db, card, ignoreId) {
+  return db.cards.some(c =>
+    c.id !== ignoreId &&
+    c.page === card.page &&
+    c.section === card.section &&
+    c.title.toLowerCase() === card.title.toLowerCase()
+  );
+}
+
+app.get('/api/cards', async (req, res) => {
+  try {
+    const db = await loadDb();
+    const { page, section } = req.query;
+    if (!page) return res.status(400).json({ error: "Missing 'page' query parameter." });
+
+    let cards = db.cards.filter(c => c.page === String(page).trim().toLowerCase());
+    if (section) {
+      cards = cards.filter(c => c.section === String(section).trim().toLowerCase());
+    }
+    cards.sort((a, b) => (a.sortOrder || 0) - (b.sortOrder || 0));
+    res.json(cards);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.post('/api/cards', async (req, res) => {
+  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+  try {
+    const db = await loadDb();
+    const page = cardString(req.body, 'page').toLowerCase();
+    const section = cardString(req.body, 'section').toLowerCase();
+    const title = cardString(req.body, 'title');
+
+    if (!page || !section || !title) {
+      return res.status(400).json({ error: 'page, section and title are required.' });
+    }
+    if (!VALID_SECTIONS.has(section)) {
+      return res.status(400).json({ error: `Unknown section '${section}'.` });
+    }
+
+    const card = {
+      id: db.cards.length > 0 ? Math.max(...db.cards.map(c => c.id)) + 1 : 1,
+      page,
+      section,
+      icon: emptyToNull(cardString(req.body, 'icon')),
+      title,
+      body: emptyToNull(cardString(req.body, 'body')),
+      imageUrl: emptyToNull(cardString(req.body, 'imageUrl')),
+      // Append to the end of its section.
+      sortOrder: db.cards.filter(c => c.page === page && c.section === section).length + 1
+    };
+
+    const invalid = validateCard(card);
+    if (invalid) return res.status(400).json({ error: invalid });
+
+    if (duplicateTitleExists(db, card, null)) {
+      return res.status(409).json({
+        error: `A card titled "${card.title}" already exists in this section.`
+      });
+    }
+
+    db.cards.push(card);
+    await saveDb();
+    res.status(201).json(card);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.put('/api/cards/:id', async (req, res) => {
+  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+  try {
+    const db = await loadDb();
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) return res.status(400).json({ error: 'Missing card ID in path.' });
+
+    // page and section are fixed at creation, so an update only touches the
+    // display fields.
+    const existing = db.cards.find(c => c.id === id);
+    if (!existing) return res.status(404).json({ error: 'Card not found.' });
+
+    const updated = { ...existing };
+    if ('title' in req.body) updated.title = cardString(req.body, 'title');
+    if ('icon' in req.body) updated.icon = emptyToNull(cardString(req.body, 'icon'));
+    if ('body' in req.body) updated.body = emptyToNull(cardString(req.body, 'body'));
+    if ('imageUrl' in req.body) updated.imageUrl = emptyToNull(cardString(req.body, 'imageUrl'));
+    if ('sortOrder' in req.body) {
+      const order = Number(req.body.sortOrder);
+      if (!Number.isFinite(order)) {
+        return res.status(400).json({ error: 'sortOrder must be a number.' });
+      }
+      updated.sortOrder = order;
+    }
+
+    if (!updated.title) return res.status(400).json({ error: 'title cannot be empty.' });
+
+    const invalid = validateCard(updated);
+    if (invalid) return res.status(400).json({ error: invalid });
+
+    if (duplicateTitleExists(db, updated, id)) {
+      return res.status(409).json({
+        error: 'Another card in this section already uses that title.'
+      });
+    }
+
+    Object.assign(existing, updated);
+    await saveDb();
+    res.json(existing);
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+app.delete('/api/cards/:id', async (req, res) => {
+  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+  try {
+    const db = await loadDb();
+    const id = parseInt(req.params.id, 10);
+    if (Number.isNaN(id)) return res.status(400).json({ error: 'Missing card ID in path.' });
+
+    const index = db.cards.findIndex(c => c.id === id);
+    if (index === -1) return res.status(404).json({ error: 'Card not found.' });
+
+    db.cards.splice(index, 1);
+    await saveDb();
+    res.json({ success: true });
+  } catch (error) {
+    res.status(500).json({ error: error.message });
+  }
+});
+
+// ── Image uploads ───────────────────────────────────────────────────────────
+// Files land in public/assets/images/uploads and are served by the static
+// middleware below, so an uploaded image needs no special route to display.
+const UPLOAD_DIR = path.join(__dirname, 'public', 'assets', 'images', 'uploads');
+const PUBLIC_UPLOAD_PREFIX = '/assets/images/uploads';
+const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
+
+const EXTENSION_BY_MIME = {
+  'image/jpeg': 'jpg',
+  'image/png': 'png',
+  'image/webp': 'webp',
+  'image/gif': 'gif',
+  'image/svg+xml': 'svg'
+};
+
+class UnsupportedImageError extends Error {}
+
+const upload = multer({
+  storage: multer.diskStorage({
+    destination: (req, file, cb) => {
+      fs.mkdir(UPLOAD_DIR, { recursive: true }, err => cb(err, UPLOAD_DIR));
+    },
+    // Never reuse the client's filename — it can contain path traversal
+    // ("../../") or collide with an existing upload.
+    filename: (req, file, cb) => {
+      const ext = EXTENSION_BY_MIME[file.mimetype.toLowerCase()];
+      cb(null, crypto.randomUUID().replace(/-/g, '') + '.' + ext);
+    }
+  }),
+  limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
+  // An allowlist, not a blocklist.
+  fileFilter: (req, file, cb) => {
+    if (EXTENSION_BY_MIME[file.mimetype.toLowerCase()]) return cb(null, true);
+    cb(new UnsupportedImageError());
+  }
+});
+
+app.post('/api/upload', (req, res) => {
+  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+
+  upload.single('file')(req, res, err => {
+    if (err instanceof UnsupportedImageError) {
+      return res.status(415).json({ error: 'Unsupported image type. Use JPG, PNG, WEBP, GIF or SVG.' });
+    }
+    if (err && err.code === 'LIMIT_FILE_SIZE') {
+      return res.status(413).json({ error: 'That image is too large. The limit is 5MB.' });
+    }
+    if (err) return res.status(400).json({ error: 'Expected a multipart/form-data upload.' });
+    if (!req.file) return res.status(400).json({ error: 'No file was uploaded.' });
+
+    res.status(201).json({
+      url: `${PUBLIC_UPLOAD_PREFIX}/${req.file.filename}`,
+      filename: req.file.filename,
+      size: req.file.size
+    });
+  });
 });
 
 const staticPath = path.join(__dirname, 'public');

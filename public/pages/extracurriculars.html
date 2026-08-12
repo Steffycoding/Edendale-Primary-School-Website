@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Extras &amp; Co-Curriculars – Edendale Primary School</title>
-  
-  
+
+
   <link rel="stylesheet" href="../css/main.css">
   <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
 </head>
@@ -18,16 +18,15 @@
         <img src="../assets/images/logo.svg" alt="Logo">
         <span>Edendale Primary School</span>
       </a>
-      
+
       <ul class="nav-links">
         <li><a href="about.html">About</a></li>
         <li><a href="grades.html">Admissions &amp; Subjects</a></li>
-        <li><a href="grade-detail.html?grade=R">Grade R</a></li>
         <li><a href="extracurriculars.html" class="active">Extra &amp; Co-Curriculars</a></li>
         <li><a href="events.html">Events Calendar</a></li>
         <li><a href="contact.html">Contact</a></li>
             </ul>
-      
+
       <!-- Hidden Admin Cog -->
       <a href="/admin-login.html" id="admin-toggle-btn" title="Admin Login">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -44,70 +43,81 @@
     </div>
   </nav>
 
-  <!-- PAGE HEADER -->
+  <!-- PAGE HEADER
+       data-limit caps the length so a long title cannot overflow the header -->
   <section class="page-header">
     <div class="container">
-      <h1 data-editable data-field="extras_page_title">Extras &amp; Co-Curriculars</h1>
-      <p data-editable data-field="extras_page_subtitle">Beyond the Classroom</p>
+      <h1 data-editable data-field="extras_page_title" data-limit="40">Extras &amp; Co-Curriculars</h1>
+      <p data-editable data-field="extras_page_subtitle" data-limit="80">Beyond the Classroom</p>
     </div>
   </section>
 
   <!-- ══════════════════════════════════
-       INTRO QUOTE
+       WELCOME / INTRO (for parents & guardians)
        ══════════════════════════════════ -->
-  <section class="section" style="padding-bottom:0;">
+  <section class="section" style="padding-bottom:24px;">
     <div class="container">
-      <blockquote class="extras-intro-quote" data-editable data-field="extras_intro_quote">
-        "At Edendale Primary, learners are encouraged to grow through sport, culture, academics,
-        and creative expression."
-      </blockquote>
+      <p class="extras-intro" data-editable data-field="extras_intro">
+        At Edendale Primary School, we believe a great education reaches beyond
+        reading, writing and numbers. Our activities give every child the chance to discover
+        new talents, make friends, and build the confidence, teamwork and discipline that help
+        them thrive both at school and in life.
+      </p>
     </div>
   </section>
 
   <!-- ══════════════════════════════════
-       SPORTS SECTION
-       ══════════════════════════════════ -->
-  <section class="section extras-section">
-    <div class="container">
-      <div class="card extras-card">
-        <div class="card-body">
-          <h2 class="extras-card-title" data-editable data-field="sports_title">SPORTS SECTION</h2>
-          <div class="extras-two-col">
-            <ul class="extras-list">
-              <li data-editable data-field="sport1">Soccer</li>
-              <li data-editable data-field="sport2">Athletics</li>
-              <li data-editable data-field="sport3">Swimming (off-campus / seasonal)</li>
-              <li data-editable data-field="sport4">Chess</li>
-                  </ul>
-            <ul class="extras-list">
-              <li data-editable data-field="sport5">Netball</li>
-              <li data-editable data-field="sport6">Cricket (seasonal)</li>
-                  </ul>
-          </div>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ══════════════════════════════════
-       CULTURAL ACTIVITIES SECTION
+       EXTRA-CURRICULAR ACTIVITIES
+       (sport & culture, outside the timetable)
        ══════════════════════════════════ -->
   <section class="section extras-section" style="padding-top:0;">
     <div class="container">
-      <div class="card extras-card">
-        <div class="card-body">
-          <h2 class="extras-card-title" data-editable data-field="cultural_title">CULTURAL ACTIVITIES</h2>
-          <div class="extras-two-col">
-            <ul class="extras-list">
-              <li data-editable data-field="cult1">Choir</li>
-              <li data-editable data-field="cult2">Arts &amp; Crafts</li>
-              <li data-editable data-field="cult3">Drama / Concerts</li>
-              <li data-editable data-field="cult4">Environmental Club</li>
-                  </ul>
-            <ul class="extras-list">
-              <li data-editable data-field="cult5">Reading Book Club</li>
-              <li data-editable data-field="cult6">General Knowledge Club</li>
-                  </ul>
+      <h2 class="extras-category-title" data-editable data-field="extracurricular_title" data-limit="60">Extra-Curricular Activities</h2>
+      <p class="extras-category-intro" data-editable data-field="extracurricular_intro">
+        Sport and performance clubs that build fitness, character and team spirit.
+      </p>
+
+      <!-- Cards render from /api/cards; the markup below is the fallback shown
+           when the backend is unavailable. Card text is edited through the card
+           editor (click a card, or its ✎ button), so it carries no
+           data-editable — that would open the content popup at the same time. -->
+      <div class="activity-grid" data-card-section="extracurricular">
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🥁</span>
+            <h3 class="activity-name">Marching Band &amp; Drumline</h3>
+            <p class="activity-desc">
+              Learners join our band to play drums and percussion, rehearsing together and
+              performing at school assemblies, sports days and community events. It teaches
+              rhythm, focus and self-discipline, and gives children the pride and confidence
+              that comes from performing as part of a team.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">⚽</span>
+            <h3 class="activity-name">Soccer</h3>
+            <p class="activity-desc">
+              Boys and girls train regularly and play friendly matches against other schools.
+              Through soccer, children build fitness, coordination and stamina, learn to work
+              together as a team, and develop the sportsmanship and resilience that come from
+              both winning and losing gracefully.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🏐</span>
+            <h3 class="activity-name">Netball</h3>
+            <p class="activity-desc">
+              One of our most popular activities, netball has learners practising passing,
+              shooting and quick footwork on the court. It develops agility, balance and
+              teamwork, while building the confidence and friendships that grow from working
+              together toward a shared goal.
+            </p>
           </div>
         </div>
       </div>
@@ -115,26 +125,57 @@
   </section>
 
   <!-- ══════════════════════════════════
-       DEVELOPMENT & ENRICHMENT SECTION
+       CO-CURRICULAR ACTIVITIES
+       (clubs that enrich the curriculum)
        ══════════════════════════════════ -->
-  <section class="section extras-section" style="padding-top:0;">
+  <section class="section extras-section extras-alt">
     <div class="container">
-      <div class="card extras-card">
-        <div class="card-body">
-          <h2 class="extras-card-title" data-editable data-field="dev_title">DEVELOPMENT &amp; ENRICHMENT</h2>
-          <div class="extras-two-col">
-            <ul class="extras-list">
-              <li data-editable data-field="dev1">Economics Club</li>
-              <li data-editable data-field="dev2">Coding &amp; Robotics</li>
-              <li data-editable data-field="dev3">Media Support</li>
-              <li data-editable data-field="dev4">Homework Support</li>
-                  </ul>
-            <ul class="extras-list">
-              <li data-editable data-field="dev5">Public Speaking</li>
-                  </ul>
+      <h2 class="extras-category-title" data-editable data-field="cocurricular_title" data-limit="60">Co-Curricular Activities</h2>
+      <p class="extras-category-intro" data-editable data-field="cocurricular_intro">
+        Clubs that enrich and extend what learners explore in the classroom.
+      </p>
+
+      <div class="activity-grid" data-card-section="cocurricular">
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🔬</span>
+            <h3 class="activity-name">Science &amp; Discovery Club</h3>
+            <p class="activity-desc">
+              In Science Club, children carry out safe, hands-on experiments and simple projects
+              that bring their classroom lessons to life. By exploring how and why things work,
+              they build curiosity, observation skills and confidence, and discover just how
+              exciting learning can be.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">📚</span>
+            <h3 class="activity-name">Reading &amp; Storytelling Club</h3>
+            <p class="activity-desc">
+              Members gather to share stories, read together and talk about their favourite
+              books. The club nurtures a genuine love of reading, strengthens vocabulary and
+              comprehension, and sparks the imagination, giving children a foundation that
+              supports every other subject they learn.
+            </p>
           </div>
         </div>
       </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       CALL TO ACTION (for guardians)
+       ══════════════════════════════════ -->
+  <section class="section extras-cta-section">
+    <div class="container">
+      <h2 data-editable data-field="extras_cta_title">Want to know more about life at Edendale?</h2>
+      <p data-editable data-field="extras_cta_text">
+        We would love to tell you more about the activities on offer and how your child can get
+        involved. Reach out to the school; we are happy to help.
+      </p>
+      <a href="contact.html" class="btn btn-primary">Get in Touch</a>
     </div>
   </section>
 
@@ -191,9 +232,11 @@
   </div>
 </div>
 
-  
+
   <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
   <script src="../js/admin.js"></script>
+  <script src="../js/cards.js"></script>
+  <script src="../js/card-editor.js"></script>
   <script src="../js/main.js"></script>
 </body>
 </html>

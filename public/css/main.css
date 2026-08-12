@@ -85,12 +85,14 @@ a {
    NAVBAR
    ============================================================ */
 .navbar {
-  background: var(--navy);
-  border-top: 4px solid var(--gold);
+  background: rgb(3, 3, 163);
+  border-top: 3px solid var(--gold);
+  border-bottom: 3px solid var(--gold);
   padding: 18px 0;
   position: sticky;
   top: 0;
   z-index: 1000;
+  border-radius:3px;
 }
 
 
@@ -199,12 +201,13 @@ a {
 .hero-tagline {
   font-size: 2rem;
   margin-bottom: 24px;
+  color:var(--gold);
 }
 
 
 .hero-description {
-  font-size: 1.2rem;
-  max-width: 680px;
+  font-size: 1.5rem;
+  max-width: 60vw;
   margin: auto;
   line-height: 1.8;
 }
@@ -242,6 +245,8 @@ a {
 .section-title {
   font-size: 2.3rem;
   margin-bottom: 16px;
+  text-align: center;
+  color:var(--navy);
 }
 
 
@@ -252,12 +257,17 @@ a {
   background: var(--gold);
   margin: 0 0 30px;
   border-radius: 20px;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
 }
 
 
 .about-description {
-  max-width: 760px;
-  font-size: 1.08rem;
+  max-width: 80vw;
+  font-size: 1.3rem;
+  text-align: center;
+  font-weight: 800;
 }
 
 
@@ -341,14 +351,15 @@ a {
 
 
 .journey-section .section-title {
-  color: white;
+  color:var(--gold);
+  text-align: center;
 }
 
 
 .journey-section p {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   max-width: 850px;
-  align-items: left;
+  align-items: center;
 }
 
 
@@ -508,6 +519,7 @@ a {
 
   .section-title {
     font-size: 1.8rem;
+    text-align: center;
   }
 }
 /* ============================================================
@@ -606,14 +618,6 @@ body {
 }
 
 
-/* ============================================================
-   ADMIN BUTTON
-   ============================================================ */
-
-
-
-
-
 
 /* Mobile Menu Additions */
 .mobile-menu-btn {
@@ -636,15 +640,6 @@ body {
   .mobile-menu-btn {
     display: flex;
   }
-}
-
-.nav-links.show ~ .mobile-menu-btn {
-  color: var(--navy);
-  background: transparent;
-  border-color: transparent;
-  position: fixed;
-  top: 20px;
-  right: 20px;
 }
 
 
@@ -680,7 +675,7 @@ body.no-scroll {
 .mission-grid {
   display: grid;
   grid-template-columns: 1fr;
-  gap: 40px;
+  gap: 10px;
 }
 
 @media (min-width: 768px) {
@@ -692,15 +687,6 @@ body.no-scroll {
 /* ============================================================
    admin.css — Admin Edit Mode Styles
    ============================================================ */
-
-/* ── Hidden Admin Toggle Button (top-right corner) ── */
-
-
-
-
-
-
-
 
 
 /* ── Admin Login Modal ── */
@@ -1911,3 +1897,5 @@ body.admin-mode .card-ghost {
     width: 94vw;
   }
 }
+
+

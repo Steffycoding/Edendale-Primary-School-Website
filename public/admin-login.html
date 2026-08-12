@@ -8,6 +8,7 @@
   <style>
     .admin-login-page {
       display: flex;
+      flex-direction: column;
       justify-content: center;
       align-items: center;
       min-height: calc(100vh - 200px);
@@ -20,6 +21,38 @@
       transform: none;
       margin: 0 auto;
     }
+    .back-home-btn {
+      background: var(--navy);
+      border-color: var(--navy);
+      color: var(--white);
+    }
+    .back-home-btn:hover {
+      background: var(--gold);
+      color: var(--navy);
+      border-color: var(--gold);
+    }
+    .nav-inner {
+      justify-content: center;
+    }
+    .nav-logo {
+      position: static;
+      transform: none;
+      margin: 0;
+    }
+    #show-password {
+      width: 18px;
+      height: 18px;
+      cursor: pointer;
+      accent-color: var(--navy);
+    }
+    label[for="show-password"] {
+      cursor: pointer;
+      color: var(--text-dark);
+      font-size: 0.95rem;
+      user-select: none;
+      vertical-align: middle;
+      margin-bottom: 7px;
+    }
   </style>
 </head>
 <body>
@@ -29,17 +62,21 @@
         <img src="/assets/images/logo.svg" alt="Edendale Primary School Logo">
         <span>Edendale Primary School</span>
       </a>
-      <ul class="nav-links">
-        <li><a href="/">Home</a></li>
-      </ul>
     </div>
   </nav>
 
   <main class="admin-login-page">
+    <div style="width: 100%; max-width: 400px; margin-bottom: 20px;">
+      <a href="/" class="btn btn-outline back-home-btn" style="width: 100%; text-align: center;">← Back to Home</a>
+    </div>
     <div class="admin-modal-box" id="login-box">
       <h2>Admin Login</h2>
       <input type="text" id="admin-username" placeholder="Username">
       <input type="password" id="admin-password" placeholder="Password">
+      <div style="display: flex; align-items: center; margin-top: 10px; font-size: 0.9rem;">
+        <input type="checkbox" id="show-password" style="margin-right: 8px;">
+        <label for="show-password" style="color: var(--text-muted);">Show password</label>
+      </div>
       <button class="btn btn-primary" id="admin-login-btn">Login</button>
       <p id="admin-login-error" style="color:#ff6b6b; margin-top:10px; font-size:0.85rem;"></p>
     </div>

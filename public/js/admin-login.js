@@ -46,6 +46,16 @@ document.getElementById('admin-password').addEventListener('keydown', e => {
   }
 });
 
+// Show password toggle functionality
+document.getElementById('show-password').addEventListener('change', function() {
+  const passwordInput = document.getElementById('admin-password');
+  if (this.checked) {
+    passwordInput.type = 'text';
+  } else {
+    passwordInput.type = 'password';
+  }
+});
+
 
 document.getElementById('next-time-btn').addEventListener('click', () => {
   window.location.href = '/';

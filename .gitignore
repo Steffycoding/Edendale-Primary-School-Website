@@ -1,0 +1,6 @@
+# Images uploaded through the admin card editor. These are per-deployment
+# content, not source — committing them would grow the repo with every photo
+# a teacher adds, and they can't easily be removed from history afterwards.
+# The directory itself is kept so a fresh clone can write into it.
+public/assets/images/uploads/*
+!public/assets/images/uploads/.gitkeep

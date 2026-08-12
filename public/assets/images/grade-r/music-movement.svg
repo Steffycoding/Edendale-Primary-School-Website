@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 300" role="img" aria-label="Music &amp; Movement">
+  <defs>
+    <linearGradient id="g" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f3f1ff"/>
+      <stop offset="100%" stop-color="#e6e2fa"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="300" fill="url(#g)"/>
+  <circle cx="200" cy="128" r="58" fill="#ffffff" opacity="0.75"/>
+  <text x="200" y="150" font-size="56" text-anchor="middle">🎵</text>
+  <text x="200" y="222" font-size="20" text-anchor="middle"
+        font-family="Georgia, serif" fill="#14008f">Music &amp; Movement</text>
+  <rect x="0.5" y="0.5" width="399" height="299" fill="none"
+        stroke="#d9a300" stroke-opacity="0.35"/>
+</svg>

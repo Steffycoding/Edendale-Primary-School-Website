@@ -4,8 +4,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Grade R – Edendale Primary School</title>
-  
-  
+
+
   <link rel="stylesheet" href="../css/main.css">
   <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
 </head>
@@ -18,11 +18,12 @@
         <img src="../assets/images/logo.svg" alt="Logo">
         <span>Edendale Primary School</span>
       </a>
-      
+
       <ul class="nav-links">
         <li><a href="about.html">About</a></li>
-        <li><a href="grades.html">Admissions &amp; Subjects</a></li>
-        <li><a href="grade-detail.html" class="active">Grade R</a></li>
+        <!-- Grade pages are reached from Admissions & Subjects, so that entry
+             stays highlighted while you're on one. -->
+        <li><a href="grades.html" class="active">Admissions &amp; Subjects</a></li>
         <li><a href="extracurriculars.html">Extra &amp; Co-Curriculars</a></li>
         <li><a href="events.html">Events Calendar</a></li>
         <li><a href="contact.html">Contact</a></li>
@@ -46,23 +47,27 @@
 
   <!-- ══════════════════════════════════
        GRADE DETAIL HEADER
-       NOTE: JS populates grade name from URL ?grade=R
+       grade-detail.js owns the heading and title — it validates ?grade=
+       against the grades the school actually offers before showing it.
+       data-limit caps the length so a long title cannot overflow the header.
        ══════════════════════════════════ -->
   <section class="page-header">
     <div class="container">
-      <h1 id="grade-detail-heading" data-editable data-field="grade_detail_heading">Grade R</h1>
+      <h1 id="grade-detail-heading" data-editable data-field="grade_detail_heading"
+          data-limit="40">Grade R</h1>
     </div>
   </section>
 
   <!-- ══════════════════════════════════
-       GRADE INTRO
+       GRADE INTRO + QUICK FACTS
        ══════════════════════════════════ -->
-  <section class="section grade-detail-section">
+  <section class="section grade-detail-section" data-grade-content>
     <div class="container grade-detail-layout">
 
       <!-- LEFT: Text content -->
       <div class="grade-detail-content">
-        <h2 class="section-title" style="text-align:left;" data-editable data-field="gd_subtitle">
+        <h2 class="section-title" style="text-align:left;" data-editable data-field="gd_subtitle"
+            data-limit="80">
           A Gentle Start to a Lifelong Journey
         </h2>
         <span class="gold-underline" style="margin-left:0;"></span>
@@ -71,10 +76,6 @@
           "A nurturing, play-based environment where young learners discover confidence,
           curiosity, along with school readiness."
         </blockquote>
-
-        <p class="grade-age-badge" data-editable data-field="gd_age">
-          🟡 Ages 5 – 6 · Foundation Phase
-        </p>
 
         <h3 data-editable data-field="gd_learn_title">WHAT YOUR CHILD WILL LEARN:</h3>
 
@@ -110,25 +111,190 @@
 
       </div><!-- /.grade-detail-content -->
 
-      <!-- RIGHT: Actions -->
-      <div class="grade-detail-sidebar">
-        <a href="contact.html" class="btn btn-primary" style="display:block; margin-bottom:12px;"
-          data-field="gd_activities_btn">Activities</a>
-        <a href="#gallery" class="btn btn-outline" style="display:block;"
-          data-field="gd_gallery_btn">Gallery</a>
-
-        <!-- GALLERY SECTION -->
-        <div id="gallery" class="grade-gallery" style="margin-top:24px;">
-          <!-- TODO: Load gallery images from DB via Java Servlet -->
-          <div class="gallery-placeholder">Gallery images will load here</div>
+      <!-- RIGHT: Quick facts card -->
+      <aside class="grade-detail-sidebar">
+        <div class="card grade-facts-card">
+          <div class="card-body">
+            <h3 class="grade-facts-title" data-editable data-field="gd_facts_title">Quick Facts</h3>
+            <ul class="grade-facts-list">
+              <li><span>Ages</span><strong data-editable data-field="gd_fact_ages">5 – 6 years</strong></li>
+              <li><span>Phase</span><strong data-editable data-field="gd_fact_phase">Foundation Phase</strong></li>
+              <li><span>Approach</span><strong data-editable data-field="gd_fact_approach">Play-based learning</strong></li>
+              <li><span>Focus</span><strong data-editable data-field="gd_fact_focus">School readiness</strong></li>
+            </ul>
+            <a href="#gallery" class="btn btn-outline" style="display:block; margin-bottom:12px;"
+               data-field="gd_gallery_btn">View Gallery</a>
+            <a href="contact.html" class="btn btn-primary" style="display:block;"
+               data-field="gd_enquire_btn">Enquire Now</a>
+          </div>
         </div>
 
         <blockquote class="sidebar-quote" data-editable data-field="gd_sidebar_quote">
-          "Every child learns differently — and at Edendale, every child is given the space
+          "Every child learns differently; and at Edendale, every child is given the space
           to grow at their own pace."
         </blockquote>
-      </div><!-- /.grade-detail-sidebar -->
+      </aside><!-- /.grade-detail-sidebar -->
 
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       ACTIVITIES — what Grade R learners do
+       ══════════════════════════════════ -->
+  <section class="section grade-activities-section" data-grade-content>
+    <div class="container">
+      <h2 class="section-title" style="text-align:center;" data-editable data-field="gd_activities_title"
+          data-limit="60">
+        A Day in Grade R
+      </h2>
+      <p class="grade-section-intro" data-editable data-field="gd_activities_intro">
+        Our days are filled with purposeful play; every activity is designed to help little
+        learners grow, explore and get ready for the years ahead.
+      </p>
+
+      <!-- Cards render from /api/cards; the markup below is the fallback shown
+           when the backend is unavailable. Card text is edited through the card
+           editor (click a card, or its ✎ button), so it carries no
+           data-editable — that would open the content popup at the same time. -->
+      <div class="activity-grid" data-card-section="activities">
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">📖</span>
+            <h3 class="activity-name">Story Time &amp; Early Reading</h3>
+            <p class="activity-desc">
+              Every day the class gathers for a read-aloud story, where children look at the
+              pictures, guess what happens next and talk about the characters. This grows their
+              vocabulary, strengthens listening and concentration, and builds an early love of
+              books that prepares them for reading on their own.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🧩</span>
+            <h3 class="activity-name">Building, Puzzles &amp; Problem-Solving</h3>
+            <p class="activity-desc">
+              Children work with blocks, puzzles and shape-sorting games, often side by side with
+              friends. As they build towers and fit pieces together, they develop patience,
+              logical thinking and the small hand muscles they will later need to hold a pencil
+              and write.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🎨</span>
+            <h3 class="activity-name">Arts, Crafts &amp; Creative Expression</h3>
+            <p class="activity-desc">
+              With paint, crayons, scissors and glue, children create their own artwork and
+              proudly display it. These hands-on activities sharpen fine motor control and
+              hand-eye coordination, while giving every child a safe, joyful way to express their
+              ideas and feelings.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🎵</span>
+            <h3 class="activity-name">Music, Song &amp; Movement</h3>
+            <p class="activity-desc">
+              Through singing, clapping games, dancing and simple instruments, children learn
+              rhythm and new words while moving their whole bodies. It builds coordination, memory
+              and the confidence to perform in front of others; and it is one of the happiest,
+              most energetic parts of their day.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">⚽</span>
+            <h3 class="activity-name">Outdoor &amp; Active Play</h3>
+            <p class="activity-desc">
+              In a safe, supervised playground, children run, climb, jump and play group games.
+              This strengthens their growing muscles, balance and coordination, teaches them to
+              take turns and play fairly, and lays the foundation for a healthy, active lifestyle.
+            </p>
+          </div>
+        </div>
+
+        <div class="card activity-card">
+          <div class="card-body">
+            <span class="activity-icon" aria-hidden="true">🔤</span>
+            <h3 class="activity-name">First Numbers, Letters &amp; Sounds</h3>
+            <p class="activity-desc">
+              Playful games with letters, numbers, shapes and colours help children recognise and
+              remember them without any pressure. These gentle first steps in reading and maths
+              make learning feel like fun; and get little ones confidently ready for Grade 1.
+            </p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ══════════════════════════════════
+       GALLERY
+       ══════════════════════════════════ -->
+  <section class="section grade-gallery-section" id="gallery" data-grade-content>
+    <div class="container">
+      <h2 class="section-title" style="text-align:center;" data-editable data-field="gd_gallery_title"
+          data-limit="60">
+        Grade R Gallery
+      </h2>
+      <p class="grade-section-intro" data-editable data-field="gd_gallery_intro">
+        A glimpse into our classrooms and playground. (Photos coming soon — we will replace these
+        placeholders with real snapshots from the school.)
+      </p>
+
+      <!-- Drop an image anywhere on this grid in admin mode to add a photo -->
+      <div class="gallery-grid" data-card-section="gallery">
+        <figure class="gallery-item">
+          <div class="gallery-media">
+            <img src="../assets/images/grade-r/story-time.svg" alt="Grade R story time">
+            <span class="gallery-soon">Photo Coming Soon</span>
+          </div>
+          <figcaption>Story Time</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-media">
+            <img src="../assets/images/grade-r/creative-play.svg" alt="Grade R creative play">
+            <span class="gallery-soon">Photo Coming Soon</span>
+          </div>
+          <figcaption>Creative Play</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-media">
+            <img src="../assets/images/grade-r/arts-crafts.svg" alt="Grade R arts and crafts">
+            <span class="gallery-soon">Photo Coming Soon</span>
+          </div>
+          <figcaption>Arts &amp; Crafts</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-media">
+            <img src="../assets/images/grade-r/music-movement.svg" alt="Grade R music and movement">
+            <span class="gallery-soon">Photo Coming Soon</span>
+          </div>
+          <figcaption>Music &amp; Movement</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-media">
+            <img src="../assets/images/grade-r/outdoor-play.svg" alt="Grade R outdoor play">
+            <span class="gallery-soon">Photo Coming Soon</span>
+          </div>
+          <figcaption>Outdoor Play</figcaption>
+        </figure>
+        <figure class="gallery-item">
+          <div class="gallery-media">
+            <img src="../assets/images/grade-r/learning-games.svg" alt="Grade R learning games">
+            <span class="gallery-soon">Photo Coming Soon</span>
+          </div>
+          <figcaption>Learning Games</figcaption>
+        </figure>
+      </div>
     </div>
   </section>
 
@@ -183,18 +349,14 @@
   </div>
 </div>
 
-  
-  <script>
-    document.getElementById('footer-year').textContent = new Date().getFullYear();
-    // TODO: Read ?grade=X from URL and update heading + content dynamically
-    const params = new URLSearchParams(window.location.search);
-    const grade = params.get('grade');
-    if (grade) {
-      document.getElementById('grade-detail-heading').textContent = 'Grade ' + grade;
-      document.title = 'Grade ' + grade + ' – Edendale Primary School';
-    }
-  </script>
+
+  <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
   <script src="../js/admin.js"></script>
+  <!-- grade-detail.js must precede cards.js: it hides the Grade R sections
+       for other grades so cards.js does not harvest their cards. -->
+  <script src="../js/grade-detail.js"></script>
+  <script src="../js/cards.js"></script>
+  <script src="../js/card-editor.js"></script>
   <script src="../js/main.js"></script>
 </body>
 </html>

@@ -268,6 +268,9 @@ function renderMonthly() {
     if (dayEvents.length) cell.classList.add('calendar-cell--has-event');
     if (dateStr === selectedDate) cell.classList.add('calendar-cell--selected');
 
+    const relLabel = relativeDayLabel(dateStr);
+    if (relLabel) cell.dataset.relative = relLabel;
+
     const numEl = document.createElement('span');
     numEl.className = 'calendar-day-num';
     numEl.textContent = String(day);
@@ -331,6 +334,9 @@ function renderWeekly() {
     col.className = 'week-day-col';
     if (isSameDayStr(dateStr, isoDate(today))) col.classList.add('calendar-cell--today');
     if (dateStr === selectedDate) col.classList.add('calendar-cell--selected');
+
+    const relLabel = relativeDayLabel(dateStr);
+    if (relLabel) col.dataset.relative = relLabel;
 
     col.innerHTML = `
       <div class="week-day-header">
@@ -730,6 +736,18 @@ function isoDate(d) {
 }
 
 function isSameDayStr(a, b) { return a === b; }
+
+// Returns 'Today' / 'Tomorrow' / 'Yesterday' for a date one day either side
+// of today, otherwise null (so the hover tooltip only shows on those three).
+function relativeDayLabel(dateStr) {
+  const diffDays = Math.round(
+    (new Date(dateStr + 'T00:00:00') - new Date(isoDate(today) + 'T00:00:00')) / 86400000
+  );
+  if (diffDays === 0) return 'Today';
+  if (diffDays === 1) return 'Tomorrow';
+  if (diffDays === -1) return 'Yesterday';
+  return null;
+}
 
 function eventsOn(dateStr) {
   return events.filter(e => e.date === dateStr);

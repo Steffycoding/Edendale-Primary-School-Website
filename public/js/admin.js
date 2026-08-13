@@ -6,24 +6,34 @@ let currentEditTarget = null;
 let pendingChanges = {};
 
 async function checkAdminStatus() {
+  // Immediately set admin mode if token exists to prevent layout shifts
+  const token = localStorage.getItem('adminToken');
+  if (token) {
+    isAdminMode = true;
+    document.body.classList.add('admin-mode');
+    document.documentElement.classList.add('admin-mode');
+    const adminBar = document.getElementById('admin-bar');
+    if (adminBar) adminBar.classList.add('active');
+    notifyModeChange();
+  }
+  
+  // Verify with server and revert if token is invalid
   try {
-    const token = localStorage.getItem('adminToken');
     const res = await fetch('/api/admin/status', {
       headers: { 'Authorization': 'Bearer ' + token }
     });
     const data = await res.json();
-    if (data.admin) {
-      isAdminMode = true;
-      document.body.classList.add('admin-mode');
+    if (!data.admin && token) {
+      // Token exists but is invalid, remove admin mode
+      isAdminMode = false;
+      document.body.classList.remove('admin-mode');
+      document.documentElement.classList.remove('admin-mode');
       const adminBar = document.getElementById('admin-bar');
-      if (adminBar) adminBar.classList.add('active');
-      const adminNavLink = document.getElementById('admin-nav-link');
-      if (adminNavLink) adminNavLink.parentElement.style.display = 'none';
-      const adminToggleBtn = document.getElementById('admin-toggle-btn');
-      if (adminToggleBtn) adminToggleBtn.style.display = 'none';
+      if (adminBar) adminBar.classList.remove('active');
       notifyModeChange();
     }
   } catch (err) {
+    // Don't remove admin mode on network errors - trust the local token
     console.error('Error checking admin status:', err);
   }
 }
@@ -38,6 +48,7 @@ function notifyModeChange() {
 async function exitAdminMode() {
   isAdminMode = false;
   document.body.classList.remove('admin-mode');
+  document.documentElement.classList.remove('admin-mode');
   const adminBar = document.getElementById('admin-bar');
   if (adminBar) adminBar.classList.remove('active');
   pendingChanges = {};
@@ -103,13 +114,8 @@ function handleEditClick(e) {
 /**
  * Places the popup next to the element being edited.
  *
- * #edit-popup is position:fixed with no top/left of its own, and the markup
- * sits at the very end of <body>. Left alone it resolves to its static
- * position — below the footer — which on a long page is off the screen
- * entirely: the popup opens, but nobody can see it.
- *
- * Offsets are viewport-relative because the element is fixed, so scroll
- * position must NOT be added here.
+ * #edit-popup is position:fixed, so we use viewport coordinates.
+ * A scroll listener updates position to keep it with the element.
  */
 function positionEditPopup(popup, target) {
   const rect = target.getBoundingClientRect();

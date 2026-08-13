@@ -108,6 +108,7 @@ a {
   display: flex;
   align-items: center;
   gap: 14px;
+  margin-left: -20px;
 }
 
 
@@ -129,6 +130,7 @@ a {
   display: flex;
   gap: 28px;
   list-style: none;
+  margin-left: auto;
 }
 
 
@@ -869,7 +871,7 @@ body.admin-mode [data-editable]:hover::after {
 /* ── Inline Edit Popup ── */
 #edit-popup {
   display: none;
-  position: fixed;
+  position: absolute;
   z-index: 10001;
   background: var(--white);
   border: 2px solid var(--gold);
@@ -1101,6 +1103,13 @@ body.admin-mode [data-editable]:hover::after {
 #admin-toggle-btn:hover,
 #admin-toggle-btn:focus-visible {
   opacity: 1;
+}
+body.admin-mode #admin-toggle-btn,
+html.admin-mode #admin-toggle-btn {
+  display: none !important;
+}
+#admin-toggle-btn.hidden {
+  display: none !important;
 }
 #admin-toggle-btn svg {
   width: 24px;

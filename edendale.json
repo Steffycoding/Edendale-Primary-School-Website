@@ -4,11 +4,6 @@
       "id": 1,
       "username": "admin",
       "password_hash": "$2b$10$MU7pVtIE3dkYUEdjOwmMh.emEYqUd8YAxaPPxX4.yJOvmBbCD4Cpy"
-    },
-    {
-      "id": 2,
-      "username": "teacher",
-      "password_hash": "$2b$10$WmL06fY/qrcCZC0dQcYVMOTSnF5hRMVrpshxZTUZFkeXaSH6wRl2e"
     }
   ],
   "content": [
@@ -123,6 +118,13 @@
       "field_name": "admissions_cta_link",
       "value": "https://wcedonline.westerncape.gov.za/admissions",
       "type": "link"
+    },
+    {
+      "id": 17,
+      "page": "home",
+      "field_name": "about_description",
+      "value": "<!-- TODO: Replace with full about text -->\n        Edendale Primary School is a public primary school situated in Manenburg in Cape Town.\n        We offer Grades R through 7, providing a safe and nurturing learning environment for every child.",
+      "type": "text"
     }
   ],
   "events": [
@@ -332,6 +334,16 @@
       "body": null,
       "imageUrl": "/assets/images/grade-r/learning-games.svg",
       "sortOrder": 6
+    },
+    {
+      "id": 18,
+      "page": "extras",
+      "section": "extracurricular",
+      "icon": "☀️",
+      "title": "runnerd",
+      "body": null,
+      "imageUrl": null,
+      "sortOrder": 4
     }
   ]
 }

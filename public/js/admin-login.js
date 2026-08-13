@@ -1,19 +1,6 @@
 'use strict';
 
-document.addEventListener('DOMContentLoaded', async () => {
-  try {
-    const token = localStorage.getItem('adminToken');
-    const res = await fetch('/api/admin/status', {
-      headers: { 'Authorization': 'Bearer ' + token }
-    });
-    const data = await res.json();
-    if (data.admin) {
-      window.location.href = '/';
-    }
-  } catch (err) {
-    console.error('Error checking admin status:', err);
-  }
-});
+// Removed automatic redirect to prevent issues when refreshing during password change
 
 document.getElementById('admin-login-btn').addEventListener('click', async () => {
   const user = document.getElementById('admin-username').value.trim();
@@ -56,6 +43,19 @@ document.getElementById('show-password').addEventListener('change', function() {
   }
 });
 
+// Show confirm password toggle functionality
+document.getElementById('show-confirm-password').addEventListener('change', function() {
+  const newPasswordInput = document.getElementById('new-password');
+  const confirmPasswordInput = document.getElementById('confirm-password');
+  if (this.checked) {
+    newPasswordInput.type = 'text';
+    confirmPasswordInput.type = 'text';
+  } else {
+    newPasswordInput.type = 'password';
+    confirmPasswordInput.type = 'password';
+  }
+});
+
 
 document.getElementById('next-time-btn').addEventListener('click', () => {
   window.location.href = '/';
@@ -82,10 +82,6 @@ document.getElementById('save-password-btn').addEventListener('click', async () 
   }
   if (!/[0-9]/.test(newPwd)) {
     errorEl.textContent = 'Password must contain at least one digit';
-    return;
-  }
-  if (!/[^A-Za-z0-9]/.test(newPwd)) {
-    errorEl.textContent = 'Password must contain at least one special character';
     return;
   }
   
@@ -115,13 +111,11 @@ document.getElementById('new-password').addEventListener('input', (e) => {
   
   const rules = {
     length: val.length >= 12,
-    special: /[^A-Za-z0-9]/.test(val),
     digit: /[0-9]/.test(val),
     capital: /[A-Z]/.test(val)
   };
   
   document.getElementById('rule-length').style.color = rules.length ? 'green' : 'var(--text-muted)';
-  document.getElementById('rule-special').style.color = rules.special ? 'green' : 'var(--text-muted)';
   document.getElementById('rule-digit').style.color = rules.digit ? 'green' : 'var(--text-muted)';
   document.getElementById('rule-capital').style.color = rules.capital ? 'green' : 'var(--text-muted)';
 });

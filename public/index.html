@@ -8,6 +8,12 @@
   
   <link rel="stylesheet" href="css/main.css">
   <link rel="icon" href="assets/images/logo.svg" type="image/svg+xml">
+  <script>
+    // Immediately set admin mode class to prevent layout shifts
+    if (localStorage.getItem('adminToken')) {
+      document.documentElement.classList.add('admin-mode');
+    }
+  </script>
 </head>
 <body>
 

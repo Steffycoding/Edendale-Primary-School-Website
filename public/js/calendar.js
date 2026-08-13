@@ -82,6 +82,13 @@ const eventModalHoliday = document.getElementById('event-modal-holiday');
 
 const toastEl = document.getElementById('cal-toast');
 
+const dayModal = document.getElementById('day-info-modal');
+const dayModalClose = document.getElementById('day-info-close');
+const dayModalTitle = document.getElementById('day-info-title');
+const dayModalList = document.getElementById('day-info-list');
+const dayModalAddBtn = document.getElementById('day-info-add-btn');
+let dayModalDate = null; // date currently shown in the day-info modal
+
 /* ══════════════════════════════════════════
    SEED DATA (used the first time there is
    nothing in localStorage / the API fails)
@@ -128,6 +135,16 @@ document.addEventListener('DOMContentLoaded', () => {
     eventModal.addEventListener('click', (e) => {
       if (e.target === eventModal) closeEventModal();
     });
+  }
+
+  if (dayModalClose) dayModalClose.addEventListener('click', closeDayModal);
+  if (dayModal) {
+    dayModal.addEventListener('click', (e) => {
+      if (e.target === dayModal) closeDayModal();
+    });
+  }
+  if (dayModalAddBtn) {
+    dayModalAddBtn.addEventListener('click', () => openEventModal(null, dayModalDate));
   }
 
   if (pagePrevBtn) pagePrevBtn.addEventListener('click', () => { eventPage--; renderEventsList(); });
@@ -343,10 +360,45 @@ function shiftWeek(delta) {
    DAY SELECTION (click a cell to filter the list)
    ══════════════════════════════════════════ */
 function selectDay(dateStr) {
-  selectedDate = selectedDate === dateStr ? null : dateStr;
+  const wasSelected = selectedDate === dateStr;
+  selectedDate = wasSelected ? null : dateStr;
   eventPage = 0;
   if (currentView === 'monthly') renderMonthly(); else renderWeekly();
   renderEventsList();
+  if (!wasSelected) openDayModal(dateStr);
+}
+
+/* ══════════════════════════════════════════
+   DAY INFO MODAL (opens on clicking a day)
+   ══════════════════════════════════════════ */
+function openDayModal(dateStr) {
+  if (!dayModal) return;
+  dayModalDate = dateStr;
+
+  const isAdmin = document.body.classList.contains('admin-mode');
+  const dayEvents = eventsOn(dateStr).slice().sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
+
+  if (dayModalTitle) dayModalTitle.textContent = formatReadable(dateStr);
+  if (dayModalAddBtn) dayModalAddBtn.style.display = isAdmin ? 'inline-block' : 'none';
+
+  if (dayModalList) {
+    dayModalList.innerHTML = '';
+    if (!dayEvents.length) {
+      const msg = document.createElement('p');
+      msg.className = 'events-empty-msg';
+      msg.textContent = 'No events on this day.';
+      dayModalList.appendChild(msg);
+    } else {
+      dayEvents.forEach(ev => dayModalList.appendChild(buildEventCard(ev, isAdmin)));
+    }
+  }
+
+  dayModal.style.display = 'flex';
+}
+
+function closeDayModal() {
+  if (dayModal) dayModal.style.display = 'none';
+  dayModalDate = null;
 }
 
 /* ══════════════════════════════════════════
@@ -415,7 +467,7 @@ function renderEventsList() {
   }
 
   // "Add event" ghost card — only when the page has room, admin only
-  if (pageItems.length < perPage) {
+  if (isAdmin && pageItems.length < perPage) {
     const addCard = document.createElement('div');
     addCard.className = 'event-add-card';
     addCard.innerHTML = `<span class="plus">＋</span><span>Add Event</span>`;
@@ -516,6 +568,8 @@ function openEventModal(ev = null, prefillDate = null) {
   if (!eventModal) return;
   if (!document.body.classList.contains('admin-mode')) return;
 
+  closeDayModal(); // avoid stacking the day-info modal underneath the edit form
+
   if (ev) {
     eventModalHeading.textContent = '✏️ Edit Event';
     eventModalId.value = ev.id;
@@ -563,11 +617,15 @@ async function saveEvent() {
   const payload = { title, description, date, startTime, endTime, allDay, isHoliday };
 
   try {
+    const token = localStorage.getItem('adminToken');
     const method = id ? 'PUT' : 'POST';
     const url = id ? `/api/events/${id}` : '/api/events';
     const response = await fetch(url, {
       method,
-      headers: { 'Content-Type': 'application/json' },
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'Bearer ' + token
+      },
       body: JSON.stringify(payload)
     });
     if (!response.ok) throw new Error('Save failed');

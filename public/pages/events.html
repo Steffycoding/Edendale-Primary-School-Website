@@ -186,6 +186,22 @@
     </div>
   </div>
 
+  <!-- ══════════════════════════════════
+       DAY INFO MODAL (opens when a calendar
+       day is clicked — shows that day's events)
+       ══════════════════════════════════ -->
+  <div id="day-info-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
+       z-index:10000; align-items:center; justify-content:center;">
+    <div class="admin-modal-box" style="max-width:520px; width:92%; max-height:80vh; display:flex; flex-direction:column;">
+      <button id="day-info-close" class="event-modal-close-x" aria-label="Close" type="button">&times;</button>
+      <h2 id="day-info-title">Day</h2>
+      <div id="day-info-list" class="events-cards-grid" style="grid-template-columns:1fr; overflow-y:auto; margin:12px 0;"></div>
+      <button class="btn btn-primary admin-only" id="day-info-add-btn" style="display:none;" type="button">
+        + Add Event
+      </button>
+    </div>
+  </div>
+
   <!-- TOAST -->
   <div id="cal-toast"></div>
 

@@ -4,9 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events Calendar – Edendale Primary School</title>
-  
-  
+
+
   <link rel="stylesheet" href="../css/main.css">
+  <link rel="stylesheet" href="../css/events-calendar.css">
   <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
   <script>
     if (localStorage.getItem('adminToken')) {
@@ -23,7 +24,7 @@
         <img src="../assets/images/logo.svg" alt="Logo">
         <span>Edendale Primary School</span>
       </a>
-      
+
       <ul class="nav-links">
         <li><a href="about.html">About</a></li>
         <li><a href="grades.html">Admissions &amp; Subjects</a></li>
@@ -31,7 +32,7 @@
         <li><a href="events.html">Events Calendar</a></li>
         <li><a href="contact.html">Contact</a></li>
       </ul>
-      
+
       <!-- Hidden Admin Cog -->
       <a href="/admin-login.html" id="admin-toggle-btn" title="Admin Login">
         <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -56,61 +57,84 @@
   </section>
 
   <!-- ══════════════════════════════════
-       CALENDAR CONTROLS
+       CALENDAR
        ══════════════════════════════════ -->
   <section class="section events-section">
     <div class="container">
 
-      <!-- Month/Year Navigation -->
-      <div class="calendar-nav">
-        <button class="btn btn-outline" id="prev-month">&laquo; Prev</button>
-        <h2 class="calendar-month-title" id="calendar-month-title">April 2026</h2>
-        <button class="btn btn-outline" id="next-month">Next &raquo;</button>
-      </div>
+      <div class="cal-shell">
 
-      <!-- ══ CALENDAR GRID ══
-           JS will generate the days dynamically.
-           Events are loaded from the Java backend via fetch/AJAX.
-      ══════════════════════ -->
-      <div class="calendar-grid-wrapper">
-        <!-- Day headers -->
-        <div class="calendar-day-headers">
-          <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
-          <span>Thu</span><span>Fri</span><span>Sat</span>
+        <!-- View Toggle -->
+        <div class="cal-view-toggle" id="cal-view-toggle">
+          <button class="cal-view-btn active" data-view="monthly" type="button">
+            <span class="cal-view-icon">🗓️</span><span>Monthly</span>
+          </button>
+          <button class="cal-view-btn" data-view="weekly" type="button">
+            <span class="cal-view-icon">📅</span><span>Weekly</span>
+          </button>
         </div>
-        <!-- Day cells rendered by calendar.js -->
-        <div class="calendar-grid" id="calendar-grid">
-          <!-- TODO: Populated by js/calendar.js -->
-        </div>
-      </div>
 
-      <!-- ══ EVENT LIST / SIDEBAR ══ -->
-      <div class="events-list-section" style="margin-top:40px;">
-        <h3 class="section-title" style="text-align:left;">Upcoming Events</h3>
-        <span class="gold-underline" style="margin-left:0;"></span>
-        <div class="events-list" id="events-list">
-          <!-- TODO: Populated by calendar.js from Java API -->
-          <!-- SKELETON EVENT ITEM STRUCTURE:
-          <div class="event-item">
-            <div class="event-date-badge">
-              <span class="event-day">15</span>
-              <span class="event-month">Apr</span>
-            </div>
-            <div class="event-details">
-              <h4 class="event-title" data-editable data-field="event1_title">Event Name</h4>
-              <p class="event-description" data-editable data-field="event1_desc">Description…</p>
-              <span class="event-time" data-editable data-field="event1_time">08:00 – 10:00</span>
-            </div>
-            [Admin: Delete button shown in edit mode]
+        <!-- MONTHLY VIEW -->
+        <div class="cal-monthly-view" id="cal-monthly-view">
+          <div class="calendar-nav">
+            <button class="btn btn-outline" id="prev-month">&laquo; Prev</button>
+            <h2 class="calendar-month-title" id="calendar-month-title">April 2026</h2>
+            <button class="btn btn-outline" id="next-month">Next &raquo;</button>
           </div>
-          -->
+
+          <div class="calendar-grid-wrapper">
+            <div class="calendar-day-headers">
+              <span>Sun</span><span>Mon</span><span>Tue</span><span>Wed</span>
+              <span>Thu</span><span>Fri</span><span>Sat</span>
+            </div>
+            <div class="calendar-grid" id="calendar-grid">
+              <!-- Populated by calendar.js -->
+            </div>
+          </div>
+        </div>
+
+        <!-- WEEKLY VIEW -->
+        <div class="cal-weekly-view" id="cal-weekly-view" hidden>
+          <div class="calendar-nav">
+            <button class="btn btn-outline" id="prev-week">&laquo; Prev Week</button>
+            <h2 class="calendar-month-title" id="calendar-week-title">Week</h2>
+            <button class="btn btn-outline" id="next-week">Next Week &raquo;</button>
+          </div>
+          <div class="week-grid" id="week-grid">
+            <!-- Populated by calendar.js -->
+          </div>
+        </div>
+
+        <!-- Jump to today -->
+        <div class="cal-today-row">
+          <button class="btn btn-outline" id="cal-today-btn" type="button">Jump to Today</button>
+        </div>
+
+      </div>
+
+      <!-- ══ EVENT LIST ══ -->
+      <div class="events-list-section" style="margin-top:40px;">
+        <div class="events-list-heading-row">
+          <div>
+            <h3 class="section-title" style="text-align:left;" id="events-list-title">Upcoming Events</h3>
+            <span class="gold-underline" style="margin-left:0;"></span>
+          </div>
+          <button class="btn btn-primary admin-only" id="add-event-btn" style="display:none;">
+            + Add New Event
+          </button>
+        </div>
+
+        <div class="events-cards-grid" id="events-list">
+          <!-- Populated by calendar.js -->
           <p class="events-empty-msg">No upcoming events. Check back soon!</p>
         </div>
 
-        <!-- ADD EVENT BUTTON — visible in admin mode only -->
-        <button class="btn btn-primary admin-only" id="add-event-btn" style="margin-top:24px; display:none;">
-          + Add New Event
-        </button>
+        <div class="pagination-controls" id="pagination-controls" hidden>
+          <button class="btn btn-outline pagination-btn" id="page-prev-btn">&larr; Previous</button>
+          <div class="page-dots" id="page-dots"></div>
+          <span class="page-indicator" id="page-indicator">1 / 1</span>
+          <button class="btn btn-outline pagination-btn" id="page-next-btn">Next &rarr;</button>
+        </div>
       </div>
 
     </div>
@@ -121,23 +145,49 @@
        ══════════════════════════════════ -->
   <div id="event-modal" style="display:none; position:fixed; inset:0; background:rgba(0,0,0,0.6);
        z-index:10001; align-items:center; justify-content:center;">
-    <div class="admin-modal-box" style="width:400px;">
-      <h2>Add / Edit Event</h2>
+    <div class="admin-modal-box event-form-box">
+      <button id="event-modal-close" class="event-modal-close-x" aria-label="Close" type="button">&times;</button>
+      <h2 id="event-modal-heading">Add / Edit Event</h2>
       <input type="hidden" id="event-modal-id">
-      <input type="text" id="event-modal-title" placeholder="Event Title">
-      <input type="date" id="event-modal-date" style="width:100%; padding:10px; margin-bottom:14px;
-             border-radius:8px; border:1px solid rgba(245,166,35,0.25);">
-      <input type="text" id="event-modal-time" placeholder="Time (e.g. 08:00 – 10:00)">
-      <textarea id="event-modal-desc" placeholder="Event Description" rows="3"
-                style="width:100%; padding:10px; margin-bottom:14px; border-radius:8px;
-                border:1px solid rgba(245,166,35,0.25); background:rgba(255,255,255,0.07);
-                color:#fff;"></textarea>
-      <div style="display:flex; gap:12px;">
-        <button class="btn btn-primary" id="event-modal-save" style="flex:1;">Save Event</button>
-        <button class="btn btn-outline" id="event-modal-cancel" style="flex:1;">Cancel</button>
+
+      <label class="event-form-label" for="event-modal-title">Event Title *</label>
+      <input type="text" id="event-modal-title" placeholder="e.g. Sports Day">
+
+      <label class="event-form-label" for="event-modal-desc">Description</label>
+      <textarea id="event-modal-desc" placeholder="Event Description" rows="3"></textarea>
+
+      <label class="event-form-label" for="event-modal-date">Date *</label>
+      <input type="date" id="event-modal-date">
+
+      <div class="event-form-time-row">
+        <div>
+          <label class="event-form-label" for="event-modal-start">Start Time</label>
+          <input type="text" id="event-modal-start" placeholder="HH:MM" maxlength="5">
+        </div>
+        <div>
+          <label class="event-form-label" for="event-modal-end">End Time</label>
+          <input type="text" id="event-modal-end" placeholder="HH:MM" maxlength="5">
+        </div>
+      </div>
+
+      <div class="event-form-checks">
+        <label class="event-form-check-label">
+          <input type="checkbox" id="event-modal-allday"> All Day Event
+        </label>
+        <label class="event-form-check-label">
+          <input type="checkbox" id="event-modal-holiday"> Public Holiday
+        </label>
+      </div>
+
+      <div style="display:flex; gap:12px; margin-top:6px;">
+        <button class="btn btn-primary" id="event-modal-save" style="flex:1;" type="button">Save Event</button>
+        <button class="btn btn-outline" id="event-modal-cancel" style="flex:1;" type="button">Cancel</button>
       </div>
     </div>
   </div>
+
+  <!-- TOAST -->
+  <div id="cal-toast"></div>
 
   <!-- FOOTER -->
   <footer class="site-footer">
@@ -184,7 +234,7 @@
   </div>
 </div>
 
-  
+
   <script>document.getElementById('footer-year').textContent = new Date().getFullYear();</script>
   <script src="../js/calendar.js"></script>
   <script src="../js/admin.js"></script>

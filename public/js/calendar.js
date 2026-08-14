@@ -86,7 +86,6 @@ const dayModal = document.getElementById('day-info-modal');
 const dayModalClose = document.getElementById('day-info-close');
 const dayModalTitle = document.getElementById('day-info-title');
 const dayModalList = document.getElementById('day-info-list');
-const dayModalAddBtn = document.getElementById('day-info-add-btn');
 let dayModalDate = null; // date currently shown in the day-info modal
 
 /* ══════════════════════════════════════════
@@ -142,9 +141,6 @@ document.addEventListener('DOMContentLoaded', () => {
     dayModal.addEventListener('click', (e) => {
       if (e.target === dayModal) closeDayModal();
     });
-  }
-  if (dayModalAddBtn) {
-    dayModalAddBtn.addEventListener('click', () => openEventModal(null, dayModalDate));
   }
 
   if (pagePrevBtn) pagePrevBtn.addEventListener('click', () => { eventPage--; renderEventsList(); });
@@ -385,7 +381,6 @@ function openDayModal(dateStr) {
   const dayEvents = eventsOn(dateStr).slice().sort((a, b) => (a.startTime || '').localeCompare(b.startTime || ''));
 
   if (dayModalTitle) dayModalTitle.textContent = formatReadable(dateStr);
-  if (dayModalAddBtn) dayModalAddBtn.style.display = isAdmin ? 'inline-block' : 'none';
 
   if (dayModalList) {
     dayModalList.innerHTML = '';
@@ -399,12 +394,14 @@ function openDayModal(dateStr) {
     }
   }
 
+  document.body.classList.add('modal-open');
   dayModal.style.display = 'flex';
 }
 
 function closeDayModal() {
   if (dayModal) dayModal.style.display = 'none';
   dayModalDate = null;
+  document.body.classList.remove('modal-open');
 }
 
 /* ══════════════════════════════════════════
@@ -470,15 +467,6 @@ function renderEventsList() {
     eventsList.appendChild(msg);
   } else {
     pageItems.forEach(ev => eventsList.appendChild(buildEventCard(ev, isAdmin)));
-  }
-
-  // "Add event" ghost card — only when the page has room, admin only
-  if (isAdmin && pageItems.length < perPage) {
-    const addCard = document.createElement('div');
-    addCard.className = 'event-add-card';
-    addCard.innerHTML = `<span class="plus">＋</span><span>Add Event</span>`;
-    addCard.addEventListener('click', () => openEventModal(null, selectedDate));
-    eventsList.appendChild(addCard);
   }
 
   renderPagination(totalPages);
@@ -598,11 +586,13 @@ function openEventModal(ev = null, prefillDate = null) {
     eventModalHoliday.checked = false;
   }
 
+  document.body.classList.add('modal-open');
   eventModal.style.display = 'flex';
 }
 
 function closeEventModal() {
   if (eventModal) eventModal.style.display = 'none';
+  document.body.classList.remove('modal-open');
 }
 
 async function saveEvent() {

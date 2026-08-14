@@ -74,6 +74,8 @@ function resolveCardPage() {
     const grade = new URLSearchParams(window.location.search).get('grade');
     return 'grade_' + (grade ? grade.toLowerCase() : 'r');
   }
+  if (file === 'about') return 'about';
+  if (file === 'contact') return 'contact';
   return file || 'home';
 }
 
@@ -221,6 +223,27 @@ function renderGalleryItem(card) {
     </figure>`;
 }
 
+function renderGenericCard(card) {
+  return `
+    <div class="card" data-card-id="${card.id}">
+      <div class="card-body">
+        ${card.icon ? `<span class="activity-icon" aria-hidden="true">${escapeHtml(card.icon)}</span>` : ''}
+        <h3>${escapeHtml(card.title)}</h3>
+        <p>${escapeHtml(card.body || '')}</p>
+      </div>
+      ${adminActionsHtml(card)}
+    </div>`;
+}
+
+function renderStatBox(card) {
+  return `
+    <div class="stat-box" data-card-id="${card.id}">
+      <div class="stat-number">${escapeHtml(card.title)}</div>
+      <div class="stat-label">${escapeHtml(card.body || '')}</div>
+      ${adminActionsHtml(card)}
+    </div>`;
+}
+
 function adminActionsHtml(card) {
   return `
     <div class="card-admin-actions">
@@ -232,10 +255,11 @@ function adminActionsHtml(card) {
 }
 
 function ghostTileHtml(section, isGallery) {
+  const addText = isGallery ? 'Add Photo' : 'Add Card';
   return `
     <button type="button" class="card-ghost" data-action="add" data-section="${escapeHtml(section)}">
       <span class="ghost-plus">+</span>
-      <span>${isGallery ? 'Add Photo' : 'Add Activity'}</span>
+      <span>${addText}</span>
     </button>`;
 }
 
@@ -243,10 +267,22 @@ function ghostTileHtml(section, isGallery) {
 function renderSection(container) {
   const section   = container.dataset.cardSection;
   const isGallery = section === 'gallery';
+  const isStats   = section === 'stats';
   const cards     = cardsIn(section);
 
+  let renderer;
+  if (isGallery) {
+    renderer = renderGalleryItem;
+  } else if (isStats) {
+    renderer = renderStatBox;
+  } else if (section === 'activities' || section === 'extracurricular' || section === 'cocurricular') {
+    renderer = renderActivityCard;
+  } else {
+    renderer = renderGenericCard;
+  }
+
   container.innerHTML =
-      cards.map(isGallery ? renderGalleryItem : renderActivityCard).join('') +
+      cards.map(renderer).join('') +
       ghostTileHtml(section, isGallery);
 }
 
@@ -270,6 +306,7 @@ function harvestStaticCards() {
     const section = container.dataset.cardSection;
     let order = 1;
 
+    // Activity cards (for extracurriculars)
     container.querySelectorAll('.activity-card').forEach(el => {
       harvested.push({
         id:        cardState.nextLocalId--,
@@ -283,6 +320,7 @@ function harvestStaticCards() {
       });
     });
 
+    // Gallery items (for grade gallery)
     container.querySelectorAll('.gallery-item').forEach(el => {
       harvested.push({
         id:        cardState.nextLocalId--,
@@ -292,6 +330,48 @@ function harvestStaticCards() {
         title:     (el.querySelector('figcaption')?.textContent || '').trim(),
         body:      null,
         imageUrl:  el.querySelector('img')?.getAttribute('src') || '',
+        sortOrder: order++
+      });
+    });
+
+    // Generic cards (for about page, contact page, etc.)
+    container.querySelectorAll('.card').forEach(el => {
+      // Skip if already handled as activity-card or gallery-item
+      if (el.classList.contains('activity-card') || el.classList.contains('gallery-item')) return;
+
+      const iconEl = el.querySelector('.activity-icon');
+      const titleEl = el.querySelector('h3, h4');
+      const bodyEl = el.querySelector('p');
+      const imgEl = el.querySelector('img');
+
+      const hasIcon = iconEl && iconEl.textContent.trim();
+      const hasImage = imgEl && imgEl.getAttribute('src');
+
+      harvested.push({
+        id:        cardState.nextLocalId--,
+        page:      cardState.page,
+        section,
+        icon:      hasIcon ? iconEl.textContent.trim() : null,
+        title:     titleEl ? titleEl.textContent.trim() : '',
+        body:      bodyEl ? bodyEl.textContent.trim() : '',
+        imageUrl:  hasImage ? imgEl.getAttribute('src') : null,
+        sortOrder: order++
+      });
+    });
+
+    // Stat boxes (for about page stats)
+    container.querySelectorAll('.stat-box').forEach(el => {
+      const numberEl = el.querySelector('.stat-number');
+      const labelEl = el.querySelector('.stat-label');
+
+      harvested.push({
+        id:        cardState.nextLocalId--,
+        page:      cardState.page,
+        section,
+        icon:      null,
+        title:     numberEl ? numberEl.textContent.trim() : '',
+        body:      labelEl ? labelEl.textContent.trim() : '',
+        imageUrl:  null,
         sortOrder: order++
       });
     });

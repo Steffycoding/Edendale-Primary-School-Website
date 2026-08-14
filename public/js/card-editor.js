@@ -89,18 +89,29 @@ function openCardEditor(card, section) {
   editorImageUrl = card ? card.imageUrl : null;
 
   const isGallery = section === 'gallery';
+  const isStats   = section === 'stats';
   const isNew     = !card;
 
   document.getElementById('card-editor-title').textContent =
-      (isNew ? 'Add ' : 'Edit ') + (isGallery ? 'Photo' : 'Card');
+      (isNew ? 'Add ' : 'Edit ') + (isGallery ? 'Photo' : isStats ? 'Stat' : 'Card');
 
-  document.getElementById('card-editor-fields').innerHTML =
-      isGallery ? galleryFieldsHtml(card) : activityFieldsHtml(card);
+  let fieldsHtml;
+  if (isGallery) {
+    fieldsHtml = galleryFieldsHtml(card);
+  } else if (isStats) {
+    fieldsHtml = statFieldsHtml(card);
+  } else if (section === 'activities' || section === 'extracurricular' || section === 'cocurricular') {
+    fieldsHtml = activityFieldsHtml(card);
+  } else {
+    fieldsHtml = genericFieldsHtml(card);
+  }
+
+  document.getElementById('card-editor-fields').innerHTML = fieldsHtml;
 
   setEditorError('');
   wireCounters();
   if (isGallery) wireEditorDropzone();
-  wireIconSuggestions();
+  if (!isStats && !isGallery) wireIconSuggestions();
 
   editor.classList.add('active');
 
@@ -176,6 +187,46 @@ function galleryFieldsHtml(card) {
       <input type="text" id="ce-title" value="${escapeAttr(title)}"
              data-limit="${CARD_LIMITS.caption}" placeholder="e.g. Outdoor Play">
       <span class="char-counter" data-for="ce-title"></span>
+    </div>`;
+}
+
+function genericFieldsHtml(card) {
+  const title = card ? (card.title || '') : '';
+  const body  = card ? (card.body  || '') : '';
+
+  return `
+    <div class="card-editor-field">
+      <label for="ce-title">Title</label>
+      <input type="text" id="ce-title" value="${escapeAttr(title)}"
+             data-limit="${CARD_LIMITS.title}" placeholder="e.g. Academic Excellence">
+      <span class="char-counter" data-for="ce-title"></span>
+    </div>
+
+    <div class="card-editor-field">
+      <label for="ce-body">Description</label>
+      <textarea id="ce-body" rows="6" data-limit="${CARD_LIMITS.body}"
+                placeholder="Brief description">${escapeText(body)}</textarea>
+      <span class="char-counter" data-for="ce-body"></span>
+    </div>`;
+}
+
+function statFieldsHtml(card) {
+  const title = card ? (card.title || '') : '';
+  const body  = card ? (card.body  || '') : '';
+
+  return `
+    <div class="card-editor-field">
+      <label for="ce-title">Number/Value</label>
+      <input type="text" id="ce-title" value="${escapeAttr(title)}"
+             data-limit="${CARD_LIMITS.title}" placeholder="e.g. 400+">
+      <span class="char-counter" data-for="ce-title"></span>
+    </div>
+
+    <div class="card-editor-field">
+      <label for="ce-body">Label</label>
+      <input type="text" id="ce-body" value="${escapeAttr(body)}"
+             data-limit="${CARD_LIMITS.body}" placeholder="e.g. Learners">
+      <span class="char-counter" data-for="ce-body"></span>
     </div>`;
 }
 
@@ -329,6 +380,8 @@ async function saveCardEditor() {
   if (!title) {
     setEditorError(editorSection === 'gallery'
         ? 'Give the photo a caption.'
+        : editorSection === 'stats'
+        ? 'Enter a number or value.'
         : 'Give the card a name.');
     return;
   }

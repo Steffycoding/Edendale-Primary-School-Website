@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Contact &amp; Donors – Edendale Primary School</title>
-  
-  
-  <link rel="stylesheet" href="../css/main.css">
   <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
   <script>
+    // Set admin mode class before CSS loads to prevent flash
     if (localStorage.getItem('adminToken')) {
       document.documentElement.classList.add('admin-mode');
     }
   </script>
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 
@@ -104,15 +103,13 @@
         <div class="support-cta card" style="margin-top:24px;">
           <div class="card-body">
             <h3 data-editable data-field="support_cta_title">Interested in supporting our learners?</h3>
-            <ul style="margin-top:12px; padding-left:20px; list-style:disc; color: var(--text-dark);">
+            <ul style="margin-top:12px; padding-left:20px; list-style:disc; color: var(--navy);">
               <li data-editable data-field="support_opt1">Sponsor resources</li>
               <li data-editable data-field="support_opt2">Volunteer time</li>
               <li data-editable data-field="support_opt3">Donate books</li>
               <li data-editable data-field="support_opt4">Partner with the school</li>
-                  </ul>
-            <a href="mailto:edendaleprimary@gmail.com" class="btn btn-primary" style="margin-top:20px;">
-              Get in Touch
-            </a>
+            </ul>
+            <a href="contact.html" class="btn btn-primary">Get in Touch</a>
           </div>
         </div>
 

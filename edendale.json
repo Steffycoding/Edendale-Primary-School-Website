@@ -3,7 +3,7 @@
     {
       "id": 1,
       "username": "admin",
-      "password_hash": "$2b$10$MU7pVtIE3dkYUEdjOwmMh.emEYqUd8YAxaPPxX4.yJOvmBbCD4Cpy"
+      "password_hash": "$2b$10$4gIaf1gTwcI8rBBNblmzKOSJwtEqGLz1dyX/z602IWB1k8CMHH52i"
     }
   ],
   "content": [
@@ -74,7 +74,7 @@
       "id": 10,
       "page": "contact",
       "field_name": "contact_address",
-      "value": "100 Philippi Ring Road & Manenberg Ave, Manenberg, Cape Town, 7764, South Africa",
+      "value": "100 Philippi Ring Road &amp; Manenberg Ave,<div>Manenberg,&nbsp;</div><div>Cape Town,</div><div>&nbsp;7764,&nbsp;</div><div>South Africa</div>",
       "type": "text"
     },
     {
@@ -218,6 +218,17 @@
       "event_date": "2026-06-26",
       "event_time": "12:00",
       "description": "Last day of second school term."
+    },
+    {
+      "id": 6,
+      "title": "Sports day",
+      "event_date": "2026-08-14",
+      "start_time": "12:30",
+      "end_time": "14:30",
+      "all_day": false,
+      "is_holiday": false,
+      "is_custom": true,
+      "description": "Athletics with all grades."
     }
   ],
   "cards": [

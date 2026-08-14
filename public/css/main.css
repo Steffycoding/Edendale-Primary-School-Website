@@ -209,19 +209,21 @@ a {
 
 .hero-description {
   font-size: 1.5rem;
-  max-width: 60vw;
+  max-width: 80vw;
   margin: auto;
   line-height: 1.8;
 }
 
 
 .btn {
-  display: inline-block;
+  display: flex;
   padding: 15px 36px;
   border-radius: 999px;
   margin-top: 35px;
   font-weight: bold;
   transition: var(--transition);
+  text-align: center;
+  justify-content: center;
 }
 
 
@@ -310,11 +312,62 @@ a {
 .stat-number {
   font-size: 2rem;
   font-weight: bold;
+  color: var(--gold);
 }
 
 
 .stat-label {
   font-size: 1rem;
+  color: var(--navy);
+  font-weight: 500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.stat-box.add-card-btn {
+  cursor: pointer;
+  border-style: dashed;
+  border-color: var(--gold);
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  margin: 0;
+  background: rgba(217, 163, 0, 0.05);
+  color: var(--gold-dark);
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.stat-box.add-card-btn:hover {
+  border-style: solid;
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-box.add-card-btn .stat-number {
+  color: var(--gold);
+}
+
+.card.add-card-btn {
+  cursor: pointer;
+  border-style: dashed;
+  border-color: var(--gold);
+  background: rgba(217, 163, 0, 0.05);
+  color: var(--gold-dark);
+}
+
+.card.add-card-btn:hover {
+  border-style: solid;
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
 }
 
 
@@ -375,15 +428,10 @@ a {
 
 .card h3,
 .card h4 {
-  color: var(--navy-dark);
+  color: var(--gold);
   margin-bottom: 12px;
   font-weight: 700;
-}
-
-.card p {
-  color: var(--navy);
-  line-height: 1.6;
-  flex: 1;
+  font-size: 1.4rem;
 }
 
 
@@ -505,20 +553,681 @@ a {
 .grade-details strong {
   color: black;
   display: block;
-  font-weight: bold;
-  margin-bottom: 4px;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size:1.2rem;
 }
 
 
 .grade-details span {
-  color: var(--text-dark);
+  color: var(--navy-dark);
   font-weight: normal;
   display: block;
-  line-height: 1.4;
-  font-size: 0.95rem;
+  line-height: 1.5;
+  font-size: 1.1rem;
   padding-left: 8px;
   border-left: 3px solid var(--gold);
   margin-top: 4px;
+  font-weight:600;
+  font-family:"Fredoka";
+}
+
+
+.btn-outline {
+  background: transparent;
+  border: 2px solid var(--gold);
+  color: var(--gold);
+  padding: 12px 28px;
+  border-radius: 24px;
+  cursor: pointer;
+  font-weight: bold;
+  transition: var(--transition);
+  display: inline-block;
+}
+
+
+.btn-outline:hover {
+  background: var(--gold);
+  color: var(--navy);
+}
+
+
+.admissions-cta {
+  margin-top: 48px;
+  padding: 32px;
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  text-align: center;
+  box-shadow: var(--shadow);
+}
+
+
+.admissions-cta p {
+  font-size: 1.3rem;
+  color: var(--navy);
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+/* ============================================================
+   EDENDALE PRIMARY SCHOOL — GLOBAL CSS
+   ============================================================ */
+
+:root {
+  --navy: #14008f;
+  --navy-dark: #0f0066;
+  --gold: #d9a300;
+  --gold-dark: #b8860b;
+  --white: #ffffff;
+  --light-bg: #ececec;
+  --text-dark: #1d1d1d;
+  --text-muted: #666;
+  --border: rgba(217, 163, 0, 0.35);
+
+  --shadow: 0 8px 18px rgba(0, 0, 0, 0.12);
+  --shadow-lg: 0 12px 24px rgba(0, 0, 0, 0.18);
+
+  --radius: 18px;
+  --radius-lg: 28px;
+
+  --max-width: 1200px;
+  --transition: 0.3s ease;
+}
+
+
+/* RESET */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+
+html {
+  scroll-behavior: smooth;
+}
+
+
+body {
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+  background: var(--light-bg);
+  color: var(--text-dark);
+  font-family: Georgia, serif;
+  line-height: 1.7;
+}
+
+
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;
+  pointer-events: none;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(20, 0, 143, 0.14), transparent 35%),
+    radial-gradient(circle at 80% 25%, rgba(217, 163, 0, 0.14), transparent 35%),
+    radial-gradient(circle at 50% 80%, rgba(20, 0, 143, 0.08), transparent 40%);
+  filter: blur(90px);
+}
+
+
+img {
+  width: 100%;
+  display: block;
+}
+
+
+a {
+  color: var(--navy);
+  line-height: 1.6;
+  font-size:1.2rem;
+  font-weight:500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align:center;
+  align-items:center;
+
+}
+
+.container {
+  width: min(92%, var(--max-width));
+  margin: auto;
+}
+
+
+/* ============================================================
+   NAVBAR
+   ============================================================ */
+.navbar {
+  background: rgb(3, 3, 163);
+  border-top: 3px solid var(--gold);
+  border-bottom: 3px solid var(--gold);
+  padding: 18px 0;
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  border-radius:3px;
+}
+
+
+.nav-inner {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: relative;
+}
+
+
+.nav-logo {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-left: -20px;
+}
+
+
+.nav-logo img {
+  width: 56px;
+  height: 56px;
+  border-radius: 50%;
+}
+
+
+.nav-logo span {
+  color: white;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+
+.nav-links {
+  display: flex;
+  gap: 28px;
+  list-style: none;
+  margin-left: auto;
+}
+
+
+.nav-links a {
+  color: white;
+  font-size: 0.95rem;
+}
+
+
+.nav-links a.active,
+.nav-links a:hover {
+  color: var(--gold);
+}
+
+
+.nav-centered {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+
+.nav-left,
+.nav-right {
+  display: flex;
+  gap: 28px;
+  align-items: center;
+}
+
+
+.nav-left a,
+.nav-right a {
+  color: white;
+  font-size: 0.9rem;
+}
+
+
+.nav-logo-center img {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+}
+
+
+/* ============================================================
+   HERO
+   ============================================================ */
+.hero {
+  background: var(--navy);
+  color: white;
+  text-align: center;
+  padding: 90px 0 110px;
+  border-bottom: 4px solid var(--gold);
+}
+
+
+.hero-content {
+  max-width: 760px;
+  margin: auto;
+}
+
+
+.hero-title {
+  font-size: 3rem;
+  color: var(--gold);
+  margin-bottom: 30px;
+}
+
+
+.hero-tagline {
+  font-size: 2rem;
+  margin-bottom: 24px;
+  color:var(--gold);
+}
+
+
+.hero-description {
+  font-size: 1.5rem;
+  max-width: 90vw;
+  margin: auto;
+  line-height: 1.8;
+  margin-bottom: 2rem;
+  font-family: "arial";
+}
+
+
+.btn {
+  display: flex-end;
+  padding: 15px 36px;
+  border-radius: 999px;
+  margin-top: 35px;
+  font-weight: bold;
+  transition: var(--transition);
+  text-align: center;
+}
+
+
+.btn-primary {
+  background: #8f6800;
+  color: white;
+}
+
+
+.btn-primary:hover {
+  background: var(--gold-dark);
+}
+
+
+/* ============================================================
+   GENERAL SECTIONS
+   ============================================================ */
+.section {
+  padding: 50px 0;
+  border-bottom: 5px solid var(--gold);
+  border-radius: 16px;
+}
+
+
+.section-title {
+  font-size: 2.3rem;
+  margin-bottom: 16px;
+  text-align: center;
+  color:var(--navy);
+}
+
+
+.gold-underline {
+  display: block;
+  width: 80px;
+  height: 4px;
+  background: var(--gold);
+  margin: 0 0 30px;
+  border-radius: 20px;
+  align-items: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+.about-description {
+  max-width: 90vw;
+  font-size: 1.3rem;
+  text-align: center;
+  font-weight: 600;
+  font-family:"arial";
+}
+
+
+/* ============================================================
+   STATS SECTION
+   ============================================================ */
+.stats-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  justify-content: center;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+
+.stat-box {
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  border: 2px solid var(--gold);
+  border-radius: 24px;
+  padding: 40px 20px;
+  text-align: center;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+
+.stat-box:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+
+.stat-number {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--gold);
+}
+
+
+.stat-label {
+  font-size: 1rem;
+  color: var(--navy);
+  font-weight: 500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+.stat-box.add-card-btn {
+  cursor: pointer;
+  border-style: dashed;
+  border-color: var(--gold);
+  width: 100%;
+  height: 100%;
+  padding: 40px 20px;
+  margin: 0;
+  background: rgba(217, 163, 0, 0.05);
+  color: var(--gold-dark);
+  font-family: inherit;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  border-radius: 24px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.stat-box.add-card-btn:hover {
+  border-style: solid;
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+.stat-box.add-card-btn .stat-number {
+  color: var(--gold);
+}
+
+.card.add-card-btn {
+  cursor: pointer;
+  border-style: dashed;
+  border-color: var(--gold);
+  background: rgba(217, 163, 0, 0.05);
+  color: var(--gold-dark);
+}
+
+.card.add-card-btn:hover {
+  border-style: solid;
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+
+/* ============================================================
+   CARD GRIDS
+   ============================================================ */
+.news-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 24px;
+}
+
+.why-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 24px;
+  justify-content: center;
+}
+
+@media (max-width: 900px) {
+  .why-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 600px) {
+  .why-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+.card {
+  background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%) !important;
+  border: 2px solid var(--gold);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  overflow: hidden;
+  transition: var(--transition);
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+.card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+
+.card-body {
+  padding: 28px;
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+
+.card h3,
+.card h4 {
+  color: var(--gold);
+  margin-bottom: 12px;
+  font-weight: 700;
+  font-size: 1.6rem;
+  text-align:center;
+  border-bottom: 3px dashed var(--gold);
+}
+
+.card p {
+  color: var(--navy);
+  line-height: 1.6;
+  flex: 1;
+  font-size:1.3rem;
+  font-weight:500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align:center;
+  align-items:center;
+}
+
+address {
+  color: var(--navy);
+  line-height: 1.6;
+  flex: 1;
+  font-size:1.2rem;
+  font-weight:500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align:center;
+  align-items:center;
+}
+
+ul{
+  color: var(--navy);
+  line-height: 1.6;
+  font-size:1.2rem;
+  font-weight:500;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  text-align:center;
+  align-items:center;
+
+}
+
+.news-card-image img {
+  height: 220px;
+  object-fit: cover;
+}
+
+
+.why-card {
+  min-height: 180px;
+  width: 100%;
+}
+
+
+/* ============================================================
+   COMMUNITY / JOURNEY SECTION
+   ============================================================ */
+.journey-section {
+  background: var(--navy);
+  color: white;
+  border-top: 4px solid var(--gold);
+  border-radius: 30px 30px 0 0;
+}
+
+
+.journey-section .section-title {
+  color:var(--gold);
+  text-align: center;
+}
+
+
+.journey-section p {
+  font-size: 1.3rem;
+  max-width: 850px;
+  align-items: center;
+}
+
+
+/* ============================================================
+    PAGE HEADER
+    ============================================================ */
+.page-header {
+  background: var(--navy);
+  color: var(--gold);
+  text-align: center;
+  padding: 60px 0;
+  border-bottom: 4px solid var(--gold);
+  font-size:1.6rem;
+}
+
+
+.page-header-title {
+  font-size: 2.8rem;
+  color: var(--gold);
+  margin: 0;
+}
+
+
+/* ============================================================
+    GRADES GRID
+    ============================================================ */
+.grades-section {
+  background: var(--light-bg);
+  padding: 60px 0;
+}
+
+
+.grades-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 32px;
+  margin-bottom: 48px;
+}
+
+
+.grade-card {
+  background: var(--navy);
+  border: 3px solid var(--gold);
+  border-radius: 28px;
+  padding: 0;
+  color: var(--white);
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+
+.grade-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
+
+.grade-card .card-body {
+  padding: 32px;
+  text-align: center;
+}
+
+
+.grade-card-title {
+  font-size: 2rem;
+  color: var(--gold);
+  margin-bottom: 20px;
+  font-weight: bold;
+}
+
+
+.grade-details {
+  list-style: none;
+  margin-bottom: 24px;
+}
+
+
+.grade-details li {
+  margin-bottom: 16px;
+  font-size: 1.1rem;
+}
+
+
+.grade-details strong {
+  color: black;
+  display: block;
+  font-weight: 600;
+  margin-bottom: 6px;
+  font-size: 1.4rem;
+  font-family: "Playfair Display";
+}
+
+
+.grade-details span {
+  color: var(--navy-dark);
+  font-weight: normal;
+  display: block;
+  line-height: 1.4;
+  font-size: 1.1rem;
+  padding-left: 8px;
+  border: 5px dashed var(--gold);
+  margin-top: 4px;
+  font-weight:600;
+  font-family:"arial";
 }
 
 
@@ -580,8 +1289,20 @@ a {
 
 
   .section-title {
-    font-size: 1.8rem;
+    font-size: 1.6rem;
     text-align: center;
+  }
+  
+  /* About section */
+
+  .hero-description {
+
+    font-size: 1.2rem;
+    max-width: 90vw;
+    margin: auto;
+    line-height: 1.8;
+    margin-bottom: 2rem;
+    font-family: "arial";
   }
 }
 /* ============================================================
@@ -701,6 +1422,13 @@ body {
 @media (max-width: 768px) {
   .mobile-menu-btn {
     display: flex;
+  }
+  .site-footer {
+    background: var(--navy);
+    color: white;
+    border-top: 3px solid var(--gold);
+    text-align: center;
+    padding: 22px 0;
   }
 }
 
@@ -1190,6 +1918,7 @@ html.admin-mode #admin-toggle-btn {
 
   .nav-logo {
     gap: 8px;
+    margin-left:1.2rem;
   }
 
   .nav-logo img {
@@ -1295,14 +2024,18 @@ html.admin-mode #admin-toggle-btn {
 }
 
 .activity-icon {
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
+
   width: 96px;
   height: 96px;
-  margin-bottom: 20px;
+
+  margin: 0 auto 20px;
+
   border-radius: 50%;
   background: rgba(217, 163, 0, 0.14);
+
   font-size: 3.2rem;
   line-height: 1;
 }
@@ -1596,7 +2329,9 @@ body.admin-mode .admin-only {
   display: flex !important;
 }
 
+/* Ensure add card buttons are hidden by default */
 .add-card-btn {
+  display: none !important;
   cursor: pointer;
   border: none;
   background: #f0f0f0 !important;
@@ -1605,15 +2340,20 @@ body.admin-mode .admin-only {
   transition: var(--transition);
 }
 
+html.admin-mode .add-card-btn,
+body.admin-mode .add-card-btn {
+  display: flex !important;
+}
+
 .add-card-btn:hover {
   transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
   background: #e0e0e0 !important;
 }
 
-/* Ensure stat-box add button has proper flex layout */
-.add-card-btn.stat-box {
-  display: flex !important;
+/* Ensure stat-box add button has proper flex layout in admin mode */
+html.admin-mode .add-card-btn.stat-box,
+body.admin-mode .add-card-btn.stat-box {
   flex-direction: column;
   justify-content: center;
   align-items: center;
@@ -2073,10 +2813,44 @@ body.admin-mode .card-ghost {
 .cal-shell .btn,
 .events-list-section .btn,
 .event-form-box .btn {
-  margin-top: 0;
-  padding: 10px 20px;
-  font-size: 0.85rem;
-  border-radius: var(--radius);
+  margin-bottom: 2rem;
+  padding: 12px 24px;
+  font-size: 0.9rem;
+  border-radius: 24px;
+  font-weight: 600;
+  transition: var(--transition);
+}
+
+.cal-shell .btn-primary,
+.events-list-section .btn-primary,
+.event-form-box .btn-primary {
+  background: var(--gold);
+  color: var(--navy-dark);
+  border: 2px solid var(--gold);
+}
+
+.cal-shell .btn-primary:hover,
+.events-list-section .btn-primary:hover,
+.event-form-box .btn-primary:hover {
+  background: var(--gold-dark);
+  border-color: var(--gold-dark);
+  transform: translateY(-2px);
+}
+
+.cal-shell .btn-outline,
+.events-list-section .btn-outline,
+.event-form-box .btn-outline {
+  background: transparent;
+  color: var(--navy-dark);
+  border: 2px solid var(--navy-dark);
+}
+
+.cal-shell .btn-outline:hover,
+.events-list-section .btn-outline:hover,
+.event-form-box .btn-outline:hover {
+  background: var(--navy-dark);
+  color: var(--white);
+  transform: translateY(-2px);
 }
 
 /* ── View Toggle ── */
@@ -2503,6 +3277,22 @@ body.admin-mode .card-ghost {
   font-size: 1.25rem;
 }
 
+/* ── Event List Heading Row (title + Add New Event button) ──
+   Previously unstyled: the title and the admin "add" button could
+   collide or sit misaligned, especially once the button wraps to
+   its own line on narrow screens. */
+.events-list-heading-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  flex-wrap: wrap;
+}
+
+.events-list-heading-row .btn {
+  margin-top: 0;
+}
+
 /* ── Event Cards Styling ── */
 .events-cards-grid {
   display: grid;
@@ -2514,77 +3304,252 @@ body.admin-mode .card-ghost {
   background: linear-gradient(135deg, #dbeafe 0%, #93c5fd 60%, #60a5fa 100%);
   border: 2px solid var(--gold);
   border-radius: var(--radius-lg);
-  padding: 20px;
-  box-shadow: var(--shadow);
+  padding: 24px;
   transition: var(--transition);
+  box-shadow: var(--shadow);
+  align-items: center;
+  text-align: center;
 }
 
 .event-item:hover {
-  transform: translateY(-2px);
+  transform: translateY(-4px);
   box-shadow: var(--shadow-lg);
 }
 
 .event-item-title {
-  font-size: 1.1rem;
+  font-size: 1.3rem;
   font-weight: 700;
-  color: var(--navy-dark);
-  margin-bottom: 8px;
+  color: var(--gold);
+  margin-bottom: 12px;
+  font-family: var(--font-heading, inherit);
 }
 
 .event-item-date {
-  font-size: 0.9rem;
-  color: var(--navy);
+  font-size: 1.2rem;
+  color: var(--navy-dark);
   margin-bottom: 12px;
   font-weight: 600;
+  background: rgba(255,255,255,0.3);
+  padding: 6px 12px;
+  border-radius: 8px;
+  display: flex-end;
+  justify-content:center;
+  align-items:center;
+  text-align:center;
+}
+
+/* Fixed: "display: flex-end" is not a valid CSS value, so this badge
+   was silently falling back to block layout with the align-items/
+   text-align rules having no effect. Rebuilt as a proper small flex
+   "chip" showing day number + month, with the two inner spans
+   (.event-day / .event-month) actually styled — previously they had
+   no rules at all and just inherited plain body text. */
+.event-date-badge {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align:center;
+  gap: 2px;
+  width: 58px;
+  padding: 8px 6px;
+  margin: 0 0 14px;
+  border-radius: 10px;
+  background: rgba(245, 175, 23, 0.915);
+  color: var(--navy-dark);
+}
+
+.event-day {
+  font-size: 1.3rem;
+  font-weight: 800;
+  line-height: 1;
+}
+
+.event-month {
+  font-size: 0.68rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+/* Holiday badge — referenced in calendar.js's buildEventCard() but
+   had no matching rule, so it rendered as unstyled inline text. */
+.event-holiday-badge {
+  display: inline-block;
+  font-size: 0.72rem;
+  font-weight: 700;
+  color: var(--navy-dark);
+  background: rgba(255, 255, 255, 0.55);
+  border: 1px solid rgba(15, 0, 102, 0.25);
+  padding: 3px 10px;
+  border-radius: 999px;
+  margin-bottom: 8px;
+}
+
+.event-title{
+  font-size: 1.8rem;
+  align-items: center;
+  text-align: center;
 }
 
 .event-item-desc {
-  font-size: 0.9rem;
+  font-size: 0.95rem;
   color: var(--navy);
-  line-height: 1.5;
-  margin-bottom: 12px;
+  line-height: 1.6;
+  margin-bottom: 16px;
+  font-family: 'Fredoka', Tahoma, Geneva, Verdana, sans-serif;
+  font-weight:600;
+  margin-bottom:10px;
 }
+
+p.event-description{
+  align-items: center;
+  text-align: center;
+  font-size:1.1rem;
+  color: var(--gold-dark);
+  font-weight:600;
+  margin-bottom:10px;
+}
+
+/* Base layout for the text block that sits under the date badge.
+   Right padding keeps the title/description from running underneath
+   the absolutely-positioned edit/delete buttons in the corner. */
+.event-details {
+  padding-right: auto;
+  margin-bottom:2rem;
+}
+
+.event-time {
+  font-size: 1rem;
+  color: rgba(4, 11, 114, 0.881);
+  font-weight: 600;
+  display: flex; 
+  justify-content: center; /* Centers horizontally */
+  align-items: center;     /* Centers vertically */
+  
+}   
 
 .event-item-time {
-  font-size: 0.85rem;
-  color: var(--navy);
+  font-size: 1.2rem;
+  color: var(--navy-dark);
   margin-bottom: 12px;
+  font-weight: 500;
 }
 
+/* ── Edit / Delete buttons on each event card ──
+   FIX: calendar.js's buildEventCard() creates these buttons with the
+   classes "event-item-action-btn edit" and "event-item-action-btn
+   remove" — but this stylesheet was previously targeting ".btn",
+   ".btn-edit" and ".btn-remove", which never matched anything in the
+   actual markup. That mismatch is why the buttons appeared unstyled.
+   Rebuilt below to target the real class names, as small round icon
+   buttons stacked vertically in the corner (so they never need much
+   horizontal space and can't collide with card text on narrow
+   screens). Blue = edit, orange = delete, to stay within the site's
+   navy/gold palette instead of introducing red. */
 .event-item-actions {
   display: flex;
-  gap: 8px;
-  margin-top: 12px;
+  flex-direction: row;
+  gap: 6px;
+  position: absolute;
+  top: 30px;
+  right: 12px;
+  z-index: 3;
 }
 
-.event-item-actions .btn {
-  padding: 6px 12px;
-  font-size: 0.8rem;
+.event-item {
+  position: relative;
 }
 
-.event-add-card {
-  background: rgba(255,255,255,0.5);
-  border: 2px dashed var(--gold);
-  border-radius: var(--radius-lg);
-  padding: 20px;
+.event-item-action-btn {
+  width: 30px;
+  height: 30px;
+  padding: 0;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
+  border-radius: 50%;
+  border: 2px solid transparent;
+  font-size: 0.9rem;
+  line-height: 1;
   cursor: pointer;
   transition: var(--transition);
-  color: var(--navy);
-  font-weight: 600;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.18);
 }
 
-.event-add-card:hover {
-  background: rgba(255,255,255,0.8);
+.event-item-action-btn:hover {
+  transform: translateY(-2px) scale(1.06);
+  box-shadow: 0 4px 10px rgba(0,0,0,0.22);
+}
+
+.event-item-action-btn.edit {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: var(--navy);
+  color: var(--navy);
+}
+
+.event-item-action-btn.edit:hover {
+  background: var(--navy);
+  color: var(--white);
   border-color: var(--navy);
 }
 
+.event-item-action-btn.remove {
+  background: rgba(255, 255, 255, 0.9);
+  border-color: #d9720e;
+  color: #b85f0a;
+}
+
+.event-item-action-btn.remove:hover {
+  background: #d9720e;
+  color: var(--white);
+  border-color: #d9720e;
+}
+
+/* Protected public holidays render this button with the native
+   `disabled` attribute (see calendar.js) — give it a clearly
+   non-interactive look instead of the orange delete styling. */
+.event-item-action-btn.remove:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+  background: rgba(255,255,255,0.6);
+  border-color: var(--text-muted);
+  color: var(--text-muted);
+  transform: none;
+  box-shadow: none;
+}
+
+.event-add-card {
+  background: rgba(217, 163, 0, 0.1);
+  border: 2px dashed var(--gold);
+  border-radius: var(--radius-lg);
+  padding: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  cursor: pointer;
+  transition: var(--transition);
+  color: var(--gold-dark);
+  font-weight: 600;
+  min-height: 180px;
+}
+
+.event-add-card:hover {
+  background: rgba(217, 163, 0, 0.2);
+  border-color: var(--navy);
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-lg);
+}
+
 .event-add-card .plus {
-  font-size: 1.5rem;
+  font-size: 2rem;
   font-weight: 700;
+  color: var(--gold);
+}
+
+.events-empty-msg{
+  color: white;
 }
 
 /* Disable body scroll when modals are open */
@@ -2680,10 +3645,727 @@ body.modal-open {
   .events-cards-grid { grid-template-columns: 1fr; }
   .event-details { padding-right: 0; margin-top: 4px; }
   .event-item { flex-wrap: wrap; }
-  .event-item-actions { position: static; margin-left: auto; }
+  .event-item-actions { position: static; flex-direction: row; margin-bottom: 12px; }
   .pagination-btn .btn-arrow-label { display: none; }
 }
 
-@media (max-width: 420px) {
-  .event-form-time-row { grid-template-columns: 1fr; }
+/* ============================================================
+   FINAL MOBILE EVENTS + FOOTER POLISH
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ----------------------------------------------------------
+     EVENTS SECTION
+     ---------------------------------------------------------- */
+
+  .events-list-section {
+    padding: 26px 0;
+  }
+
+  .events-list-heading-row {
+    gap: 10px;
+    margin-bottom: 14px;
+  }
+
+  .events-list-heading-row h2 {
+    font-size: 1.35rem;
+    line-height: 1.25;
+    margin: 0;
+  }
+
+  .events-list-heading-row .btn {
+    width: auto;
+    min-height: 36px;
+    padding: 8px 14px;
+    margin: 0;
+    font-size: 0.78rem;
+    border-radius: 18px;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT CARD GRID
+     ---------------------------------------------------------- */
+
+  .events-cards-grid {
+    grid-template-columns: 1fr;
+    gap: 10px;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT CARD
+     ---------------------------------------------------------- */
+
+  .event-item {
+    width: 100%;
+    box-sizing: border-box;
+
+    padding: 14px;
+    border-width: 1.5px;
+    border-radius: 13px;
+
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.10);
+
+    display: flex;
+    flex-direction: column;
+    gap: 7px;
+  }
+
+  .event-item:hover {
+    transform: none;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.10);
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT TITLE
+     ---------------------------------------------------------- */
+
+  .event-item-title {
+    font-size: 1rem;
+    line-height: 1.25;
+
+    margin: 0;
+    padding-right: 66px;
+
+    font-weight: 700;
+  }
+
+
+  /* ----------------------------------------------------------
+     DATE BADGE
+     ---------------------------------------------------------- */
+
+  .event-date-badge {
+    min-width: 42px;
+    width: 42px;
+    height: 42px;
+
+    padding: 4px;
+    border-radius: 9px;
+
+    flex-shrink: 0;
+  }
+
+  .event-day {
+    font-size: 1rem;
+    line-height: 1;
+    font-weight: 700;
+  }
+
+  .event-month {
+    font-size: 0.58rem;
+    line-height: 1;
+    margin-top: 2px;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT DATE / TIME
+     ---------------------------------------------------------- */
+
+  .event-item-date,
+  .event-item-time {
+    font-size: 0.78rem;
+    line-height: 1.3;
+
+    margin: 0;
+    font-weight: 600;
+  }
+
+  .event-item-date {
+    padding: 5px 8px;
+    border-radius: 7px;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT DESCRIPTION
+     ---------------------------------------------------------- */
+
+  .event-item-desc {
+    font-size: 0.78rem;
+    line-height: 1.45;
+
+    margin: 2px 0 4px;
+
+    display: -webkit-box;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT ACTION BUTTONS
+     ---------------------------------------------------------- */
+
+  .event-item-actions {
+    position: absolute;
+
+    top: 10px;
+    right: 10px;
+
+    display: flex;
+    flex-direction: row;
+
+    gap: 5px;
+
+    margin: 0;
+  }
+
+  .event-item-action-btn {
+    width: 27px;
+    height: 27px;
+
+    min-width: 27px;
+
+    border-width: 1px;
+    border-radius: 7px;
+
+    font-size: 0.72rem;
+
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.12);
+  }
+
+  .event-item-action-btn:hover {
+    transform: none;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT DETAILS
+     ---------------------------------------------------------- */
+
+  .event-details {
+    padding-right: 0;
+    margin-top: 0;
+  }
+
+
+  /* ----------------------------------------------------------
+     EVENT PAGINATION
+     ---------------------------------------------------------- */
+
+  .events-pagination {
+    margin-top: 16px;
+    gap: 7px;
+  }
+
+  .events-pagination .btn,
+  .pagination-btn {
+    min-height: 34px;
+    padding: 7px 12px;
+    margin: 0;
+    font-size: 0.76rem;
+    border-radius: 17px;
+  }
+
+
+  /* ----------------------------------------------------------
+     CALENDAR VIEW TOGGLE
+     ---------------------------------------------------------- */
+
+  .cal-view-toggle {
+    gap: 6px;
+    margin-bottom: 16px;
+  }
+
+  .cal-view-btn {
+    padding: 7px 12px;
+    font-size: 0.72rem;
+    border-width: 1.5px;
+  }
+
+  .cal-view-icon {
+    font-size: 0.85rem;
+  }
+
+
+  /* ----------------------------------------------------------
+     CALENDAR CONTAINER
+     ---------------------------------------------------------- */
+
+  .cal-shell {
+    padding: 12px;
+    border-radius: 13px;
+  }
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+  margin-bottom: 20px;
+  flex-wrap: wrap;
+}
+
+  .calendar-month-title {
+    font-size: 1.05rem;
+    min-width: 110px;
+  }
+
+  .cal-today-row {
+    margin-top: 10px;
+  }
+
+
+  /* ----------------------------------------------------------
+     MOBILE CALENDAR
+     ---------------------------------------------------------- */
+
+  .calendar-day-headers {
+    gap: 2px;
+    margin-bottom: 3px;
+  }
+
+  .calendar-day-headers span {
+    font-size: 0.58rem;
+    letter-spacing: 0;
+    padding: 2px 0;
+  }
+
+  .calendar-grid {
+    gap: 2px;
+  }
+
+  .calendar-cell {
+    min-height: 54px;
+    padding: 3px;
+
+    border-radius: 6px;
+
+    gap: 2px;
+  }
+
+  .calendar-day-num {
+    font-size: 0.68rem;
+  }
+
+  .cal-event-chip {
+    font-size: 0.5rem;
+    padding: 1px 3px;
+    border-radius: 4px;
+  }
+
+  .cal-event-more {
+    font-size: 0.48rem;
+  }
+
+
+  /* ----------------------------------------------------------
+     FOOTER
+     ---------------------------------------------------------- */
+
+  .site-footer {
+    padding: 11px 10px;
+
+    border-top-width: 2px;
+
+    min-height: auto;
+  }
+
+  .site-footer .container {
+    width: 100%;
+    max-width: 100%;
+    padding: 0;
+  }
+
+  .site-footer p {
+    margin: 0;
+
+    font-size: 0.7rem;
+    line-height: 1.35;
+
+    padding: 0 6px;
+
+    max-width: 100%;
+  }
+  
+  .activity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-left: auto;
+    margin-right: auto;
+    margin-bottom: 13px;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+  .events-list-section {
+    padding: 22px 0;
+  }
+
+  .events-list-heading-row h2 {
+    font-size: 1.2rem;
+  }
+
+  .events-list-heading-row .btn {
+    min-height: 33px;
+    padding: 7px 11px;
+    font-size: 0.7rem;
+  }
+
+  .events-cards-grid {
+    gap: 8px;
+  }
+
+  .event-item {
+    padding: 12px;
+    border-radius: 11px;
+  }
+
+  .event-item-title {
+    font-size: 0.92rem;
+    padding-right: 60px;
+  }
+
+  .event-item-date,
+  .event-item-time {
+    font-size: 0.72rem;
+  }
+
+  .event-item-desc {
+    font-size: 0.74rem;
+    line-height: 1.4;
+    -webkit-line-clamp: 2;
+  }
+
+  .event-date-badge {
+    width: 38px;
+    min-width: 38px;
+    height: 38px;
+    border-radius: 8px;
+  }
+
+  .event-day {
+    font-size: 0.9rem;
+  }
+
+  .event-month {
+    font-size: 0.52rem;
+  }
+
+  .event-item-actions {
+    top: 8px;
+    right: 8px;
+    gap: 4px;
+  }
+
+  .event-item-action-btn {
+    width: 25px;
+    height: 25px;
+    min-width: 25px;
+    font-size: 0.65rem;
+  }
+
+  .cal-shell {
+    padding: 9px;
+  }
+
+  .calendar-cell {
+    min-height: 48px;
+  }
+
+  .calendar-day-num {
+    font-size: 0.62rem;
+  }
+
+  .cal-event-chip {
+    font-size: 0.45rem;
+    padding: 1px 2px;
+  }
+
+  .site-footer {
+    padding: 9px 8px;
+  }
+
+  .site-footer p {
+    font-size: 0.64rem;
+    line-height: 1.3;
+    padding: 0 4px;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .event-item {
+    padding: 10px;
+  }
+
+  .event-item-title {
+    font-size: 0.86rem;
+    padding-right: 56px;
+  }
+
+  .event-item-desc {
+    font-size: 0.7rem;
+  }
+
+  .event-date-badge {
+    width: 35px;
+    min-width: 35px;
+    height: 35px;
+  }
+
+  .event-day {
+    font-size: 0.82rem;
+  }
+
+  .event-month {
+    font-size: 0.47rem;
+  }
+
+  .event-item-action-btn {
+    width: 23px;
+    height: 23px;
+    min-width: 23px;
+  }
+
+  .site-footer {
+    padding: 8px 6px;
+  }
+
+  .site-footer p {
+    font-size: 0.6rem;
+  }
+  .admin-bar{
+    font-size:1rem;
+  }
+}
+
+/* ============================================================
+   MOBILE FOOTER + ADMIN BAR — FINAL COMPACT STYLE
+   ============================================================ */
+
+@media (max-width: 768px) {
+
+  /* ----------------------------------------------------------
+     FOOTER
+     ---------------------------------------------------------- */
+
+  .site-footer {
+    padding: 7px 8px !important;
+    min-height: 0 !important;
+    height: auto !important;
+
+    border-top: 2px solid var(--gold);
+
+    text-align: center;
+  }
+
+  .site-footer .container {
+    width: 100% !important;
+    max-width: 100% !important;
+
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .site-footer p,
+  .site-footer span,
+  .site-footer a {
+    font-size: 0.62rem !important;
+    line-height: 1.25 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .site-footer .btn,
+  .site-footer button,
+  .site-footer a.btn {
+    min-height: 26px !important;
+    height: 26px !important;
+
+    padding: 3px 8px !important;
+    margin: 0 !important;
+
+    font-size: 0.6rem !important;
+    line-height: 1 !important;
+
+    border-radius: 13px !important;
+    box-shadow: none !important;
+  }
+
+
+
+  /* ----------------------------------------------------------
+     ADMIN BAR
+     ---------------------------------------------------------- */
+
+  #admin-bar {
+    height: 38px !important;
+
+    padding: 0 10px !important;
+
+    font-size: 0.68rem !important;
+
+    border-top: 1px solid rgba(15, 0, 102, 0.35);
+
+    box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.14);
+
+    gap: 8px;
+  }
+
+  #admin-bar .admin-bar-actions {
+    display: flex;
+    align-items: center;
+
+    gap: 5px;
+  }
+
+  #admin-bar button {
+    min-height: 25px !important;
+    height: 25px !important;
+
+    padding: 3px 8px !important;
+
+    border-width: 1px !important;
+    border-radius: 7px !important;
+
+    font-size: 0.62rem !important;
+    line-height: 1 !important;
+
+    white-space: nowrap;
+  }
+
+  .extras-intro {
+    position: relative;
+    font-size: 1rem;
+    font-weight: bold;
+    text-align: center;
+    max-width: 880px;
+    margin: 0 auto;
+    padding-top: 30px;
+    color: var(--navy);
+    line-height: 1.75;
+  }
+  .about-description{
+    align-items:center;
+    text-align:center;
+    justify-content:center;
+    font-size: 1rem;
+  }
+}
+
+
+/* ============================================================
+   SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 480px) {
+
+  .site-footer {
+    padding: 6px 6px !important;
+    border-top-width: 1.5px;
+  }
+
+  .site-footer p,
+  .site-footer span,
+  .site-footer a {
+    font-size: 0.56rem !important;
+  }
+
+  .site-footer .btn,
+  .site-footer button,
+  .site-footer a.btn {
+    min-height: 24px !important;
+    height: 24px !important;
+
+    padding: 3px 7px !important;
+
+    font-size: 0.56rem !important;
+    border-radius: 12px !important;
+  }
+
+
+  /* Admin bar */
+  #admin-bar {
+    height: 34px !important;
+
+    padding: 0 7px !important;
+
+    font-size: 0.6rem !important;
+  }
+
+  #admin-bar .admin-bar-actions {
+    gap: 4px;
+  }
+
+  #admin-bar button {
+    min-height: 22px !important;
+    height: 22px !important;
+
+    padding: 2px 6px !important;
+
+    font-size: 0.54rem !important;
+    border-radius: 6px !important;
+  }
+}
+
+
+/* ============================================================
+   VERY SMALL PHONES
+   ============================================================ */
+
+@media (max-width: 360px) {
+
+  .site-footer {
+    padding: 5px !important;
+  }
+
+  .site-footer p,
+  .site-footer span,
+  .site-footer a {
+    font-size: 0.52rem !important;
+  }
+
+  .site-footer .btn,
+  .site-footer button,
+  .site-footer a.btn {
+    min-height: 22px !important;
+    height: 22px !important;
+
+    padding: 2px 6px !important;
+
+    font-size: 0.52rem !important;
+  }
+
+
+  /* Admin bar */
+  #admin-bar {
+    height: 31px !important;
+
+    padding: 0 5px !important;
+
+    font-size: 0.54rem !important;
+  }
+
+  #admin-bar .admin-bar-actions {
+    gap: 3px;
+  }
+
+  #admin-bar button {
+    min-height: 20px !important;
+    height: 20px !important;
+
+    padding: 2px 5px !important;
+
+    font-size: 0.5rem !important;
+  }
 }

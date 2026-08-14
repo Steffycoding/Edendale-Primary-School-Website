@@ -4,15 +4,14 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Events Calendar – Edendale Primary School</title>
-
-
-  <link rel="stylesheet" href="../css/main.css">
   <link rel="icon" href="../assets/images/logo.svg" type="image/svg+xml">
   <script>
+    // Set admin mode class before CSS loads to prevent flash
     if (localStorage.getItem('adminToken')) {
       document.documentElement.classList.add('admin-mode');
     }
   </script>
+  <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
 
@@ -179,8 +178,7 @@
       </div>
 
       <div style="display:flex; gap:12px; margin-top:6px;">
-        <button class="btn btn-primary" id="event-modal-save" style="flex:1;" type="button">Save Event</button>
-        <button class="btn btn-outline" id="event-modal-cancel" style="flex:1;" type="button">Cancel</button>
+        <button class="btn btn-primary" id="event-modal-save" type="button">Save Event</button>
       </div>
     </div>
   </div>

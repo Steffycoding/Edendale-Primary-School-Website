@@ -57,7 +57,7 @@ async function seedDb() {
   dbData.content = [
     { id: 1, page: 'home', field_name: 'hero_title', value: 'Edendale Primary School', type: 'text' },
     { id: 2, page: 'home', field_name: 'hero_tagline', value: 'Kennis is lig', type: 'text' },
-    { id: 3, page: 'home', field_name: 'hero_description', value: 'Edendale Primary School has been serving the Manenburg community with dedication, compassion, and a commitment to excellence in education.', type: 'text' },
+    { id: 3, page: 'home', field_name: 'hero_description', value: 'Edendale Primary School has been serving the Manenberg community with dedication, compassion, and a commitment to excellence in education.', type: 'text' },
     { id: 4, page: 'home', field_name: 'hero_cta', value: 'Admissions Enquiry', type: 'text' },
     { id: 44, page: 'home', field_name: 'hero_cta_link', value: 'pages/grades.html', type: 'link' },
     { id: 5, page: 'home', field_name: 'about_title', value: 'A Place of Learning, Growth & Community', type: 'text' },
@@ -65,7 +65,7 @@ async function seedDb() {
     { id: 7, page: 'home', field_name: 'stat_teachers', value: '70+', type: 'text' },
     { id: 8, page: 'home', field_name: 'stat_grades', value: 'Gr R–7', type: 'text' },
     { id: 9, page: 'contact', field_name: 'contact_school_name', value: 'Edendale Primary School', type: 'text' },
-    { id: 10, page: 'contact', field_name: 'contact_address', value: '100 Philippi Ring Road & Manenburg Ave, Manenburg, Cape Town, 7764, South Africa', type: 'text' },
+    { id: 10, page: 'contact', field_name: 'contact_address', value: '100 Philippi Ring Road & Manenberg Ave, Manenberg, Cape Town, 7764, South Africa', type: 'text' },
     { id: 11, page: 'contact', field_name: 'contact_phone', value: '021 800 0111', type: 'text' },
     { id: 12, page: 'contact', field_name: 'contact_mobile', value: '082 829 1000', type: 'text' },
     { id: 13, page: 'contact', field_name: 'contact_email', value: 'edendaleprimary@gmail.com', type: 'text' },

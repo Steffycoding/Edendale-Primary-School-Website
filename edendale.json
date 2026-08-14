@@ -25,7 +25,7 @@
       "id": 3,
       "page": "home",
       "field_name": "hero_description",
-      "value": "Edendale Primary School has been serving the Manenburg community with dedication, compassion, and a commitment to excellence in education.",
+      "value": "Edendale Primary School has been serving the Manenberg community with dedication, compassion, and a commitment to excellence in education.",
       "type": "text"
     },
     {
@@ -74,7 +74,7 @@
       "id": 10,
       "page": "contact",
       "field_name": "contact_address",
-      "value": "100 Philippi Ring Road & Manenburg Ave, Manenburg, Cape Town, 7764, South Africa",
+      "value": "100 Philippi Ring Road & Manenberg Ave, Manenberg, Cape Town, 7764, South Africa",
       "type": "text"
     },
     {
@@ -123,7 +123,63 @@
       "id": 17,
       "page": "home",
       "field_name": "about_description",
-      "value": "<!-- TODO: Replace with full about text -->\n        Edendale Primary School is a public primary school situated in Manenburg in Cape Town.\n        We offer Grades R through 7, providing a safe and nurturing learning environment for every child.",
+      "value": "<!-- TODO: Replace with full about text -->\n        Edendale Primary School is a public primary school situated in Manenberg in Cape Town.\n        We offer Grades R through 7, providing a safe and nurturing learning environment for every child.",
+      "type": "text"
+    },
+    {
+      "id": 18,
+      "page": "grades",
+      "field_name": "grade1_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills</div>",
+      "type": "text"
+    },
+    {
+      "id": 19,
+      "page": "grades",
+      "field_name": "grade2_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills</div>",
+      "type": "text"
+    },
+    {
+      "id": 20,
+      "page": "grades",
+      "field_name": "gradeR_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills</div>",
+      "type": "text"
+    },
+    {
+      "id": 21,
+      "page": "grades",
+      "field_name": "grade3_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills</div>",
+      "type": "text"
+    },
+    {
+      "id": 22,
+      "page": "grades",
+      "field_name": "grade4_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Natural Sciences &amp; Technology,&nbsp;</div><div>Social Sciences,&nbsp;</div><div>Life Skills,&nbsp;</div><div>Creative Arts</div>",
+      "type": "text"
+    },
+    {
+      "id": 23,
+      "page": "grades",
+      "field_name": "grade5_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Natural Sciences &amp; Technology,&nbsp;</div><div>Social Sciences,&nbsp;</div><div>Life Skills,&nbsp;</div><div>Creative Arts</div>",
+      "type": "text"
+    },
+    {
+      "id": 24,
+      "page": "grades",
+      "field_name": "grade7_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Natural Sciences &amp; Technology,&nbsp;</div><div>Social Sciences,&nbsp;</div><div>Life Skills,&nbsp;</div><div>Creative Arts</div>",
+      "type": "text"
+    },
+    {
+      "id": 25,
+      "page": "grades",
+      "field_name": "grade6_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Natural Sciences &amp; Technology,&nbsp;</div><div>Social Sciences,&nbsp;</div><div>Life Skills,&nbsp;</div><div>Creative Arts</div>",
       "type": "text"
     }
   ],
@@ -334,16 +390,6 @@
       "body": null,
       "imageUrl": "/assets/images/grade-r/learning-games.svg",
       "sortOrder": 6
-    },
-    {
-      "id": 18,
-      "page": "extras",
-      "section": "extracurricular",
-      "icon": "🥁",
-      "title": "atgd",
-      "body": "gdzbc",
-      "imageUrl": null,
-      "sortOrder": 4
     }
   ]
 }

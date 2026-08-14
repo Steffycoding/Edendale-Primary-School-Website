@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ClaudeCodeEditorTabs">
+    <option name="activeSessionId" value="812e6cdf-5512-474b-9d54-f6c2489f4bfa" />
+    <option name="openSessionIds">
+      <list>
+        <option value="ad4c4087-2d7f-42e6-b143-f382b6a8d73c" />
+        <option value="812e6cdf-5512-474b-9d54-f6c2489f4bfa" />
+      </list>
+    </option>
+    <option name="sessionPaths">
+      <map>
+        <entry key="812e6cdf-5512-474b-9d54-f6c2489f4bfa" value="/sessions/new" />
+        <entry key="ad4c4087-2d7f-42e6-b143-f382b6a8d73c" value="/sessions/1b151645-c78f-4b50-b1da-d0b8feaafe6a" />
+      </map>
+    </option>
+    <option name="sessionTitles">
+      <map>
+        <entry key="812e6cdf-5512-474b-9d54-f6c2489f4bfa" value="Claude Code" />
+        <entry key="ad4c4087-2d7f-42e6-b143-f382b6a8d73c" value="Fix the contac page , and view calenders , gogle" />
+      </map>
+    </option>
+  </component>
+</project>

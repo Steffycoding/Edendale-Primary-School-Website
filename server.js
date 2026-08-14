@@ -157,13 +157,16 @@ app.get('/api/events', async (req, res) => {
       const prefix = `${year}-${String(month).padStart(2, '0')}`;
       events = events.filter(e => e.event_date.startsWith(prefix));
     }
-    // Transform keys
     events = events.map(e => ({
       id: e.id,
       title: e.title,
       date: e.event_date,
-      time: e.event_time,
-      description: e.description
+      startTime: e.start_time || e.event_time || '',
+      endTime: e.end_time || '',
+      allDay: !!e.all_day,
+      isHoliday: !!e.is_holiday,
+      isCustom: e.is_custom !== false,
+      description: e.description || ''
     }));
     res.json(events);
   } catch (error) {
@@ -175,17 +178,27 @@ app.post('/api/events', async (req, res) => {
   if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
-    const { title, date, time, description } = req.body;
+    const { title, date, startTime, endTime, allDay, isHoliday, description } = req.body;
+    if (!title || !date) return res.status(400).json({ error: 'title and date are required' });
     const newEvent = {
       id: db.events.length > 0 ? Math.max(...db.events.map(e => e.id)) + 1 : 1,
       title,
       event_date: date,
-      event_time: time,
-      description
+      start_time: startTime || '',
+      end_time: endTime || '',
+      all_day: !!allDay,
+      is_holiday: !!isHoliday,
+      is_custom: true,
+      description: description || ''
     };
     db.events.push(newEvent);
     await saveDb();
-    res.json({ id: newEvent.id });
+    res.status(201).json({
+      id: newEvent.id, title: newEvent.title, date: newEvent.event_date,
+      startTime: newEvent.start_time, endTime: newEvent.end_time,
+      allDay: newEvent.all_day, isHoliday: newEvent.is_holiday,
+      isCustom: newEvent.is_custom, description: newEvent.description
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -196,18 +209,26 @@ app.put('/api/events/:id', async (req, res) => {
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
-    const { title, date, time, description } = req.body;
-    
+    const { title, date, startTime, endTime, allDay, isHoliday, description } = req.body;
+
     const event = db.events.find(e => e.id === id);
     if (!event) return res.status(404).json({ error: 'Not found' });
 
-    event.title = title;
-    event.event_date = date;
-    event.event_time = time;
-    event.description = description;
+    if (title !== undefined) event.title = title;
+    if (date !== undefined) event.event_date = date;
+    if (startTime !== undefined) event.start_time = startTime;
+    if (endTime !== undefined) event.end_time = endTime;
+    if (allDay !== undefined) event.all_day = !!allDay;
+    if (isHoliday !== undefined) event.is_holiday = !!isHoliday;
+    if (description !== undefined) event.description = description;
 
     await saveDb();
-    res.json({ success: true });
+    res.json({
+      id: event.id, title: event.title, date: event.event_date,
+      startTime: event.start_time, endTime: event.end_time,
+      allDay: event.all_day, isHoliday: event.is_holiday,
+      isCustom: event.is_custom, description: event.description
+    });
   } catch (error) {
     res.status(500).json({ error: error.message });
   }

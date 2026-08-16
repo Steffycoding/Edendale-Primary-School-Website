@@ -15,6 +15,9 @@ async function checkAdminStatus() {
     const adminBar = document.getElementById('admin-bar');
     if (adminBar) adminBar.classList.add('active');
     notifyModeChange();
+    
+    // Save initial content state for undo functionality
+    saveInitialContentState();
   }
   
   // Verify with server and revert if token is invalid
@@ -36,6 +39,49 @@ async function checkAdminStatus() {
     // Don't remove admin mode on network errors - trust the local token
     console.error('Error checking admin status:', err);
   }
+}
+
+function saveInitialContentState() {
+  let page = window.location.pathname.split('/').pop().replace('.html', '');
+  if (!page || page === 'index') page = 'home';
+  
+  const initialState = {};
+  
+  // Save all editable fields
+  document.querySelectorAll('[data-editable]').forEach(el => {
+    const field = el.dataset.field;
+    if (field) {
+      if (el.dataset.type === 'image') {
+        initialState[field] = el.getAttribute('src');
+      } else if (el.dataset.type === 'link') {
+        initialState[field] = el.getAttribute('href');
+      } else {
+        initialState[field] = el.innerHTML;
+      }
+    }
+  });
+  
+  // Save card data for about page
+  if (page === 'about') {
+    initialState.cardData = collectAboutPageCardData();
+  }
+  
+  localStorage.setItem(`initialContent_${page}`, JSON.stringify(initialState));
+}
+
+function updateInitialContentState() {
+  let page = window.location.pathname.split('/').pop().replace('.html', '');
+  if (!page || page === 'index') page = 'home';
+  
+  // Get existing state
+  const existingState = JSON.parse(localStorage.getItem(`initialContent_${page}`) || '{}');
+  
+  // Update with current card data if about page
+  if (page === 'about') {
+    existingState.cardData = collectAboutPageCardData();
+  }
+  
+  localStorage.setItem(`initialContent_${page}`, JSON.stringify(existingState));
 }
 
 /** Lets cards.js attach or drop its controls when edit mode is toggled. */
@@ -66,6 +112,10 @@ async function exitAdminMode() {
 function handleEditClick(e) {
   if (!isAdminMode) return;
   e.preventDefault();
+  
+  // Close any existing edit popup before opening a new one
+  hideEditPopup();
+  
   currentEditTarget = e.currentTarget;
   const isImage = currentEditTarget.dataset.type === 'image';
   const isLink = currentEditTarget.dataset.type === 'link';
@@ -115,26 +165,49 @@ function handleEditClick(e) {
  * Places the popup next to the element being edited.
  *
  * #edit-popup is position:fixed, so we use viewport coordinates.
- * A scroll listener updates position to keep it with the element.
+ * Keeps position stable during scroll and avoids navbar/footer overlap.
  */
 function positionEditPopup(popup, target) {
   const rect = target.getBoundingClientRect();
-  const margin = 8;
+  const margin = 12;
+
+  // Get navbar and footer heights to avoid overlap
+  const navbar = document.querySelector('.navbar');
+  const footer = document.querySelector('footer');
+  const navbarHeight = navbar ? navbar.offsetHeight : 0;
+  const footerHeight = footer ? footer.offsetHeight : 0;
 
   // Measured after .active has made it displayable, or both are 0.
   const width = popup.offsetWidth;
   const height = popup.offsetHeight;
 
-  // Prefer just below the element; flip above when that would overflow.
-  let top = rect.bottom + margin;
-  if (top + height > window.innerHeight - margin) {
-    top = rect.top - height - margin;
-  }
-  // Still no room either way (element taller than the viewport) — pin it.
-  top = Math.max(margin, Math.min(top, window.innerHeight - height - margin));
+  // Safe vertical area (between navbar and footer)
+  const safeTop = navbarHeight + margin;
+  const safeBottom = window.innerHeight - footerHeight - margin;
+  const safeHeight = safeBottom - safeTop;
 
-  const left = Math.max(margin,
-      Math.min(rect.left, window.innerWidth - width - margin));
+  // Prefer to the right of the element; flip to left when that would overflow.
+  let left = rect.right + margin;
+  if (left + width > window.innerWidth - margin) {
+    left = rect.left - width - margin;
+  }
+  // Still no room either way (element wider than the viewport) — pin it.
+  left = Math.max(margin, Math.min(left, window.innerWidth - width - margin));
+
+  // Vertically center with the element, but keep within safe area
+  let top = rect.top + (rect.height / 2) - (height / 2);
+  
+  // Ensure it doesn't overlap navbar
+  if (top < safeTop) {
+    top = safeTop;
+  }
+  // Ensure it doesn't overlap footer
+  if (top + height > safeBottom) {
+    top = safeBottom - height;
+  }
+  
+  // Final safety check
+  top = Math.max(safeTop, Math.min(top, safeBottom - height));
 
   popup.style.top = top + 'px';
   popup.style.left = left + 'px';
@@ -239,7 +312,15 @@ function saveEdit() {
     currentEditTarget.innerHTML = newValue;
   }
   
-  pendingChanges[fieldName] = newValue;
+  if (fieldName) {
+    pendingChanges[fieldName] = newValue;
+    
+    // If this is a new card field (contains timestamp), update initial state
+    if (fieldName.includes('new_')) {
+      updateInitialContentState();
+    }
+  }
+  
   hideEditPopup();
 }
 
@@ -272,6 +353,12 @@ function undoChanges() {
          }
        }
     }
+    
+    // If this is the about page, also revert card structure
+    if (page === 'about' && data.cardData) {
+      revertAboutPageCards(data.cardData);
+    }
+    
     pendingChanges = {};
     alert('Unsaved changes reverted.');
   } else {
@@ -280,10 +367,92 @@ function undoChanges() {
   }
 }
 
+function revertAboutPageCards(cardData) {
+  // Revert stats cards
+  const statsGrid = document.querySelector('.stats-grid');
+  if (statsGrid && cardData.stats) {
+    // Remove all current stat boxes except add button
+    statsGrid.querySelectorAll('.stat-box:not(.add-card-btn)').forEach(card => card.remove());
+    
+    // Recreate stat cards from saved data
+    cardData.stats.forEach(stat => {
+      const newCard = document.createElement('div');
+      newCard.className = 'stat-box';
+      newCard.innerHTML = `
+        <button class="remove-card-btn admin-only">×</button>
+        <div class="stat-number" data-editable data-field="${stat.numberField}">${stat.number}</div>
+        <div class="stat-label" data-editable data-field="${stat.labelField}">${stat.label}</div>
+      `;
+      statsGrid.insertBefore(newCard, statsGrid.querySelector('.add-card-btn'));
+      
+      // Attach edit handlers
+      newCard.querySelectorAll('[data-editable]').forEach(el => {
+        el.addEventListener('click', handleEditClick);
+      });
+    });
+  }
+  
+  // Revert mission cards
+  const missionGrid = document.querySelector('.mission-grid');
+  if (missionGrid && cardData.mission) {
+    missionGrid.querySelectorAll('.card:not(.add-card-btn)').forEach(card => card.remove());
+    
+    cardData.mission.forEach(mission => {
+      const newCard = document.createElement('div');
+      newCard.className = 'card mission-card';
+      newCard.innerHTML = `
+        <button class="remove-card-btn admin-only">×</button>
+        <div class="card-body">
+          <h3 style="text-align:center;" data-editable data-field="${mission.titleField}">${mission.title}</h3>
+          <p style="text-align:center;" data-editable data-field="${mission.descField}">${mission.desc}</p>
+        </div>
+      `;
+      missionGrid.insertBefore(newCard, missionGrid.querySelector('.add-card-btn'));
+      
+      newCard.querySelectorAll('[data-editable]').forEach(el => {
+        el.addEventListener('click', handleEditClick);
+      });
+    });
+  }
+  
+  // Revert values cards
+  const valuesGrid = document.querySelector('.why-grid');
+  if (valuesGrid && cardData.values) {
+    valuesGrid.querySelectorAll('.card:not(.add-card-btn)').forEach(card => card.remove());
+    
+    cardData.values.forEach(value => {
+      const newCard = document.createElement('div');
+      newCard.className = 'card why-card';
+      newCard.innerHTML = `
+        <button class="remove-card-btn admin-only">×</button>
+        <div class="card-body">
+          <h4 style="text-align:center;" data-editable data-field="${value.titleField}">${value.title}</h4>
+          <p style="text-align:center;" data-editable data-field="${value.descField}">${value.desc}</p>
+        </div>
+      `;
+      valuesGrid.insertBefore(newCard, valuesGrid.querySelector('.add-card-btn'));
+      
+      newCard.querySelectorAll('[data-editable]').forEach(el => {
+        el.addEventListener('click', handleEditClick);
+      });
+    });
+  }
+}
+
 function hideEditPopup() {
   const editPopup = document.getElementById('edit-popup');
   if (editPopup) editPopup.classList.remove('active');
   currentEditTarget = null;
+  
+  // Also close card editor if it's open
+  const cardEditor = document.getElementById('card-editor');
+  if (cardEditor && cardEditor.classList.contains('active')) {
+    if (typeof closeCardEditor === 'function') {
+      closeCardEditor();
+    } else {
+      cardEditor.classList.remove('active');
+    }
+  }
 }
 
 async function saveAllChanges() {
@@ -294,12 +463,15 @@ async function saveAllChanges() {
   let page = window.location.pathname.split('/').pop().replace('.html', '');
   if (!page || page === 'index') page = 'home';
   
+  // Collect all current card data including new cards
+  const cardData = collectAboutPageCardData();
+  
   try {
     const token = localStorage.getItem('adminToken');
     const response = await fetch('/api/content', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ page, changes: pendingChanges })
+      body: JSON.stringify({ page, changes: pendingChanges, cardData })
     });
     
     if (response.ok) {
@@ -311,9 +483,62 @@ async function saveAllChanges() {
   } catch (err) {
     console.warn('[Admin] Backend not reachable — changes logged to console only.');
     console.table(pendingChanges);
+    console.log('Card Data:', cardData);
     alert('(Dev mode) Changes logged to console. Connect backend to persist.');
     pendingChanges = {};
   }
+}
+
+function collectAboutPageCardData() {
+  const cardData = {
+    stats: [],
+    mission: [],
+    values: []
+  };
+  
+  // Collect stats cards
+  document.querySelectorAll('.stats-grid .stat-box:not(.add-card-btn)').forEach(card => {
+    const number = card.querySelector('.stat-number');
+    const label = card.querySelector('.stat-label');
+    if (number && label) {
+      cardData.stats.push({
+        number: number.innerHTML,
+        numberField: number.dataset.field,
+        label: label.innerHTML,
+        labelField: label.dataset.field
+      });
+    }
+  });
+  
+  // Collect mission cards
+  document.querySelectorAll('.mission-grid .card:not(.add-card-btn)').forEach(card => {
+    const title = card.querySelector('h3');
+    const desc = card.querySelector('p');
+    if (title && desc) {
+      cardData.mission.push({
+        title: title.innerHTML,
+        titleField: title.dataset.field,
+        desc: desc.innerHTML,
+        descField: desc.dataset.field
+      });
+    }
+  });
+  
+  // Collect values cards
+  document.querySelectorAll('.why-grid .card:not(.add-card-btn)').forEach(card => {
+    const title = card.querySelector('h4');
+    const desc = card.querySelector('p');
+    if (title && desc) {
+      cardData.values.push({
+        title: title.innerHTML,
+        titleField: title.dataset.field,
+        desc: desc.innerHTML,
+        descField: desc.dataset.field
+      });
+    }
+  });
+  
+  return cardData;
 }
 
 document.addEventListener('DOMContentLoaded', () => {
@@ -360,7 +585,104 @@ document.addEventListener('DOMContentLoaded', () => {
     }
   });
   
+  // Close edit popup on scroll to prevent it from following content
+  let scrollTimeout;
+  window.addEventListener('scroll', () => {
+    const editPopup = document.getElementById('edit-popup');
+    if (editPopup && editPopup.classList.contains('active')) {
+      clearTimeout(scrollTimeout);
+      scrollTimeout = setTimeout(() => {
+        hideEditPopup();
+      }, 150); // Small delay to avoid closing on minor scrolls
+    }
+  });
+  
   document.querySelectorAll('[data-editable]').forEach(el => {
     el.addEventListener('click', handleEditClick);
   });
+  
+  // About page card management
+  initAboutPageCardManagement();
 });
+
+/* ══════════════════════════════════════════
+   ABOUT PAGE CARD MANAGEMENT
+   ══════════════════════════════════════════ */
+
+function initAboutPageCardManagement() {
+  // Handle remove card buttons
+  document.addEventListener('click', function(e) {
+    if (e.target.classList.contains('remove-card-btn')) {
+      e.preventDefault();
+      e.stopPropagation();
+      const card = e.target.closest('.card, .stat-box');
+      if (card && !card.classList.contains('add-card-btn')) {
+        if (confirm('Are you sure you want to delete this card?')) {
+          // Remove the editable fields from pending changes
+          card.querySelectorAll('[data-editable]').forEach(el => {
+            const fieldName = el.dataset.field;
+            if (fieldName && pendingChanges[fieldName]) {
+              delete pendingChanges[fieldName];
+            }
+          });
+          card.remove();
+          
+          // Update initial state to reflect the removal
+          updateInitialContentState();
+        }
+      }
+    }
+  });
+  
+  // Handle add card buttons for about page
+  document.querySelectorAll('.add-card-btn[data-section]').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      e.preventDefault();
+      e.stopPropagation();
+      const section = this.dataset.section;
+      const grid = this.parentElement;
+      
+      // Create a new card based on section type, preserving exact structure
+      const newCard = document.createElement('div');
+      const timestamp = Date.now();
+      
+      if (section === 'stats') {
+        newCard.className = 'stat-box';
+        newCard.innerHTML = `
+          <button class="remove-card-btn admin-only">×</button>
+          <div class="stat-number" data-editable data-field="about_stat_new_${timestamp}">0</div>
+          <div class="stat-label" data-editable data-field="about_stat_new_${timestamp}_label">Label</div>
+        `;
+      } else if (section === 'mission') {
+        newCard.className = 'card mission-card';
+        newCard.innerHTML = `
+          <button class="remove-card-btn admin-only">×</button>
+          <div class="card-body">
+            <h3 style="text-align:center;" data-editable data-field="about_mission_new_${timestamp}_title">New Card</h3>
+            <p style="text-align:center;" data-editable data-field="about_mission_new_${timestamp}_desc">Add your content here...</p>
+          </div>
+        `;
+      } else if (section === 'values') {
+        newCard.className = 'card why-card';
+        newCard.innerHTML = `
+          <button class="remove-card-btn admin-only">×</button>
+          <div class="card-body">
+            <h4 style="text-align:center;" data-editable data-field="about_values_new_${timestamp}_title">New Card</h4>
+            <p style="text-align:center;" data-editable data-field="about_values_new_${timestamp}_desc">Add your content here...</p>
+          </div>
+        `;
+      }
+      
+      // Insert before the add button
+      grid.insertBefore(newCard, this);
+      
+      // Attach edit handlers to new card's editable elements
+      newCard.querySelectorAll('[data-editable]').forEach(el => {
+        el.addEventListener('click', handleEditClick);
+      });
+      
+      // Update initial state to include the new card
+      updateInitialContentState();
+    });
+  });
+}

@@ -84,6 +84,12 @@ function openCardEditor(card, section) {
   const editor = document.getElementById('card-editor');
   if (!editor) return;
 
+  // Close any existing edit popup before opening card editor
+  const editPopup = document.getElementById('edit-popup');
+  if (editPopup && editPopup.classList.contains('active')) {
+    editPopup.classList.remove('active');
+  }
+
   editorCard     = card;
   editorSection  = section;
   editorImageUrl = card ? card.imageUrl : null;
@@ -465,5 +471,17 @@ document.addEventListener('keydown', e => {
     closeRemoveConfirm();
   } else if (document.getElementById('card-editor')?.classList.contains('active')) {
     closeCardEditor();
+  }
+});
+
+// Close card editor on scroll to prevent it from following content
+let cardEditorScrollTimeout;
+window.addEventListener('scroll', () => {
+  const cardEditor = document.getElementById('card-editor');
+  if (cardEditor && cardEditor.classList.contains('active')) {
+    clearTimeout(cardEditorScrollTimeout);
+    cardEditorScrollTimeout = setTimeout(() => {
+      closeCardEditor();
+    }, 150); // Small delay to avoid closing on minor scrolls
   }
 });

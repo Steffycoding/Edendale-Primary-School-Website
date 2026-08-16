@@ -17,8 +17,16 @@ document.getElementById('admin-login-btn').addEventListener('click', async () =>
     if (res.ok) {
       const json = await res.json();
       if (json.token) localStorage.setItem('adminToken', json.token);
-      document.getElementById('login-box').style.display = 'none';
-      document.getElementById('change-password-box').style.display = 'block';
+      
+      // Check if there's a redirect URL stored - if so, skip password change and redirect
+      const redirectUrl = sessionStorage.getItem('adminRedirectUrl');
+      if (redirectUrl) {
+        sessionStorage.removeItem('adminRedirectUrl');
+        window.location.href = redirectUrl;
+      } else {
+        document.getElementById('login-box').style.display = 'none';
+        document.getElementById('change-password-box').style.display = 'block';
+      }
     } else {
       errorEl.textContent = 'Invalid credentials';
     }
@@ -58,7 +66,13 @@ document.getElementById('show-confirm-password').addEventListener('change', func
 
 
 document.getElementById('next-time-btn').addEventListener('click', () => {
-  window.location.href = '/';
+  const redirectUrl = sessionStorage.getItem('adminRedirectUrl');
+  if (redirectUrl) {
+    sessionStorage.removeItem('adminRedirectUrl');
+    window.location.href = redirectUrl;
+  } else {
+    window.location.href = '/';
+  }
 });
 
 document.getElementById('save-password-btn').addEventListener('click', async () => {
@@ -95,7 +109,13 @@ document.getElementById('save-password-btn').addEventListener('click', async () 
     
     if (res.ok) {
       alert('Password updated successfully');
-      window.location.href = '/';
+      const redirectUrl = sessionStorage.getItem('adminRedirectUrl');
+      if (redirectUrl) {
+        sessionStorage.removeItem('adminRedirectUrl');
+        window.location.href = redirectUrl;
+      } else {
+        window.location.href = '/';
+      }
     } else {
       const json = await res.json();
       errorEl.textContent = json.error || 'Failed to update password';

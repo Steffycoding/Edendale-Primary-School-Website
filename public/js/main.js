@@ -94,7 +94,17 @@ if (!currentPage || currentPage === 'index') currentPage = 'home';
 loadPageContent(currentPage);
 
 /* ══════════════════════════════════════════
-   5. MOBILE MENU TOGGLE
+   5. ADMIN LOGIN REDIRECT
+   ══════════════════════════════════════════ */
+const adminToggleBtn = document.getElementById('admin-toggle-btn');
+if (adminToggleBtn) {
+  adminToggleBtn.addEventListener('click', function(e) {
+    sessionStorage.setItem('adminRedirectUrl', window.location.href);
+  });
+}
+
+/* ══════════════════════════════════════════
+   6. MOBILE MENU TOGGLE
    ══════════════════════════════════════════ */
 document.addEventListener('DOMContentLoaded', () => {
   const mobileMenuBtn = document.querySelector('.mobile-menu-btn');

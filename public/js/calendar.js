@@ -59,6 +59,8 @@ const todayBtn = document.getElementById('cal-today-btn');
 const eventsList = document.getElementById('events-list');
 const eventsListTitle = document.getElementById('events-list-title');
 const addEventBtn = document.getElementById('add-event-btn');
+const viewAllEventsBtn = document.getElementById('view-all-events-btn');
+const viewSameDayBtn = document.getElementById('view-same-day-btn');
 
 const paginationControls = document.getElementById('pagination-controls');
 const pagePrevBtn = document.getElementById('page-prev-btn');
@@ -99,9 +101,60 @@ function seedEvents() {
   return [
     { id: 1, title: 'Term 2 Begins', description: 'Start of second school term.', date: iso(y, m, 7), startTime: '07:30', endTime: '', allDay: false, isHoliday: false, isCustom: true },
     { id: 2, title: 'Parents Meeting', description: 'Parent-teacher interviews.', date: iso(y, m, 15), startTime: '14:00', endTime: '16:00', allDay: false, isHoliday: false, isCustom: true },
-    { id: 3, title: 'Sports Day', description: 'Annual inter-grade sports day.', date: iso(y, m, 22), startTime: '09:00', endTime: '13:00', allDay: false, isHoliday: false, isCustom: true },
-    { id: 4, title: 'Public Holiday', description: 'School closed for a public holiday.', date: iso(y, m, 1), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false }
+    { id: 3, title: 'Sports Day', description: 'Annual inter-grade sports day.', date: iso(y, m, 22), startTime: '09:00', endTime: '13:00', allDay: false, isHoliday: false, isCustom: true }
   ];
+}
+
+/* ══════════════════════════════════════════
+   SOUTH AFRICAN PUBLIC HOLIDAYS
+   Automatically generated for the current year
+   ══════════════════════════════════════════ */
+function getPublicHolidays(year) {
+  const holidays = [];
+  const iso = (mo, d) => `${year}-${pad(mo)}-${pad(d)}`;
+
+  // Fixed date holidays
+  holidays.push({ id: `ph_${year}_0101`, title: 'New Year\'s Day', description: 'Public Holiday', date: iso(1, 1), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_0321`, title: 'Human Rights Day', description: 'Public Holiday', date: iso(3, 21), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_0427`, title: 'Freedom Day', description: 'Public Holiday', date: iso(4, 27), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_0501`, title: 'Workers\' Day', description: 'Public Holiday', date: iso(5, 1), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_0616`, title: 'Youth Day', description: 'Public Holiday', date: iso(6, 16), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_0809`, title: 'National Women\'s Day', description: 'Public Holiday', date: iso(8, 9), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_0924`, title: 'Heritage Day', description: 'Public Holiday', date: iso(9, 24), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_1216`, title: 'Day of Reconciliation', description: 'Public Holiday', date: iso(12, 16), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_1225`, title: 'Christmas Day', description: 'Public Holiday', date: iso(12, 25), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_1226`, title: 'Day of Goodwill', description: 'Public Holiday', date: iso(12, 26), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+
+  // Calculate Easter and related holidays
+  const easter = getEasterDate(year);
+  const goodFriday = new Date(easter);
+  goodFriday.setDate(goodFriday.getDate() - 2);
+  const familyDay = new Date(easter);
+  familyDay.setDate(familyDay.getDate() + 1);
+
+  holidays.push({ id: `ph_${year}_goodfriday`, title: 'Good Friday', description: 'Public Holiday', date: isoDate(goodFriday), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+  holidays.push({ id: `ph_${year}_familyday`, title: 'Family Day', description: 'Public Holiday', date: isoDate(familyDay), startTime: '', endTime: '', allDay: true, isHoliday: true, isCustom: false });
+
+  return holidays;
+}
+
+// Calculate Easter Sunday using the Computus algorithm
+function getEasterDate(year) {
+  const a = year % 19;
+  const b = Math.floor(year / 100);
+  const c = year % 100;
+  const d = Math.floor(b / 4);
+  const e = b % 4;
+  const f = Math.floor((b + 8) / 25);
+  const g = Math.floor((b - f + 1) / 3);
+  const h = (19 * a + b - d - g + 15) % 30;
+  const i = Math.floor(c / 4);
+  const k = c % 4;
+  const l = (32 + 2 * e + 2 * i - h - k) % 7;
+  const m = Math.floor((a + 11 * h + 22 * l) / 451);
+  const month = Math.floor((h + l - 7 * m + 114) / 31);
+  const day = ((h + l - 7 * m + 114) % 31) + 1;
+  return new Date(year, month - 1, day);
 }
 
 /* ══════════════════════════════════════════
@@ -127,6 +180,15 @@ document.addEventListener('DOMContentLoaded', () => {
   if (todayBtn) todayBtn.addEventListener('click', jumpToToday);
 
   if (addEventBtn) addEventBtn.addEventListener('click', () => openEventModal());
+  if (viewAllEventsBtn) viewAllEventsBtn.addEventListener('click', () => {
+    selectedDate = null;
+    eventPage = 0;
+    renderAll();
+    updateFilterButtons();
+  });
+  if (viewSameDayBtn) viewSameDayBtn.addEventListener('click', () => {
+    // Show same day events button is handled dynamically based on selected date
+  });
   if (eventModalSave) eventModalSave.addEventListener('click', saveEvent);
   if (eventModalCancel) eventModalCancel.addEventListener('click', closeEventModal);
   if (eventModalClose) eventModalClose.addEventListener('click', closeEventModal);
@@ -166,6 +228,17 @@ function updateAddButtonVisibility() {
   addEventBtn.style.display = document.body.classList.contains('admin-mode') ? 'inline-block' : 'none';
 }
 
+function updateFilterButtons() {
+  if (!viewAllEventsBtn || !viewSameDayBtn) return;
+  if (selectedDate) {
+    viewAllEventsBtn.style.display = 'inline-block';
+    viewSameDayBtn.style.display = 'none';
+  } else {
+    viewAllEventsBtn.style.display = 'none';
+    viewSameDayBtn.style.display = 'none';
+  }
+}
+
 /* ══════════════════════════════════════════
    VIEW SWITCHING
    ══════════════════════════════════════════ */
@@ -199,13 +272,25 @@ async function fetchEvents() {
     const response = await fetch(`/api/events`, { credentials: 'include' });
     if (!response.ok) throw new Error('Failed to fetch');
     events = await response.json();
-    saveLocal();
   } catch (err) {
     console.warn('[Calendar] API not reachable — using locally stored / seed events.');
     const stored = loadLocal();
     events = stored && stored.length ? stored : seedEvents();
-    if (!stored) saveLocal();
   }
+
+  // Always add public holidays for the current year
+  const publicHolidays = getPublicHolidays(currentYear);
+  const holidayIds = new Set(publicHolidays.map(h => h.id));
+
+  // Remove old public holidays and add current year's
+  events = events.filter(e => !e.isHoliday || holidayIds.has(e.id));
+  publicHolidays.forEach(holiday => {
+    if (!events.some(e => e.id === holiday.id)) {
+      events.push(holiday);
+    }
+  });
+
+  saveLocal();
 }
 
 function loadLocal() {
@@ -228,6 +313,7 @@ function saveLocal() {
    ══════════════════════════════════════════ */
 function renderAll() {
   updateAddButtonVisibility();
+  updateFilterButtons();
   if (currentView === 'monthly') {
     renderMonthly();
   } else {
@@ -367,6 +453,7 @@ function selectDay(dateStr) {
   eventPage = 0;
   if (currentView === 'monthly') renderMonthly(); else renderWeekly();
   renderEventsList();
+  updateFilterButtons();
   if (!wasSelected) openDayModal(dateStr);
 }
 
@@ -491,7 +578,7 @@ function buildEventCard(ev, isAdmin) {
       <span class="event-month">${MONTH_SHORT[d.getMonth()]}</span>
     </div>
     <div class="event-details">
-      ${ev.isHoliday ? `<span class="event-holiday-badge">🏛 Public Holiday</span>` : ''}
+      ${ev.isHoliday ? `<span class="event-holiday-badge">🏛 Public Holiday</span>` : `<span class="event-school-badge">🎓 School Event</span>`}
       <h4 class="event-title">${escapeHtml(ev.title)}</h4>
       <p class="event-description">${escapeHtml(ev.description || '')}</p>
       ${!ev.allDay && (ev.startTime || ev.endTime)
@@ -508,17 +595,7 @@ function buildEventCard(ev, isAdmin) {
   }
 
   card.addEventListener('click', () => {
-    selectedDate = ev.date;
-    eventPage = 0;
-    if (currentView === 'monthly') {
-      currentMonth = d.getMonth();
-      currentYear = d.getFullYear();
-      renderMonthly();
-    } else {
-      weekOffset = Math.round((startOfWeek(d) - startOfWeek(today)) / (7 * 86400000));
-      renderWeekly();
-    }
-    renderEventsList();
+    openDayModal(ev.date);
   });
 
   return card;
@@ -563,6 +640,21 @@ function openEventModal(ev = null, prefillDate = null) {
   if (!document.body.classList.contains('admin-mode')) return;
 
   closeDayModal(); // avoid stacking the day-info modal underneath the edit form
+  
+  // Close other admin modals if they're open
+  const editPopup = document.getElementById('edit-popup');
+  if (editPopup && editPopup.classList.contains('active')) {
+    editPopup.classList.remove('active');
+  }
+  
+  const cardEditor = document.getElementById('card-editor');
+  if (cardEditor && cardEditor.classList.contains('active')) {
+    if (typeof closeCardEditor === 'function') {
+      closeCardEditor();
+    } else {
+      cardEditor.classList.remove('active');
+    }
+  }
 
   if (ev) {
     eventModalHeading.textContent = '✏️ Edit Event';
@@ -760,3 +852,14 @@ window.editEvent = (id) => {
   if (ev) openEventModal(ev);
 };
 window.deleteEvent = deleteEvent;
+
+// Close event modal on scroll to prevent it from following content
+let eventModalScrollTimeout;
+window.addEventListener('scroll', () => {
+  if (eventModal && eventModal.style.display === 'flex') {
+    clearTimeout(eventModalScrollTimeout);
+    eventModalScrollTimeout = setTimeout(() => {
+      closeEventModal();
+    }, 150); // Small delay to avoid closing on minor scrolls
+  }
+});

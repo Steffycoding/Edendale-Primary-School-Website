@@ -67,14 +67,14 @@
       "id": 9,
       "page": "contact",
       "field_name": "contact_school_name",
-      "value": "Edendale Primary School",
+      "value": "Edendale Primary School<br>",
       "type": "text"
     },
     {
       "id": 10,
       "page": "contact",
       "field_name": "contact_address",
-      "value": "100 Philippi Ring Road &amp; Manenberg Ave,<div>Manenberg,&nbsp;</div><div>Cape Town,</div><div>&nbsp;7764,&nbsp;</div><div>South Africa</div>",
+      "value": "100 Philippi Ring Road &amp; Manenberg Ave<br>Manenberg, Cape Town, 7764<br>South Africa",
       "type": "text"
     },
     {
@@ -106,6 +106,97 @@
       "type": "text"
     },
     {
+      "id": 78,
+      "page": "contact",
+      "field_name": "contact_page_title",
+      "value": "Contact & Donors",
+      "type": "text"
+    },
+    {
+      "id": 79,
+      "page": "contact",
+      "field_name": "contact_school_name_label",
+      "value": "🔵 School:",
+      "type": "text"
+    },
+    {
+      "id": 80,
+      "page": "contact",
+      "field_name": "contact_address_label",
+      "value": "📍 Address:",
+      "type": "text"
+    },
+    {
+      "id": 81,
+      "page": "contact",
+      "field_name": "contact_phone_label",
+      "value": "📞 Phone / Office:",
+      "type": "text"
+    },
+    {
+      "id": 82,
+      "page": "contact",
+      "field_name": "contact_mobile_label",
+      "value": "📱 Alternate / Mobile:",
+      "type": "text"
+    },
+    {
+      "id": 83,
+      "page": "contact",
+      "field_name": "contact_email_label",
+      "value": "✉ Email:",
+      "type": "text"
+    },
+    {
+      "id": 84,
+      "page": "contact",
+      "field_name": "contact_emis_label",
+      "value": "📋 EMIS No.:",
+      "type": "text"
+    },
+    {
+      "id": 85,
+      "page": "contact",
+      "field_name": "support_cta_title",
+      "value": "Interested in supporting our learners?",
+      "type": "text"
+    },
+    {
+      "id": 86,
+      "page": "contact",
+      "field_name": "support_opt1",
+      "value": "Sponsor resources",
+      "type": "text"
+    },
+    {
+      "id": 87,
+      "page": "contact",
+      "field_name": "support_opt2",
+      "value": "Volunteer time",
+      "type": "text"
+    },
+    {
+      "id": 88,
+      "page": "contact",
+      "field_name": "support_opt3",
+      "value": "Donate books",
+      "type": "text"
+    },
+    {
+      "id": 89,
+      "page": "contact",
+      "field_name": "support_opt4",
+      "value": "Partner with the school",
+      "type": "text"
+    },
+    {
+      "id": 90,
+      "page": "contact",
+      "field_name": "contact_map_title",
+      "value": "Find Us",
+      "type": "text"
+    },
+    {
       "id": 15,
       "page": "home",
       "field_name": "hero_cta_link",
@@ -118,6 +209,13 @@
       "field_name": "admissions_cta_link",
       "value": "https://wcedonline.westerncape.gov.za/admissions",
       "type": "link"
+    },
+    {
+      "id": 52,
+      "page": "grades",
+      "field_name": "admissions_cta_text",
+      "value": "Come to the school in person or:",
+      "type": "text"
     },
     {
       "id": 17,
@@ -333,7 +431,7 @@
       "id": 47,
       "page": "about",
       "field_name": "card_structure",
-      "value": "{\"stats\":[{\"number\":\"400+\",\"numberField\":\"about_stat_learners\",\"label\":\"Learners\",\"labelField\":\"about_stat_learners_label\"},{\"number\":\"70+\",\"numberField\":\"about_stat_teachers\",\"label\":\"Teachers\",\"labelField\":\"about_stat_teachers_label\"},{\"number\":\"Gr R–7\",\"numberField\":\"about_stat_grades\",\"label\":\"Grades Offered\",\"labelField\":\"about_stat_grades_label\"},{\"number\":\"0ehdx\",\"numberField\":\"about_stat_new_1786964100153\",\"label\":\"Label\",\"labelField\":\"about_stat_new_1786964100153_label\"}],\"mission\":[{\"title\":\"Our Mission\",\"titleField\":\"about_mission_title\",\"desc\":\"\\n              To provide every learner with a high-quality, inclusive education that fosters intellectual curiosity, personal growth, and a lifelong love of learning — equipping them with the skills and values they need to thrive in a changing world.\\n            \",\"descField\":\"about_mission_desc\"},{\"title\":\"Our Vision\",\"titleField\":\"about_vision_title\",\"desc\":\"\\n              To be a beacon of excellence in our community — a school where every child, regardless of background or circumstance, is empowered to reach their full potential and contribute meaningfully to society.\\n            \",\"descField\":\"about_vision_desc\"},{\"title\":\"New Cardwsgfbx\",\"titleField\":\"about_mission_new_1786964096801_title\",\"desc\":\"Add your content here...\",\"descField\":\"about_mission_new_1786964096801_desc\"}],\"values\":[{\"title\":\"Academic Excellence\",\"titleField\":\"about_val1_title\",\"desc\":\"We hold every learner to high standards while providing the support they need to meet them.\",\"descField\":\"about_val1_desc\"},{\"title\":\"Inclusivity\",\"titleField\":\"about_val2_title\",\"desc\":\"Every child belongs here. We celebrate diversity and create space for every voice to be heard.\",\"descField\":\"about_val2_desc\"},{\"title\":\"Compassion\",\"titleField\":\"about_val3_title\",\"desc\":\"We lead with empathy — understanding the realities our learners face and responding with care.\",\"descField\":\"about_val3_desc\"},{\"title\":\"Growth\",\"titleField\":\"about_val4_title\",\"desc\":\"We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.\",\"descField\":\"about_val4_desc\"},{\"title\":\"Safety &amp; Respect\",\"titleField\":\"about_val5_title\",\"desc\":\"A safe, respectful environment is the foundation on which all meaningful learning is built.\",\"descField\":\"about_val5_desc\"},{\"title\":\"New Card\",\"titleField\":\"about_values_new_1786964095401_title\",\"desc\":\"Add your conteyhsfxnv nt here...\",\"descField\":\"about_values_new_1786964095401_desc\"}]}",
+      "value": "{\"stats\":[{\"number\":\"400+\",\"numberField\":\"about_stat_learners\",\"label\":\"Learners\",\"labelField\":\"about_stat_learners_label\"},{\"number\":\"70+\",\"numberField\":\"about_stat_teachers\",\"label\":\"Teachers\",\"labelField\":\"about_stat_teachers_label\"},{\"number\":\"Gr R–7\",\"numberField\":\"about_stat_grades\",\"label\":\"Grades Offered\",\"labelField\":\"about_stat_grades_label\"},{\"number\":\"0\",\"numberField\":\"about_stat_new_1786974738409\",\"label\":\"Labelfvb\",\"labelField\":\"about_stat_new_1786974738409_label\"}],\"mission\":[{\"title\":\"Our Mission\",\"titleField\":\"about_mission_title\",\"desc\":\"To provide every learner with a high-quality, inclusive education that fosters intellectual curiosity, personal growth, and a lifelong love of learning — equipping them with the skills and values they need to thrive in a changing world.\",\"descField\":\"about_mission_desc\"},{\"title\":\"Our Vision\",\"titleField\":\"about_vision_title\",\"desc\":\"To be a beacon of excellence in our community — a school where every child, regardless of background or circumstance, is empowered to reach their full potential and contribute meaningfully to society.\",\"descField\":\"about_vision_desc\"},{\"title\":\"New Card\",\"titleField\":\"about_mission_new_1786974740168_title\",\"desc\":\"Add your content here...\",\"descField\":\"about_mission_new_1786974740168_desc\"}],\"values\":[{\"title\":\"Academic Excellence\",\"titleField\":\"about_val1_title\",\"desc\":\"We hold every learner to high standards while providing the support they need to meet them.\",\"descField\":\"about_val1_desc\"},{\"title\":\"Inclusivity\",\"titleField\":\"about_val2_title\",\"desc\":\"Every child belongs here. We celebrate diversity and create space for every voice to be heard.\",\"descField\":\"about_val2_desc\"},{\"title\":\"Compassion\",\"titleField\":\"about_val3_title\",\"desc\":\"We lead with empathy — understanding the realities our learners face and responding with care.\",\"descField\":\"about_val3_desc\"},{\"title\":\"Growth\",\"titleField\":\"about_val4_title\",\"desc\":\"We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.\",\"descField\":\"about_val4_desc\"},{\"title\":\"Safety &amp; Respect\",\"titleField\":\"about_val5_title\",\"desc\":\"A safe, respectful environment is the foundation on which all meaningful learning is built.\",\"descField\":\"about_val5_desc\"},{\"title\":\"New Value\",\"titleField\":\"about_val6_title\",\"desc\":\"Add your description here...\",\"descField\":\"about_val6_desc\"},{\"title\":\"New Carddfgbn\",\"titleField\":\"about_values_new_1786974741896_title\",\"desc\":\"Add your content here...\",\"descField\":\"about_values_new_1786974741896_desc\"}]}",
       "type": "json"
     },
     {
@@ -355,6 +453,62 @@
       "page": "about",
       "field_name": "about_values_new_1786964095401_desc",
       "value": "Add your conteyhsfxnv nt here...",
+      "type": "text"
+    },
+    {
+      "id": 51,
+      "page": "about",
+      "field_name": "gradeR_subjects",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills,</div><div>dgegf</div>",
+      "type": "text"
+    },
+    {
+      "id": 53,
+      "page": "grades",
+      "field_name": "gradeR_ages",
+      "value": "5 – 6&nbsp;",
+      "type": "text"
+    },
+    {
+      "id": 54,
+      "page": "grades",
+      "field_name": "gradeR_phase",
+      "value": "Foundation Phase",
+      "type": "text"
+    },
+    {
+      "id": 55,
+      "page": "about",
+      "field_name": "about_stat_new_1786974738409_label",
+      "value": "Labelfvb",
+      "type": "text"
+    },
+    {
+      "id": 56,
+      "page": "about",
+      "field_name": "about_values_new_1786974741896_title",
+      "value": "New Carddfgbn",
+      "type": "text"
+    },
+    {
+      "id": 57,
+      "page": "grades",
+      "field_name": "grades_page_title",
+      "value": "Admissions &amp; Subjects",
+      "type": "text"
+    },
+    {
+      "id": 58,
+      "page": "grades",
+      "field_name": "grade1_ages",
+      "value": "6 – 7",
+      "type": "text"
+    },
+    {
+      "id": 59,
+      "page": "grades",
+      "field_name": "grade1_phase",
+      "value": "Foundation Phase",
       "type": "text"
     }
   ],
@@ -576,6 +730,26 @@
       "body": null,
       "imageUrl": "/assets/images/grade-r/learning-games.svg",
       "sortOrder": 6
+    },
+    {
+      "id": 18,
+      "page": "extras",
+      "section": "extracurricular",
+      "icon": "🎵",
+      "title": "ghj",
+      "body": null,
+      "imageUrl": null,
+      "sortOrder": 4
+    },
+    {
+      "id": 19,
+      "page": "extras",
+      "section": "cocurricular",
+      "icon": "🎨",
+      "title": "u0iop",
+      "body": "0ipo",
+      "imageUrl": null,
+      "sortOrder": 3
     }
   ]
 }

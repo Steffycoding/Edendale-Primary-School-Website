@@ -457,7 +457,12 @@ function hideEditPopup() {
 async function saveAllChanges() {
   // Both index.html and about.html share the same data (about page)
   const pathname = window.location.pathname;
-  let page = 'about'; // Always use 'about' for both index and about pages
+  let page = pathname.split('/').pop().replace('.html', '');
+  
+  // Default to 'about' for index/home pages, otherwise use actual page name
+  if (!page || page === 'index' || page === 'home') {
+    page = 'about';
+  }
   
   console.log('[Save] Pathname:', pathname);
   console.log('[Save] Using page:', page);

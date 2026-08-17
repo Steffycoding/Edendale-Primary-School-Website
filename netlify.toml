@@ -30,6 +30,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/api/events"
   to = "/.netlify/functions/events"
   status = 200

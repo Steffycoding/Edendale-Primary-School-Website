@@ -500,25 +500,42 @@ app.post('/api/upload', (req, res) => {
   });
 });
 
-const staticPath = path.join(__dirname, 'public');
-app.use(express.static(staticPath, {
-  etag: false,
-  lastModified: false,
-  setHeaders: (res, path) => {
-    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-    res.setHeader('Pragma', 'no-cache');
-    res.setHeader('Expires', '0');
-  }
-}));
+// ── Local dev only ──────────────────────────────────────────────────────────
+// On Netlify, static files in /public are served directly by Netlify's CDN
+// (see netlify.toml `publish = "public"`), and the "/*" -> index.html
+// fallback is handled by a redirect rule in netlify.toml. Neither is needed
+// -- or wanted -- inside the serverless function, which should only ever
+// answer /api/* requests. LAMBDA_TASK_ROOT is set by AWS Lambda (and
+// therefore by Netlify Functions) in every serverless invocation, so it's a
+// reliable way to tell "running as a Netlify Function" apart from
+// "running locally via `node server.js`".
+const isServerless = !!process.env.LAMBDA_TASK_ROOT;
 
-// For SPA routing if there is any, fallback to pages folder or index
-// but since this is static HTML pages, it should be fine.
-app.get('*', (req, res) => {
-  const filePath = path.join(staticPath, req.path);
-  // Simple fallback just in case
-  res.sendFile(path.join(staticPath, 'index.html'));
-});
+if (!isServerless) {
+  const staticPath = path.join(__dirname, 'public');
+  app.use(express.static(staticPath, {
+    etag: false,
+    lastModified: false,
+    setHeaders: (res, path) => {
+      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+      res.setHeader('Pragma', 'no-cache');
+      res.setHeader('Expires', '0');
+    }
+  }));
 
-app.listen(PORT, '0.0.0.0', () => {
-  console.log(`Server running on port ${PORT}`);
-});
+  // For SPA routing if there is any, fallback to pages folder or index
+  // but since this is static HTML pages, it should be fine.
+  app.get('*', (req, res) => {
+    const filePath = path.join(staticPath, req.path);
+    // Simple fallback just in case
+    res.sendFile(path.join(staticPath, 'index.html'));
+  });
+
+  app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server running on port ${PORT}`);
+  });
+}
+
+// Exported so netlify/functions/api.js can wrap this same app with
+// serverless-http, instead of duplicating every route in a second file.
+export default app;

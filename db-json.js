@@ -1,15 +1,34 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
+import { createRequire } from 'module';
 import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, 'edendale.json');
 
+// Same detection server.js already uses: LAMBDA_TASK_ROOT is set by AWS
+// Lambda (and therefore by Netlify Functions) in every serverless
+// invocation, so it reliably tells "running as a Netlify Function" apart
+// from "running locally via `node server.js`".
+const isServerless = !!process.env.LAMBDA_TASK_ROOT;
+
+// Bundled into the function at build time via require(), NOT read from disk
+// at runtime -- Netlify Functions can't write to the filesystem they were
+// deployed with, so this only ever serves as the one-time seed for the Blob
+// store below, the first time the function runs on a fresh site.
+const require = createRequire(import.meta.url);
+const seedSnapshot = require('./edendale.json');
+
 let dbData = null;
 
-async function loadDb() {
+/* ══════════════════════════════════════════
+   LOCAL DEV — unchanged file-based storage
+   (used only when `node server.js` is run directly)
+   ══════════════════════════════════════════ */
+
+async function loadDbLocal() {
   if (dbData) return dbData;
   try {
     const data = await fs.readFile(DB_FILE, 'utf-8');
@@ -23,21 +42,67 @@ async function loadDb() {
       cards: []
     };
     await seedDb();
-    await saveDb();
+    await saveDbLocal();
   }
 
-  // The committed edendale.json predates cards, so seed the collection on
-  // first load rather than making anyone delete and rebuild the database.
   if (!Array.isArray(dbData.cards)) {
     dbData.cards = seedCards();
-    await saveDb();
+    await saveDbLocal();
   }
 
   return dbData;
 }
 
-async function saveDb() {
+async function saveDbLocal() {
   await fs.writeFile(DB_FILE, JSON.stringify(dbData, null, 2), 'utf-8');
+}
+
+/* ══════════════════════════════════════════
+   NETLIFY — persistent storage via Netlify Blobs
+   (used whenever this runs as a Netlify Function)
+   ══════════════════════════════════════════ */
+
+async function loadDbServerless() {
+  if (dbData) return dbData;
+
+  const { getStore } = await import('@netlify/blobs');
+  const store = getStore('edendale-db');
+
+  const existing = await store.get('db', { type: 'json' });
+  if (existing) {
+    dbData = existing;
+  } else {
+    // First request ever on this Netlify site: seed the Blob store from the
+    // real content committed in edendale.json, so live admin edits build on
+    // your actual data instead of the generic placeholder seed data.
+    dbData = JSON.parse(JSON.stringify(seedSnapshot));
+    await store.setJSON('db', dbData);
+  }
+
+  if (!Array.isArray(dbData.cards)) {
+    dbData.cards = seedCards();
+    await store.setJSON('db', dbData);
+  }
+
+  return dbData;
+}
+
+async function saveDbServerless() {
+  const { getStore } = await import('@netlify/blobs');
+  const store = getStore('edendale-db');
+  await store.setJSON('db', dbData);
+}
+
+/* ══════════════════════════════════════════
+   PUBLIC API — picks the right backend automatically
+   ══════════════════════════════════════════ */
+
+async function loadDb() {
+  return isServerless ? loadDbServerless() : loadDbLocal();
+}
+
+async function saveDb() {
+  return isServerless ? saveDbServerless() : saveDbLocal();
 }
 
 async function seedDb() {

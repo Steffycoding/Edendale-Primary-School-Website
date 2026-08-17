@@ -431,7 +431,7 @@
       "id": 47,
       "page": "about",
       "field_name": "card_structure",
-      "value": "{\"stats\":[{\"number\":\"400+\",\"numberField\":\"about_stat_learners\",\"label\":\"Learners\",\"labelField\":\"about_stat_learners_label\"},{\"number\":\"70+\",\"numberField\":\"about_stat_teachers\",\"label\":\"Teachers\",\"labelField\":\"about_stat_teachers_label\"},{\"number\":\"Gr R–7\",\"numberField\":\"about_stat_grades\",\"label\":\"Grades Offered\",\"labelField\":\"about_stat_grades_label\"},{\"number\":\"0\",\"numberField\":\"about_stat_new_1786974738409\",\"label\":\"Labelfvb\",\"labelField\":\"about_stat_new_1786974738409_label\"}],\"mission\":[{\"title\":\"Our Mission\",\"titleField\":\"about_mission_title\",\"desc\":\"To provide every learner with a high-quality, inclusive education that fosters intellectual curiosity, personal growth, and a lifelong love of learning — equipping them with the skills and values they need to thrive in a changing world.\",\"descField\":\"about_mission_desc\"},{\"title\":\"Our Vision\",\"titleField\":\"about_vision_title\",\"desc\":\"To be a beacon of excellence in our community — a school where every child, regardless of background or circumstance, is empowered to reach their full potential and contribute meaningfully to society.\",\"descField\":\"about_vision_desc\"},{\"title\":\"New Card\",\"titleField\":\"about_mission_new_1786974740168_title\",\"desc\":\"Add your content here...\",\"descField\":\"about_mission_new_1786974740168_desc\"}],\"values\":[{\"title\":\"Academic Excellence\",\"titleField\":\"about_val1_title\",\"desc\":\"We hold every learner to high standards while providing the support they need to meet them.\",\"descField\":\"about_val1_desc\"},{\"title\":\"Inclusivity\",\"titleField\":\"about_val2_title\",\"desc\":\"Every child belongs here. We celebrate diversity and create space for every voice to be heard.\",\"descField\":\"about_val2_desc\"},{\"title\":\"Compassion\",\"titleField\":\"about_val3_title\",\"desc\":\"We lead with empathy — understanding the realities our learners face and responding with care.\",\"descField\":\"about_val3_desc\"},{\"title\":\"Growth\",\"titleField\":\"about_val4_title\",\"desc\":\"We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.\",\"descField\":\"about_val4_desc\"},{\"title\":\"Safety &amp; Respect\",\"titleField\":\"about_val5_title\",\"desc\":\"A safe, respectful environment is the foundation on which all meaningful learning is built.\",\"descField\":\"about_val5_desc\"},{\"title\":\"New Value\",\"titleField\":\"about_val6_title\",\"desc\":\"Add your description here...\",\"descField\":\"about_val6_desc\"}]}",
+      "value": "{\"stats\":[{\"number\":\"400+\",\"numberField\":\"about_stat_learners\",\"label\":\"Learners\",\"labelField\":\"about_stat_learners_label\"},{\"number\":\"70+\",\"numberField\":\"about_stat_teachers\",\"label\":\"Teachers\",\"labelField\":\"about_stat_teachers_label\"},{\"number\":\"Gr R–7\",\"numberField\":\"about_stat_grades\",\"label\":\"Grades Offered\",\"labelField\":\"about_stat_grades_label\"},{\"number\":\"0agdzbc\",\"numberField\":\"about_stat_new_1787001843572\",\"label\":\"Label\",\"labelField\":\"about_stat_new_1787001843572_label\"}],\"mission\":[{\"title\":\"Our Mission\",\"titleField\":\"about_mission_title\",\"desc\":\"To provide every learner with a high-quality, inclusive education that fosters intellectual curiosity, personal growth, and a lifelong love of learning — equipping them with the skills and values they need to thrive in a changing world.\",\"descField\":\"about_mission_desc\"},{\"title\":\"Our Vision\",\"titleField\":\"about_vision_title\",\"desc\":\"To be a beacon of excellence in our community — a school where every child, regardless of background or circumstance, is empowered to reach their full potential and contribute meaningfully to society.\",\"descField\":\"about_vision_desc\"},{\"title\":\"New Cardshfxnv&nbsp;\",\"titleField\":\"about_mission_new_1787001848188_title\",\"desc\":\"Add your content here...\",\"descField\":\"about_mission_new_1787001848188_desc\"}],\"values\":[{\"title\":\"Academic Excellence\",\"titleField\":\"about_val1_title\",\"desc\":\"We hold every learner to high standards while providing the support they need to meet them.\",\"descField\":\"about_val1_desc\"},{\"title\":\"Inclusivity\",\"titleField\":\"about_val2_title\",\"desc\":\"Every child belongs here. We celebrate diversity and create space for every voice to be heard.\",\"descField\":\"about_val2_desc\"},{\"title\":\"Compassion\",\"titleField\":\"about_val3_title\",\"desc\":\"We lead with empathy — understanding the realities our learners face and responding with care.\",\"descField\":\"about_val3_desc\"},{\"title\":\"Growth\",\"titleField\":\"about_val4_title\",\"desc\":\"We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.\",\"descField\":\"about_val4_desc\"},{\"title\":\"Safety &amp; Respect\",\"titleField\":\"about_val5_title\",\"desc\":\"A safe, respectful environment is the foundation on which all meaningful learning is built.\",\"descField\":\"about_val5_desc\"},{\"title\":\"New Cardyeahdzn\",\"titleField\":\"about_values_new_1787001853587_title\",\"desc\":\"Add your content here...\",\"descField\":\"about_values_new_1787001853587_desc\"}]}",
       "type": "json"
     },
     {
@@ -516,6 +516,27 @@
       "page": "grade-detail",
       "field_name": "gd_subtitle",
       "value": "A Gentle Start to a Lifelong Journey",
+      "type": "text"
+    },
+    {
+      "id": 92,
+      "page": "about",
+      "field_name": "about_stat_new_1787001843572",
+      "value": "0agdzbc",
+      "type": "text"
+    },
+    {
+      "id": 93,
+      "page": "about",
+      "field_name": "about_mission_new_1787001848188_title",
+      "value": "New Cardshfxnv&nbsp;",
+      "type": "text"
+    },
+    {
+      "id": 94,
+      "page": "about",
+      "field_name": "about_values_new_1787001853587_title",
+      "value": "New Cardyeahdzn",
       "type": "text"
     }
   ],

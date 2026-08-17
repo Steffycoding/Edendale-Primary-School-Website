@@ -1,8 +1,6 @@
 import { loadDb, saveDb } from './db-utils.js';
+import { checkAuth } from './auth-utils.js';
 import bcrypt from 'bcryptjs';
-
-// Simple in-memory token storage (shared with admin-login)
-const adminTokens = new Set();
 
 export async function handler(event, context) {
   if (event.httpMethod !== 'POST') {
@@ -12,13 +10,7 @@ export async function handler(event, context) {
     };
   }
 
-  const auth = event.headers.authorization;
-  const cookie = event.headers.cookie || '';
-  const tokenMatch = cookie.match(/admin_token=([^;]+)/);
-  const token = tokenMatch ? tokenMatch[1] : null;
-
-  // Simple token check
-  if (!auth && !adminTokens.has(token)) {
+  if (!checkAuth(event)) {
     return {
       statusCode: 403,
       body: JSON.stringify({ error: 'Unauthorized' })
@@ -58,7 +50,7 @@ export async function handler(event, context) {
       };
     }
 
-    const db = await loadDb(context);
+    const db = await loadDb();
     if (db.admin_users.length > 0) {
       const isSame = await bcrypt.compare(newPassword, db.admin_users[0].password_hash);
       if (isSame) {
@@ -70,7 +62,7 @@ export async function handler(event, context) {
 
       const hash = await bcrypt.hash(newPassword, 10);
       db.admin_users.forEach(u => u.password_hash = hash);
-      await saveDb(context);
+      await saveDb();
 
       return {
         statusCode: 200,

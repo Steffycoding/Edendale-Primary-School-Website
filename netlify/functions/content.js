@@ -1,11 +1,9 @@
 import { loadDb, saveDb } from './db-utils.js';
-
-// Simple in-memory token storage (shared with admin-login)
-const adminTokens = new Set();
+import { checkAuth } from './auth-utils.js';
 
 export async function handler(event, context) {
   const method = event.httpMethod;
-  
+
   // GET - fetch content for a page
   if (method === 'GET') {
     try {
@@ -16,8 +14,8 @@ export async function handler(event, context) {
           body: JSON.stringify({ error: 'Page required' })
         };
       }
-      
-      const db = await loadDb(context);
+
+      const db = await loadDb();
       const pageContent = db.content.filter(c => c.page === page);
       const contentMap = {};
       pageContent.forEach(c => {
@@ -27,7 +25,7 @@ export async function handler(event, context) {
           contentMap[c.field_name] = c.value;
         }
       });
-      
+
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -40,22 +38,16 @@ export async function handler(event, context) {
       };
     }
   }
-  
+
   // PATCH - update content (admin only)
   if (method === 'PATCH') {
-    const auth = event.headers.authorization;
-    const cookie = event.headers.cookie || '';
-    const tokenMatch = cookie.match(/admin_token=([^;]+)/);
-    const token = tokenMatch ? tokenMatch[1] : null;
-    
-    // Simple token check
-    if (!auth && !adminTokens.has(token)) {
+    if (!checkAuth(event)) {
       return {
         statusCode: 403,
         body: JSON.stringify({ error: 'Unauthorized' })
       };
     }
-    
+
     try {
       const { page, changes, cardData } = JSON.parse(event.body);
       if (!page) {
@@ -64,9 +56,9 @@ export async function handler(event, context) {
           body: JSON.stringify({ error: 'Invalid payload' })
         };
       }
-      
-      const db = await loadDb(context);
-      
+
+      const db = await loadDb();
+
       // Handle individual field changes
       if (changes) {
         for (const [field_name, value] of Object.entries(changes)) {
@@ -84,7 +76,7 @@ export async function handler(event, context) {
           }
         }
       }
-      
+
       // Handle card data for about page and home page
       if (cardData && (page === 'about' || page === 'home')) {
         const cardField = db.content.find(c => c.page === page && c.field_name === 'card_structure');
@@ -100,9 +92,9 @@ export async function handler(event, context) {
           });
         }
       }
-      
-      await saveDb(context);
-      
+
+      await saveDb();
+
       return {
         statusCode: 200,
         headers: { 'Content-Type': 'application/json' },
@@ -115,7 +107,7 @@ export async function handler(event, context) {
       };
     }
   }
-  
+
   return {
     statusCode: 405,
     body: JSON.stringify({ error: 'Method not allowed' })

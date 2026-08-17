@@ -1,81 +1,97 @@
+import { getStore } from '@netlify/blobs';
 import bcrypt from 'bcryptjs';
 
-// Simple in-memory database for Netlify Functions
-// Note: This resets on each function deployment, but works for basic functionality
-let dbData = null;
+// ─────────────────────────────────────────────────────────────
+// Persistent storage via Netlify Blobs.
+//
+// Netlify Functions are stateless and can spin up a fresh instance
+// per request, and separate functions (admin-login.js, cards.js, etc.)
+// never share memory with each other. The old in-memory version of this
+// file "saved" data into a variable that either vanished on the next
+// cold start or was invisible to every other function — which is why
+// password changes silently reverted. Netlify Blobs is a real,
+// persistent key/value store attached to the site, so a write here is
+// visible to every function, on every invocation, from then on.
+//
+// No manual credentials are needed: getStore() auto-configures itself
+// when called from inside a deployed Netlify Function.
+// ─────────────────────────────────────────────────────────────
 
-async function loadDb(context) {
-  if (dbData) return dbData;
-  
-  try {
-    // Initialize with seed data
-    dbData = {
-      admin_users: [],
-      content: [],
-      events: [],
-      cards: []
-    };
-    await seedDb();
+const STORE_NAME = 'edendale-db';
+const KEY = 'db';
 
-    // Ensure cards collection exists
-    if (!Array.isArray(dbData.cards)) {
-      dbData.cards = seedCards();
-    }
+function store() {
+  return getStore(STORE_NAME);
+}
 
-    return dbData;
-  } catch (err) {
-    console.error('Error loading database:', err);
-    // Initialize with seed data on error
-    dbData = {
-      admin_users: [],
-      content: [],
-      events: [],
-      cards: []
-    };
-    await seedDb();
-    return dbData;
+// Per-invocation cache so callers can do:
+//   const db = await loadDb(); db.events.push(x); await saveDb();
+// without threading the db object through saveDb() themselves — this
+// mirrors the call signature the rest of the codebase already uses.
+let cachedDb = null;
+
+async function loadDb() {
+  const s = store();
+  let db = await s.get(KEY, { type: 'json' });
+
+  if (!db) {
+    db = await buildSeedData();
+    await s.setJSON(KEY, db);
   }
+
+  // The store predates the cards collection, so backfill it in place
+  // for any older blob that doesn't have one yet.
+  if (!Array.isArray(db.cards)) {
+    db.cards = seedCards();
+    await s.setJSON(KEY, db);
+  }
+
+  cachedDb = db;
+  return db;
 }
 
-async function saveDb(context) {
-  // For now, we're using in-memory storage
-  // In production, you might want to add Netlify KV or another persistent storage
-  console.log('Database saved (in-memory)');
+async function saveDb() {
+  if (!cachedDb) {
+    throw new Error('saveDb() called before loadDb() — nothing to save.');
+  }
+  await store().setJSON(KEY, cachedDb);
 }
 
-async function seedDb() {
+async function buildSeedData() {
   const hash1 = await bcrypt.hash('edendale2024', 10);
   const hash2 = await bcrypt.hash('kennis2026', 10);
-  dbData.admin_users.push({ id: 1, username: 'admin', password_hash: hash1 });
-  dbData.admin_users.push({ id: 2, username: 'teacher', password_hash: hash2 });
 
-  dbData.events = [
-    { id: 1, title: 'Term 2 Begins', event_date: '2026-04-07', event_time: '07:30', description: 'Start of second school term.' },
-    { id: 2, title: 'Parent-Teacher Meetings', event_date: '2026-04-15', event_time: '14:00', description: 'Individual parent-teacher interviews. Please book a slot.' },
-    { id: 3, title: 'Sports Day', event_date: '2026-04-22', event_time: '09:00', description: 'Annual inter-grade sports day on the school grounds.' },
-    { id: 4, title: 'Winter Concert', event_date: '2026-06-10', event_time: '18:00', description: 'Annual cultural evening featuring choir, drama and dance.' },
-    { id: 5, title: 'Term 2 Ends', event_date: '2026-06-26', event_time: '12:00', description: 'Last day of second school term.' }
-  ];
-
-  dbData.content = [
-    { id: 1, page: 'home', field_name: 'hero_title', value: 'Edendale Primary School', type: 'text' },
-    { id: 2, page: 'home', field_name: 'hero_tagline', value: 'Kennis is lig', type: 'text' },
-    { id: 3, page: 'home', field_name: 'hero_description', value: 'Edendale Primary School has been serving the Manenberg community with dedication, compassion, and a commitment to excellence in education.', type: 'text' },
-    { id: 4, page: 'home', field_name: 'hero_cta', value: 'Admissions Enquiry', type: 'text' },
-    { id: 44, page: 'home', field_name: 'hero_cta_link', value: 'pages/grades.html', type: 'link' },
-    { id: 5, page: 'home', field_name: 'about_title', value: 'A Place of Learning, Growth & Community', type: 'text' },
-    { id: 6, page: 'home', field_name: 'stat_learners', value: '400+', type: 'text' },
-    { id: 7, page: 'home', field_name: 'stat_teachers', value: '70+', type: 'text' },
-    { id: 8, page: 'home', field_name: 'stat_grades', value: 'Gr R–7', type: 'text' },
-    { id: 9, page: 'contact', field_name: 'contact_school_name', value: 'Edendale Primary School', type: 'text' },
-    { id: 10, page: 'contact', field_name: 'contact_address', value: '100 Philippi Ring Road & Manenberg Ave, Manenberg, Cape Town, 7764, South Africa', type: 'text' },
-    { id: 11, page: 'contact', field_name: 'contact_phone', value: '021 800 0111', type: 'text' },
-    { id: 12, page: 'contact', field_name: 'contact_mobile', value: '082 829 1000', type: 'text' },
-    { id: 13, page: 'contact', field_name: 'contact_email', value: 'edendaleprimary@gmail.com', type: 'text' },
-    { id: 14, page: 'contact', field_name: 'contact_emis', value: '1054821000', type: 'text' }
-  ];
-
-  dbData.cards = seedCards();
+  return {
+    admin_users: [
+      { id: 1, username: 'admin', password_hash: hash1 },
+      { id: 2, username: 'teacher', password_hash: hash2 }
+    ],
+    events: [
+      { id: 1, title: 'Term 2 Begins', event_date: '2026-04-07', event_time: '07:30', description: 'Start of second school term.' },
+      { id: 2, title: 'Parent-Teacher Meetings', event_date: '2026-04-15', event_time: '14:00', description: 'Individual parent-teacher interviews. Please book a slot.' },
+      { id: 3, title: 'Sports Day', event_date: '2026-04-22', event_time: '09:00', description: 'Annual inter-grade sports day on the school grounds.' },
+      { id: 4, title: 'Winter Concert', event_date: '2026-06-10', event_time: '18:00', description: 'Annual cultural evening featuring choir, drama and dance.' },
+      { id: 5, title: 'Term 2 Ends', event_date: '2026-06-26', event_time: '12:00', description: 'Last day of second school term.' }
+    ],
+    content: [
+      { id: 1, page: 'home', field_name: 'hero_title', value: 'Edendale Primary School', type: 'text' },
+      { id: 2, page: 'home', field_name: 'hero_tagline', value: 'Kennis is lig', type: 'text' },
+      { id: 3, page: 'home', field_name: 'hero_description', value: 'Edendale Primary School has been serving the Manenberg community with dedication, compassion, and a commitment to excellence in education.', type: 'text' },
+      { id: 4, page: 'home', field_name: 'hero_cta', value: 'Admissions Enquiry', type: 'text' },
+      { id: 44, page: 'home', field_name: 'hero_cta_link', value: 'pages/grades.html', type: 'link' },
+      { id: 5, page: 'home', field_name: 'about_title', value: 'A Place of Learning, Growth & Community', type: 'text' },
+      { id: 6, page: 'home', field_name: 'stat_learners', value: '400+', type: 'text' },
+      { id: 7, page: 'home', field_name: 'stat_teachers', value: '70+', type: 'text' },
+      { id: 8, page: 'home', field_name: 'stat_grades', value: 'Gr R–7', type: 'text' },
+      { id: 9, page: 'contact', field_name: 'contact_school_name', value: 'Edendale Primary School', type: 'text' },
+      { id: 10, page: 'contact', field_name: 'contact_address', value: '100 Philippi Ring Road & Manenberg Ave, Manenberg, Cape Town, 7764, South Africa', type: 'text' },
+      { id: 11, page: 'contact', field_name: 'contact_phone', value: '021 800 0111', type: 'text' },
+      { id: 12, page: 'contact', field_name: 'contact_mobile', value: '082 829 1000', type: 'text' },
+      { id: 13, page: 'contact', field_name: 'contact_email', value: 'edendaleprimary@gmail.com', type: 'text' },
+      { id: 14, page: 'contact', field_name: 'contact_emis', value: '1054821000', type: 'text' }
+    ],
+    cards: seedCards()
+  };
 }
 
 function seedCards() {

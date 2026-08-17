@@ -1,11 +1,8 @@
 import { loadDb } from './db-utils.js';
+import { createToken } from './auth-utils.js';
 import bcrypt from 'bcryptjs';
 
-// Simple in-memory token storage
-const adminTokens = new Set();
-
 export async function handler(event, context) {
-  // Only allow POST requests
   if (event.httpMethod !== 'POST') {
     return {
       statusCode: 405,
@@ -15,13 +12,12 @@ export async function handler(event, context) {
 
   try {
     const { username, password } = JSON.parse(event.body);
-    const db = await loadDb(context);
+    const db = await loadDb();
     const user = db.admin_users.find(u => u.username === username);
-    
+
     if (user && await bcrypt.compare(password, user.password_hash)) {
-      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      adminTokens.add(token);
-      
+      const token = createToken(user.username);
+
       return {
         statusCode: 200,
         headers: {

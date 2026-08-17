@@ -36,18 +36,19 @@
   force = true
 
 [[redirects]]
-  from = "/api/cards*"
+  from = "/api/cards"
   to = "/.netlify/functions/cards"
   status = 200
   force = true
 
 [[redirects]]
-  from = "/api/events*"
+  from = "/api/events"
   to = "/.netlify/functions/events"
   status = 200
   force = true
 
 [[redirects]]
-  from "/*"
+  from = "/"
   to = "/index.html"
   status = 200
+  force = true

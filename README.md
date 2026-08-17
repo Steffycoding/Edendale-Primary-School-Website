@@ -24,6 +24,8 @@ This is a full-stack web application built using **Node.js, Express, and Vanilla
 
 ## Running the Application
 
+## FIRST RUN: npm install
+
 ### Development
 \`\`\`bash
 npm run dev

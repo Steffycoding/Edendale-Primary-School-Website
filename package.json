@@ -12,12 +12,13 @@
     "netlify": "netlify dev"
   },
   "dependencies": {
+    "@netlify/functions": "^2.8.2",
     "bcryptjs": "^3.0.3",
     "express": "^4.21.2",
     "express-session": "^1.19.0",
     "multer": "^2.2.0"
   },
   "devDependencies": {
-    "netlify-cli": "^17.0.0"
+    "netlify-cli": "^22.2.2"
   }
 }

@@ -4,3 +4,4 @@
 # The directory itself is kept so a fresh clone can write into it.
 public/assets/images/uploads/*
 !public/assets/images/uploads/.gitkeep
+node_modules/

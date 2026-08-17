@@ -107,12 +107,16 @@ app.get('/api/content', async (req, res) => {
   try {
     const db = await loadDb();
     const page = req.query.page;
-    if (!page) return res.status(400).json({ error: 'Page is required' });
+    if (!page) return res.status(400).json({ error: 'Page required' });
     
-    const rows = db.content.filter(c => c.page === page);
+    const pageContent = db.content.filter(c => c.page === page);
     const contentMap = {};
-    rows.forEach(row => {
-      contentMap[row.field_name] = row.value;
+    pageContent.forEach(c => {
+      if (c.field_name === 'card_structure') {
+        contentMap[c.field_name] = JSON.parse(c.value);
+      } else {
+        contentMap[c.field_name] = c.value;
+      }
     });
     res.json(contentMap);
   } catch (error) {
@@ -124,23 +128,44 @@ app.patch('/api/content', async (req, res) => {
   if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
-    const { page, changes } = req.body;
-    if (!page || !changes) return res.status(400).json({ error: 'Invalid payload' });
+    const { page, changes, cardData } = req.body;
+    if (!page) return res.status(400).json({ error: 'Invalid payload' });
     
-    for (const [field_name, value] of Object.entries(changes)) {
-      const existing = db.content.find(c => c.page === page && c.field_name === field_name);
-      if (existing) {
-        existing.value = value;
+    // Handle individual field changes
+    if (changes) {
+      for (const [field_name, value] of Object.entries(changes)) {
+        const existing = db.content.find(c => c.page === page && c.field_name === field_name);
+        if (existing) {
+          existing.value = value;
+        } else {
+          db.content.push({
+            id: db.content.length > 0 ? Math.max(...db.content.map(c => c.id)) + 1 : 1,
+            page,
+            field_name,
+            value,
+            type: 'text'
+          });
+        }
+      }
+    }
+    
+    // Handle card data for about page and home page
+    if (cardData && (page === 'about' || page === 'home')) {
+      // Store card data as a special field
+      const cardField = db.content.find(c => c.page === page && c.field_name === 'card_structure');
+      if (cardField) {
+        cardField.value = JSON.stringify(cardData);
       } else {
         db.content.push({
           id: db.content.length > 0 ? Math.max(...db.content.map(c => c.id)) + 1 : 1,
           page,
-          field_name,
-          value,
-          type: 'text'
+          field_name: 'card_structure',
+          value: JSON.stringify(cardData),
+          type: 'json'
         });
       }
     }
+    
     await saveDb();
     res.json({ success: true });
   } catch (error) {
@@ -476,7 +501,15 @@ app.post('/api/upload', (req, res) => {
 });
 
 const staticPath = path.join(__dirname, 'public');
-app.use(express.static(staticPath));
+app.use(express.static(staticPath, {
+  etag: false,
+  lastModified: false,
+  setHeaders: (res, path) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 
 // For SPA routing if there is any, fallback to pages folder or index
 // but since this is static HTML pages, it should be fine.

@@ -42,8 +42,9 @@ async function checkAdminStatus() {
 }
 
 function saveInitialContentState() {
+  // Both index.html and about.html share the same data (about page)
   let page = window.location.pathname.split('/').pop().replace('.html', '');
-  if (!page || page === 'index') page = 'home';
+  if (!page || page === 'index' || page === 'home') page = 'about';
   
   const initialState = {};
   
@@ -62,24 +63,21 @@ function saveInitialContentState() {
   });
   
   // Save card data for about page
-  if (page === 'about') {
-    initialState.cardData = collectAboutPageCardData();
-  }
+  initialState.cardData = collectAboutPageCardData();
   
   localStorage.setItem(`initialContent_${page}`, JSON.stringify(initialState));
 }
 
 function updateInitialContentState() {
+  // Both index.html and about.html share the same data (about page)
   let page = window.location.pathname.split('/').pop().replace('.html', '');
-  if (!page || page === 'index') page = 'home';
+  if (!page || page === 'index' || page === 'home') page = 'about';
   
   // Get existing state
   const existingState = JSON.parse(localStorage.getItem(`initialContent_${page}`) || '{}');
   
-  // Update with current card data if about page
-  if (page === 'about') {
-    existingState.cardData = collectAboutPageCardData();
-  }
+  // Update with current card data
+  existingState.cardData = collectAboutPageCardData();
   
   localStorage.setItem(`initialContent_${page}`, JSON.stringify(existingState));
 }
@@ -330,8 +328,9 @@ function undoChanges() {
     alert('No unsaved changes to undo.');
     return;
   }
+  // Both index.html and about.html share the same data (about page)
   let page = window.location.pathname.split('/').pop().replace('.html', '');
-  if (!page || page === 'index') page = 'home';
+  if (!page || page === 'index' || page === 'home') page = 'about';
   
   const saved = localStorage.getItem(`initialContent_${page}`);
   if (saved) {
@@ -354,8 +353,8 @@ function undoChanges() {
        }
     }
     
-    // If this is the about page, also revert card structure
-    if (page === 'about' && data.cardData) {
+    // Also revert card structure
+    if (data.cardData) {
       revertAboutPageCards(data.cardData);
     }
     
@@ -456,23 +455,48 @@ function hideEditPopup() {
 }
 
 async function saveAllChanges() {
-  if (Object.keys(pendingChanges).length === 0) {
-    alert('No changes to save.');
-    return;
-  }
-  let page = window.location.pathname.split('/').pop().replace('.html', '');
-  if (!page || page === 'index') page = 'home';
+  // Both index.html and about.html share the same data (about page)
+  const pathname = window.location.pathname;
+  let page = 'about'; // Always use 'about' for both index and about pages
+  
+  console.log('[Save] Pathname:', pathname);
+  console.log('[Save] Using page:', page);
   
   // Collect all current card data including new cards
   const cardData = collectAboutPageCardData();
+  console.log('[Save] Card Data:', cardData);
+  console.log('[Save] Pending Changes:', pendingChanges);
+  
+  // Check if there are any changes (field changes or card structure changes)
+  const hasFieldChanges = Object.keys(pendingChanges).length > 0;
+  const hasCardChanges = cardData && (
+    (cardData.stats && cardData.stats.length > 0) ||
+    (cardData.mission && cardData.mission.length > 0) ||
+    (cardData.values && cardData.values.length > 0)
+  );
+  
+  console.log('[Save] Has field changes:', hasFieldChanges);
+  console.log('[Save] Has card changes:', hasCardChanges);
+  
+  if (!hasFieldChanges && !hasCardChanges) {
+    alert('No changes to save.');
+    return;
+  }
   
   try {
     const token = localStorage.getItem('adminToken');
+    const payload = { page, changes: pendingChanges, cardData };
+    console.log('[Save] Sending payload:', payload);
+    
     const response = await fetch('/api/content', {
       method: 'PATCH',
       headers: { 'Content-Type': 'application/json', 'Authorization': 'Bearer ' + token },
-      body: JSON.stringify({ page, changes: pendingChanges, cardData })
+      body: JSON.stringify(payload)
     });
+    
+    console.log('[Save] Response status:', response.status);
+    const result = await response.json();
+    console.log('[Save] Response:', result);
     
     if (response.ok) {
       alert('Changes saved successfully!');
@@ -490,6 +514,58 @@ async function saveAllChanges() {
 }
 
 function collectAboutPageCardData() {
+  const cardData = {
+    stats: [],
+    mission: [],
+    values: []
+  };
+  
+  // Collect stats cards
+  document.querySelectorAll('.stats-grid .stat-box:not(.add-card-btn)').forEach(card => {
+    const number = card.querySelector('.stat-number');
+    const label = card.querySelector('.stat-label');
+    if (number && label) {
+      cardData.stats.push({
+        number: number.innerHTML,
+        numberField: number.dataset.field,
+        label: label.innerHTML,
+        labelField: label.dataset.field
+      });
+    }
+  });
+  
+  // Collect mission cards
+  document.querySelectorAll('.mission-grid .card:not(.add-card-btn)').forEach(card => {
+    const title = card.querySelector('h3');
+    const desc = card.querySelector('p');
+    if (title && desc) {
+      cardData.mission.push({
+        title: title.innerHTML,
+        titleField: title.dataset.field,
+        desc: desc.innerHTML,
+        descField: desc.dataset.field
+      });
+    }
+  });
+  
+  // Collect values cards
+  document.querySelectorAll('.why-grid .card:not(.add-card-btn)').forEach(card => {
+    const title = card.querySelector('h4');
+    const desc = card.querySelector('p');
+    if (title && desc) {
+      cardData.values.push({
+        title: title.innerHTML,
+        titleField: title.dataset.field,
+        desc: desc.innerHTML,
+        descField: desc.dataset.field
+      });
+    }
+  });
+  
+  return cardData;
+}
+
+function collectHomePageCardData() {
   const cardData = {
     stats: [],
     mission: [],
@@ -609,9 +685,15 @@ document.addEventListener('DOMContentLoaded', () => {
    ABOUT PAGE CARD MANAGEMENT
    ══════════════════════════════════════════ */
 
+let aboutPageCardManagementInitialized = false;
+
 function initAboutPageCardManagement() {
-  // Handle remove card buttons
+  if (aboutPageCardManagementInitialized) return;
+  aboutPageCardManagementInitialized = true;
+  
+  // Handle remove card buttons and add card buttons via event delegation
   document.addEventListener('click', function(e) {
+    // Handle remove card buttons
     if (e.target.classList.contains('remove-card-btn')) {
       e.preventDefault();
       e.stopPropagation();
@@ -631,16 +713,16 @@ function initAboutPageCardManagement() {
           updateInitialContentState();
         }
       }
+      return;
     }
-  });
-  
-  // Handle add card buttons for about page
-  document.querySelectorAll('.add-card-btn[data-section]').forEach(btn => {
-    btn.addEventListener('click', function(e) {
+    
+    // Handle add card buttons for about page
+    const addBtn = e.target.closest('.add-card-btn[data-section]');
+    if (addBtn) {
       e.preventDefault();
       e.stopPropagation();
-      const section = this.dataset.section;
-      const grid = this.parentElement;
+      const section = addBtn.dataset.section;
+      const grid = addBtn.parentElement;
       
       // Create a new card based on section type, preserving exact structure
       const newCard = document.createElement('div');
@@ -674,7 +756,7 @@ function initAboutPageCardManagement() {
       }
       
       // Insert before the add button
-      grid.insertBefore(newCard, this);
+      grid.insertBefore(newCard, addBtn);
       
       // Attach edit handlers to new card's editable elements
       newCard.querySelectorAll('[data-editable]').forEach(el => {
@@ -683,6 +765,6 @@ function initAboutPageCardManagement() {
       
       // Update initial state to include the new card
       updateInitialContentState();
-    });
+    }
   });
 }

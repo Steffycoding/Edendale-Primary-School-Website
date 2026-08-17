@@ -72,6 +72,12 @@ async function loadPageContent(page) {
  */
 function applyContent(contentMap) {
   Object.entries(contentMap).forEach(([field, value]) => {
+    // Handle card structure for about page
+    if (field === 'card_structure' && typeof value === 'object' && value) {
+      applyCardStructure(value);
+      return;
+    }
+    
     const el = document.querySelector(`[data-field="${field}"]`);
     if (!el) return;
     if (el.dataset.type === 'image') {
@@ -88,10 +94,117 @@ function applyContent(contentMap) {
   });
 }
 
+/**
+ * Apply card structure to about page
+ * @param {Object} cardData - { stats: [], mission: [], values: [] }
+ */
+function applyCardStructure(cardData) {
+  if (!cardData) return;
+  
+  // Apply stats cards
+  if (cardData.stats && Array.isArray(cardData.stats)) {
+    const statsGrid = document.querySelector('.stats-grid');
+    if (statsGrid) {
+      // Remove existing stat boxes (except add button if it exists)
+      statsGrid.querySelectorAll('.stat-box:not(.add-card-btn)').forEach(card => card.remove());
+      
+      // Add cards from data
+      cardData.stats.forEach(stat => {
+        const newCard = document.createElement('div');
+        newCard.className = 'stat-box';
+        newCard.innerHTML = `
+          <button class="remove-card-btn admin-only">×</button>
+          <div class="stat-number" data-editable data-field="${stat.numberField}">${stat.number}</div>
+          <div class="stat-label" data-editable data-field="${stat.labelField}">${stat.label}</div>
+        `;
+        const addBtn = statsGrid.querySelector('.add-card-btn');
+        if (addBtn) {
+          statsGrid.insertBefore(newCard, addBtn);
+        } else {
+          statsGrid.appendChild(newCard);
+        }
+      });
+    }
+  }
+  
+  // Apply mission cards
+  if (cardData.mission && Array.isArray(cardData.mission)) {
+    const missionGrid = document.querySelector('.mission-grid');
+    if (missionGrid) {
+      missionGrid.querySelectorAll('.card:not(.add-card-btn)').forEach(card => card.remove());
+      
+      cardData.mission.forEach(mission => {
+        const newCard = document.createElement('div');
+        newCard.className = 'card mission-card';
+        newCard.innerHTML = `
+          <button class="remove-card-btn admin-only">×</button>
+          <div class="card-body">
+            <h3 style="text-align:center;" data-editable data-field="${mission.titleField}">${mission.title}</h3>
+            <p style="text-align:center;" data-editable data-field="${mission.descField}">${mission.desc}</p>
+          </div>
+        `;
+        const addBtn = missionGrid.querySelector('.add-card-btn');
+        if (addBtn) {
+          missionGrid.insertBefore(newCard, addBtn);
+        } else {
+          missionGrid.appendChild(newCard);
+        }
+      });
+    }
+  }
+  
+  // Apply values cards
+  if (cardData.values && Array.isArray(cardData.values)) {
+    const valuesGrid = document.querySelector('.why-grid');
+    if (valuesGrid) {
+      valuesGrid.querySelectorAll('.card:not(.add-card-btn)').forEach(card => card.remove());
+      
+      cardData.values.forEach(value => {
+        const newCard = document.createElement('div');
+        newCard.className = 'card why-card';
+        newCard.innerHTML = `
+          <button class="remove-card-btn admin-only">×</button>
+          <div class="card-body">
+            <h4 style="text-align:center;" data-editable data-field="${value.titleField}">${value.title}</h4>
+            <p style="text-align:center;" data-editable data-field="${value.descField}">${value.desc}</p>
+          </div>
+        `;
+        const addBtn = valuesGrid.querySelector('.add-card-btn');
+        if (addBtn) {
+          valuesGrid.insertBefore(newCard, addBtn);
+        } else {
+          valuesGrid.appendChild(newCard);
+        }
+      });
+    }
+  }
+  
+  // Re-attach edit handlers to new elements after admin.js loads
+  setTimeout(() => {
+    if (typeof handleEditClick === 'function') {
+      document.querySelectorAll('[data-editable]').forEach(el => {
+        el.removeEventListener('click', handleEditClick);
+        el.addEventListener('click', handleEditClick);
+      });
+    }
+  }, 100);
+}
+
 // Determine current page from URL and fetch content
+// Both index.html and about.html share the same data (about page)
 let currentPage = window.location.pathname.split('/').pop().replace('.html', '');
-if (!currentPage || currentPage === 'index') currentPage = 'home';
-loadPageContent(currentPage);
+if (!currentPage || currentPage === 'index' || currentPage === 'home') currentPage = 'about';
+
+// Add loading state to prevent flash
+document.body.classList.add('content-loading');
+
+loadPageContent(currentPage).then(() => {
+  // Remove loading state after content is loaded
+  document.body.classList.remove('content-loading');
+}).catch(() => {
+  // Remove loading state even if there's an error
+  document.body.classList.remove('content-loading');
+});
 
 /* ══════════════════════════════════════════
    5. ADMIN LOGIN REDIRECT

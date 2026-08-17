@@ -8,16 +8,12 @@
     "dev": "node server.js",
     "build": "echo 'No build step required'",
     "start": "node server.js",
-    "lint": "echo 'No lint step required'",
-    "netlify": "netlify dev"
+    "lint": "echo 'No lint step required'"
   },
   "dependencies": {
     "bcryptjs": "^3.0.3",
     "express": "^4.21.2",
     "express-session": "^1.19.0",
     "multer": "^2.2.0"
-  },
-  "devDependencies": {
-    "netlify-cli": "^17.0.0"
   }
 }

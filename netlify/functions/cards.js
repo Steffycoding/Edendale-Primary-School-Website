@@ -1,10 +1,12 @@
 import { loadDb, saveDb } from './db-utils.js';
-import { checkAuth } from './auth-utils.js';
 
 const VALID_SECTIONS = new Set(['extracurricular', 'cocurricular', 'activities', 'gallery']);
 const MAX_TITLE_LENGTH = 200;
 const MAX_ICON_LENGTH = 16;
 const MAX_IMAGE_URL_LENGTH = 255;
+
+// Simple in-memory token storage (shared with admin-login)
+const adminTokens = new Set();
 
 function validateCard(card) {
   if (card.title.length > MAX_TITLE_LENGTH) {
@@ -41,15 +43,24 @@ function duplicateTitleExists(db, card, ignoreId) {
   );
 }
 
+function checkAuth(event) {
+  const auth = event.headers.authorization;
+  const cookie = event.headers.cookie || '';
+  const tokenMatch = cookie.match(/admin_token=([^;]+)/);
+  const token = tokenMatch ? tokenMatch[1] : null;
+  
+  return auth || adminTokens.has(token);
+}
+
 export async function handler(event, context) {
   const method = event.httpMethod;
-
+  
   // GET - fetch cards
   if (method === 'GET') {
     try {
-      const db = await loadDb();
+      const db = await loadDb(context);
       const { page, section } = event.queryStringParameters;
-
+      
       if (!page) {
         return {
           statusCode: 400,
@@ -75,18 +86,18 @@ export async function handler(event, context) {
       };
     }
   }
-
+  
   // POST - create card (admin only)
   if (method === 'POST') {
-    if (!checkAuth(event)) {
+    if (!(await checkAuth(event, context))) {
       return {
         statusCode: 401,
         body: JSON.stringify({ error: 'Unauthorised.' })
       };
     }
-
+    
     try {
-      const db = await loadDb();
+      const db = await loadDb(context);
       const body = JSON.parse(event.body);
       const page = cardString(body, 'page').toLowerCase();
       const section = cardString(body, 'section').toLowerCase();
@@ -134,7 +145,7 @@ export async function handler(event, context) {
       }
 
       db.cards.push(card);
-      await saveDb();
+      await saveDb(context);
 
       return {
         statusCode: 201,
@@ -148,7 +159,7 @@ export async function handler(event, context) {
       };
     }
   }
-
+  
   // PUT - update card (admin only)
   if (method === 'PUT') {
     if (!checkAuth(event)) {
@@ -157,9 +168,9 @@ export async function handler(event, context) {
         body: JSON.stringify({ error: 'Unauthorised.' })
       };
     }
-
+    
     try {
-      const db = await loadDb();
+      const db = await loadDb(context);
       const id = parseInt(event.path.split('/').pop(), 10);
       if (Number.isNaN(id)) {
         return {
@@ -178,7 +189,7 @@ export async function handler(event, context) {
 
       const body = JSON.parse(event.body);
       const updated = { ...existing };
-
+      
       if ('title' in body) updated.title = cardString(body, 'title');
       if ('icon' in body) updated.icon = emptyToNull(cardString(body, 'icon'));
       if ('body' in body) updated.body = emptyToNull(cardString(body, 'body'));
@@ -219,7 +230,7 @@ export async function handler(event, context) {
       }
 
       Object.assign(existing, updated);
-      await saveDb();
+      await saveDb(context);
 
       return {
         statusCode: 200,
@@ -233,7 +244,7 @@ export async function handler(event, context) {
       };
     }
   }
-
+  
   // DELETE - delete card (admin only)
   if (method === 'DELETE') {
     if (!checkAuth(event)) {
@@ -242,9 +253,9 @@ export async function handler(event, context) {
         body: JSON.stringify({ error: 'Unauthorised.' })
       };
     }
-
+    
     try {
-      const db = await loadDb();
+      const db = await loadDb(context);
       const id = parseInt(event.path.split('/').pop(), 10);
       if (Number.isNaN(id)) {
         return {
@@ -262,7 +273,7 @@ export async function handler(event, context) {
       }
 
       db.cards.splice(index, 1);
-      await saveDb();
+      await saveDb(context);
 
       return {
         statusCode: 200,
@@ -276,7 +287,7 @@ export async function handler(event, context) {
       };
     }
   }
-
+  
   return {
     statusCode: 405,
     body: JSON.stringify({ error: 'Method not allowed' })

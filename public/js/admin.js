@@ -1,4 +1,3 @@
-
 'use strict';
 
 let isAdminMode = false;
@@ -6,39 +5,42 @@ let currentEditTarget = null;
 let pendingChanges = {};
 
 async function checkAdminStatus() {
-  // Immediately set admin mode if token exists to prevent layout shifts
   const token = localStorage.getItem('adminToken');
-  if (token) {
-    isAdminMode = true;
-    document.body.classList.add('admin-mode');
-    document.documentElement.classList.add('admin-mode');
-    const adminBar = document.getElementById('admin-bar');
-    if (adminBar) adminBar.classList.add('active');
-    notifyModeChange();
-    
-    // Save initial content state for undo functionality
-    saveInitialContentState();
-  }
-  
-  // Verify with server and revert if token is invalid
+  if (!token) return;   // nothing to verify — stay logged out
+
+  // Verify the token with the server BEFORE showing any admin UI. The old
+  // version flipped on admin-mode as soon as a token existed, then only
+  // reverted it after the server said no — so an expired or tampered
+  // token would flash the full admin interface for a moment on every load.
+  let valid = false;
   try {
     const res = await fetch('/api/admin/status', {
       headers: { 'Authorization': 'Bearer ' + token }
     });
     const data = await res.json();
-    if (!data.admin && token) {
-      // Token exists but is invalid, remove admin mode
-      isAdminMode = false;
-      document.body.classList.remove('admin-mode');
-      document.documentElement.classList.remove('admin-mode');
-      const adminBar = document.getElementById('admin-bar');
-      if (adminBar) adminBar.classList.remove('active');
-      notifyModeChange();
-    }
+    valid = !!data.admin;
   } catch (err) {
-    // Don't remove admin mode on network errors - trust the local token
+    // Fail SAFE, not open: a network hiccup should not leave admin
+    // controls sitting on screen indefinitely just because a token was
+    // once present. The old comment here said the opposite on purpose —
+    // that was the bug.
     console.error('Error checking admin status:', err);
   }
+
+  if (!valid) {
+    localStorage.removeItem('adminToken');
+    return;
+  }
+
+  isAdminMode = true;
+  document.body.classList.add('admin-mode');
+  document.documentElement.classList.add('admin-mode');
+  const adminBar = document.getElementById('admin-bar');
+  if (adminBar) adminBar.classList.add('active');
+  notifyModeChange();
+
+  // Save initial content state for undo functionality
+  saveInitialContentState();
 }
 
 function saveInitialContentState() {

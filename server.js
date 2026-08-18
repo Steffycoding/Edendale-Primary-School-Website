@@ -562,13 +562,29 @@ app.post('/api/upload', async (req, res) => {
 
     // Serverless: req.file.buffer holds the bytes (memoryStorage), nothing
     // was written to disk. Upload that buffer to Blob instead.
+    //
+    // Images must be publicly viewable (they render as <img> src on the
+    // site), but the store already connected to this project for the
+    // database (BLOB_READ_WRITE_TOKEN) is private — access mode is fixed
+    // per store and can't be mixed. So uploads go to a SEPARATE public
+    // store, connected with a custom env var prefix so it doesn't collide
+    // with the private store's token. See Vercel Storage tab setup notes.
+    if (!process.env.PUBLIC_BLOB_READ_WRITE_TOKEN) {
+      console.error('[Upload] PUBLIC_BLOB_READ_WRITE_TOKEN is not set.');
+      return res.status(500).json({
+        error: 'Image uploads are not configured yet. A public Blob store '
+             + 'needs to be connected with the env var prefix PUBLIC_BLOB.'
+      });
+    }
+
     try {
       const ext = EXTENSION_BY_MIME[req.file.mimetype.toLowerCase()];
       const filename = crypto.randomUUID().replace(/-/g, '') + '.' + ext;
       const blob = await put(`uploads/${filename}`, req.file.buffer, {
         access: 'public',
         contentType: req.file.mimetype,
-        allowOverwrite: true
+        allowOverwrite: true,
+        token: process.env.PUBLIC_BLOB_READ_WRITE_TOKEN
       });
       res.status(201).json({ url: blob.url, filename, size: req.file.size });
     } catch (blobErr) {

@@ -107,7 +107,7 @@
       "id": 14,
       "page": "contact",
       "field_name": "contact_emis",
-      "value": "1054821000<div><br></div><div>8888888888888888</div>",
+      "value": "1054821000",
       "type": "text"
     },
     {
@@ -191,7 +191,7 @@
       "id": 89,
       "page": "contact",
       "field_name": "support_opt4",
-      "value": "Partner with the school<div><br></div><div>99999999999999</div>",
+      "value": "Partner with the school",
       "type": "text"
     },
     {

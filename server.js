@@ -11,8 +11,8 @@ import { loadDb, saveDb } from './db-json.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
-// Detect if running as Netlify Function
-const isServerless = !!process.env.LAMBDA_TASK_ROOT;
+// Detect if running in serverless environment (Vercel)
+const isServerless = process.env.VERCEL || process.env.AWS_REGION;
 
 const app = express();
 const PORT = 3000;
@@ -20,8 +20,8 @@ const PORT = 3000;
 app.use(express.json());
 app.set('trust proxy', 1);
 
-// Only use session middleware in local development, not in Netlify Functions
-// Netlify Functions are stateless, so in-memory sessions won't work
+// Use session middleware in local development only
+// Serverless functions are stateless, so in-memory sessions won't work
 if (!isServerless) {
   app.use(session({
     secret: 'edendale-secret-key-xyz',
@@ -36,45 +36,27 @@ if (!isServerless) {
 }
 
 
-// Token storage - works for both local and serverless
-const localAdminTokens = new Set();
+// Token storage - simple in-memory for both local and serverless
+// Note: In serverless, tokens won't persist across function invocations
+// For production, consider using Vercel KV or similar
+const adminTokens = new Set();
 
 async function addToken(token) {
-  if (isServerless) {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore('edendale-auth');
-    await store.set(`token_${token}`, Date.now().toString());
-  } else {
-    localAdminTokens.add(token);
-  }
+  adminTokens.add(token);
 }
 
 async function removeToken(token) {
-  if (isServerless) {
-    const { getStore } = await import('@netlify/blobs');
-    const store = getStore('edendale-auth');
-    await store.delete(`token_${token}`);
-  } else {
-    localAdminTokens.delete(token);
-  }
+  adminTokens.delete(token);
 }
 
 async function checkIsAdmin(req) {
   const auth = req.headers.authorization;
   if (auth && auth.startsWith('Bearer ')) {
     const token = auth.split(' ')[1];
-    
-    if (isServerless) {
-      const { getStore } = await import('@netlify/blobs');
-      const store = getStore('edendale-auth');
-      const exists = await store.get(`token_${token}`);
-      return !!exists;
-    } else {
-      if (localAdminTokens.has(token)) return true;
-    }
+    if (adminTokens.has(token)) return true;
   }
   
-  // Only check session in local development
+  // Check session in local development
   if (!isServerless && req.session && req.session.admin) return true;
   
   return false;
@@ -551,41 +533,30 @@ app.post('/api/upload', async (req, res) => {
   });
 });
 
-// ── Local dev only ──────────────────────────────────────────────────────────
-// On Netlify, static files in /public are served directly by Netlify's CDN
-// (see netlify.toml `publish = "public"`), and the "/*" -> index.html
-// fallback is handled by a redirect rule in netlify.toml. Neither is needed
-// -- or wanted -- inside the serverless function, which should only ever
-// answer /api/* requests. LAMBDA_TASK_ROOT is set by AWS Lambda (and
-// therefore by Netlify Functions) in every serverless invocation, so it's a
-// reliable way to tell "running as a Netlify Function" apart from
-// "running locally via `node server.js`".
+// ── Static file serving ───────────────────────────────────────────────────────
+// Serve static files in both local and serverless environments
+const staticPath = path.join(__dirname, 'public');
+app.use(express.static(staticPath, {
+  etag: false,
+  lastModified: false,
+  setHeaders: (res, path) => {
+    res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
+    res.setHeader('Pragma', 'no-cache');
+    res.setHeader('Expires', '0');
+  }
+}));
 
+// Fallback for SPA routing - serve index.html for unmatched routes
+app.get('*', (req, res) => {
+  res.sendFile(path.join(staticPath, 'index.html'));
+});
+
+// ── Server startup (local dev only) ─────────────────────────────────────────
 if (!isServerless) {
-  const staticPath = path.join(__dirname, 'public');
-  app.use(express.static(staticPath, {
-    etag: false,
-    lastModified: false,
-    setHeaders: (res, path) => {
-      res.setHeader('Cache-Control', 'no-store, no-cache, must-revalidate, private');
-      res.setHeader('Pragma', 'no-cache');
-      res.setHeader('Expires', '0');
-    }
-  }));
-
-  // For SPA routing if there is any, fallback to pages folder or index
-  // but since this is static HTML pages, it should be fine.
-  app.get('*', (req, res) => {
-    const filePath = path.join(staticPath, req.path);
-    // Simple fallback just in case
-    res.sendFile(path.join(staticPath, 'index.html'));
-  });
-
   app.listen(PORT, '0.0.0.0', () => {
     console.log(`Server running on port ${PORT}`);
   });
 }
 
-// Exported so netlify/functions/api.js can wrap this same app with
-// serverless-http, instead of duplicating every route in a second file.
+// Export for Vercel serverless function
 export default app;

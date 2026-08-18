@@ -86,7 +86,7 @@
       "id": 11,
       "page": "contact",
       "field_name": "contact_phone",
-      "value": "021 800 0111<div><br></div><div>000000000000</div>",
+      "value": "021 800 0111",
       "type": "text"
     },
     {
@@ -191,7 +191,7 @@
       "id": 89,
       "page": "contact",
       "field_name": "support_opt4",
-      "value": "Partner with the school<div><br></div><div>hgfd</div>",
+      "value": "Partner with the school",
       "type": "text"
     },
     {
@@ -233,7 +233,7 @@
       "id": 18,
       "page": "grades",
       "field_name": "grade1_subjects",
-      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills</div><div><br></div><div>rfg</div>",
+      "value": "Home Language,&nbsp;<div>First Additional Language,&nbsp;</div><div>Mathematics,&nbsp;</div><div>Life Skills</div>",
       "type": "text"
     },
     {
@@ -436,7 +436,7 @@
       "id": 47,
       "page": "about",
       "field_name": "card_structure",
-      "value": "{\"stats\":[{\"number\":\"400+\",\"numberField\":\"about_stat_learners\",\"label\":\"Learners\",\"labelField\":\"about_stat_learners_label\"},{\"number\":\"70+\",\"numberField\":\"about_stat_teachers\",\"label\":\"Teachers\",\"labelField\":\"about_stat_teachers_label\"},{\"number\":\"Gr R–7\",\"numberField\":\"about_stat_grades\",\"label\":\"Grades Offered\",\"labelField\":\"about_stat_grades_label\"}],\"mission\":[{\"title\":\"Our Mission\",\"titleField\":\"about_mission_title\",\"desc\":\"To provide every learner with a high-quality, inclusive education that fosters intellectual curiosity, personal growth, and a lifelong love of learning — equipping them with the skills and values they need to thrive in a changing world.\",\"descField\":\"about_mission_desc\"},{\"title\":\"Our Vision\",\"titleField\":\"about_vision_title\",\"desc\":\"To be a beacon of excellence in our community — a school where every child, regardless of background or circumstance, is empowered to reach their full potential and contribute meaningfully to society.\",\"descField\":\"about_vision_desc\"}],\"values\":[{\"title\":\"Academic Excellence\",\"titleField\":\"about_val1_title\",\"desc\":\"We hold every learner to high standards while providing the support they need to meet them.\",\"descField\":\"about_val1_desc\"},{\"title\":\"Inclusivity\",\"titleField\":\"about_val2_title\",\"desc\":\"Every child belongs here. We celebrate diversity and create space for every voice to be heard.\",\"descField\":\"about_val2_desc\"},{\"title\":\"Compassion\",\"titleField\":\"about_val3_title\",\"desc\":\"We lead with empathy — understanding the realities our learners face and responding with care.\",\"descField\":\"about_val3_desc\"},{\"title\":\"Growth\",\"titleField\":\"about_val4_title\",\"desc\":\"We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.\",\"descField\":\"about_val4_desc\"},{\"title\":\"Safety &amp; Respect\",\"titleField\":\"about_val5_title\",\"desc\":\"A safe, respectful environment is the foundation on which all meaningful learning is built.\",\"descField\":\"about_val5_desc\"},{\"title\":\"New Card\",\"titleField\":\"about_values_new_1787052471019_title\",\"desc\":\"Add your content here.rfgcb..\",\"descField\":\"about_values_new_1787052471019_desc\"}]}",
+      "value": "{\"stats\":[{\"number\":\"400+\",\"numberField\":\"about_stat_learners\",\"label\":\"Learners\",\"labelField\":\"about_stat_learners_label\"},{\"number\":\"70+\",\"numberField\":\"about_stat_teachers\",\"label\":\"Teachers\",\"labelField\":\"about_stat_teachers_label\"},{\"number\":\"Gr R–7\",\"numberField\":\"about_stat_grades\",\"label\":\"Grades Offered\",\"labelField\":\"about_stat_grades_label\"}],\"mission\":[{\"title\":\"Our Mission\",\"titleField\":\"about_mission_title\",\"desc\":\"To provide every learner with a high-quality, inclusive education that fosters intellectual curiosity, personal growth, and a lifelong love of learning — equipping them with the skills and values they need to thrive in a changing world.\",\"descField\":\"about_mission_desc\"},{\"title\":\"Our Vision\",\"titleField\":\"about_vision_title\",\"desc\":\"To be a beacon of excellence in our community — a school where every child, regardless of background or circumstance, is empowered to reach their full potential and contribute meaningfully to society.\",\"descField\":\"about_vision_desc\"}],\"values\":[{\"title\":\"Academic Excellence\",\"titleField\":\"about_val1_title\",\"desc\":\"We hold every learner to high standards while providing the support they need to meet them.\",\"descField\":\"about_val1_desc\"},{\"title\":\"Inclusivity\",\"titleField\":\"about_val2_title\",\"desc\":\"Every child belongs here. We celebrate diversity and create space for every voice to be heard.\",\"descField\":\"about_val2_desc\"},{\"title\":\"Compassion\",\"titleField\":\"about_val3_title\",\"desc\":\"We lead with empathy — understanding the realities our learners face and responding with care.\",\"descField\":\"about_val3_desc\"},{\"title\":\"Growth\",\"titleField\":\"about_val4_title\",\"desc\":\"We believe every learner has untapped potential, and we dedicate ourselves to helping it flourish.\",\"descField\":\"about_val4_desc\"},{\"title\":\"Safety &amp; Respect\",\"titleField\":\"about_val5_title\",\"desc\":\"A safe, respectful environment is the foundation on which all meaningful learning is built.\",\"descField\":\"about_val5_desc\"}]}",
       "type": "json"
     },
     {
@@ -506,14 +506,14 @@
       "id": 58,
       "page": "grades",
       "field_name": "grade1_ages",
-      "value": "6 – 7<div><br></div><div>9</div>",
+      "value": "6 – 7",
       "type": "text"
     },
     {
       "id": 59,
       "page": "grades",
       "field_name": "grade1_phase",
-      "value": "Foundation Phase<div><br></div><div>fg</div>",
+      "value": "Foundation Phase",
       "type": "text"
     },
     {
@@ -608,17 +608,6 @@
       "event_date": "2026-06-26",
       "event_time": "12:00",
       "description": "Last day of second school term."
-    },
-    {
-      "id": 6,
-      "title": "d",
-      "event_date": "2026-08-18",
-      "start_time": "",
-      "end_time": "",
-      "all_day": false,
-      "is_holiday": false,
-      "is_custom": true,
-      "description": "dcv"
     }
   ],
   "cards": [
@@ -791,26 +780,6 @@
       "body": null,
       "imageUrl": "/assets/images/grade-r/learning-games.svg",
       "sortOrder": 6
-    },
-    {
-      "id": 18,
-      "page": "extras",
-      "section": "extracurricular",
-      "icon": "🥁",
-      "title": "rghvn",
-      "body": "ertgh",
-      "imageUrl": null,
-      "sortOrder": 4
-    },
-    {
-      "id": 19,
-      "page": "extras",
-      "section": "cocurricular",
-      "icon": "🎭",
-      "title": "d",
-      "body": "dfxv",
-      "imageUrl": null,
-      "sortOrder": 3
     }
   ]
 }

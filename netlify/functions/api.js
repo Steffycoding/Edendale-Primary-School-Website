@@ -26,28 +26,36 @@ async function checkIsAdmin(auth) {
 
 // Database functions using Netlify Blobs
 async function loadDb() {
-  const { getStore } = await import('@netlify/blobs');
-  const store = getStore('edendale-db');
-  
-  const existing = await store.get('db', { type: 'json' });
-  if (existing) {
-    return existing;
+  try {
+    const { getStore } = await import('@netlify/blobs');
+    const store = getStore('edendale-db');
+    
+    const existing = await store.get('db', { type: 'json' });
+    if (existing) {
+      console.log('DB loaded from blobs');
+      return existing;
+    }
+    
+    console.log('Seeding initial database');
+    // Seed data
+    const seedData = {
+      admin_users: [
+        { id: 1, username: 'admin', password_hash: '$2b$10$usR4aXGduQt.YYYivDD36O/qMtTXrVlvTIKrvl6RwPr4e7pwSZQ2S' }
+      ],
+      content: [
+        { id: 1, page: 'admin-login', field_name: 'hero_title', value: 'Admin Login', type: 'text' }
+      ],
+      events: [],
+      cards: []
+    };
+    
+    await store.setJSON('db', seedData);
+    console.log('Database seeded successfully');
+    return seedData;
+  } catch (error) {
+    console.error('Error loading database:', error);
+    throw error;
   }
-  
-  // Seed data
-  const seedData = {
-    admin_users: [
-      { id: 1, username: 'admin', password_hash: '$2b$10$usR4aXGduQt.YYYivDD36O/qMtTXrVlvTIKrvl6RwPr4e7pwSZQ2S' }
-    ],
-    content: [
-      { id: 1, page: 'admin-login', field_name: 'hero_title', value: 'Admin Login', type: 'text' }
-    ],
-    events: [],
-    cards: []
-  };
-  
-  await store.setJSON('db', seedData);
-  return seedData;
 }
 
 async function saveDb(data) {
@@ -73,31 +81,46 @@ export async function handler(event, context) {
   }
 
   try {
+    console.log('Request:', method, path);
+    console.log('Raw path:', event.rawPath);
+    console.log('Query params:', event.queryStringParameters);
+    
+    // Extract the actual API path from the request
+    const apiPath = path.startsWith('/.netlify/functions') ? event.rawUrl?.split('/api')[1] ? '/api' + event.rawUrl.split('/api')[1] : path : path;
+    console.log('API Path:', apiPath);
+    
     // Admin login
-    if (path === '/api/admin/login' && method === 'POST') {
+    if ((apiPath === '/api/admin/login' || path === '/api/admin/login') && method === 'POST') {
+      console.log('Processing admin login');
       const body = JSON.parse(event.body);
       const { username, password } = body;
       
       const db = await loadDb();
+      console.log('DB loaded, users:', db.admin_users.length);
       const user = db.admin_users.find(u => u.username === username);
+      console.log('User found:', !!user);
       
       if (user && await bcrypt.compare(password, user.password_hash)) {
         const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
         await addToken(token);
+        console.log('Login successful');
         return { statusCode: 200, headers, body: JSON.stringify({ success: true, token }) };
       } else {
+        console.log('Invalid credentials');
         return { statusCode: 401, headers, body: JSON.stringify({ error: 'Invalid credentials' }) };
       }
     }
 
     // Admin status
-    if (path === '/api/admin/status' && method === 'GET') {
+    if ((apiPath === '/api/admin/status' || path === '/api/admin/status') && method === 'GET') {
+      console.log('Processing admin status');
       const isAdmin = await checkIsAdmin(event.headers.authorization);
       return { statusCode: 200, headers, body: JSON.stringify({ admin: isAdmin }) };
     }
 
     // Admin logout
-    if (path === '/api/admin/logout' && method === 'POST') {
+    if ((apiPath === '/api/admin/logout' || path === '/api/admin/logout') && method === 'POST') {
+      console.log('Processing admin logout');
       const auth = event.headers.authorization;
       if (auth && auth.startsWith('Bearer ')) {
         await removeToken(auth.split(' ')[1]);
@@ -106,7 +129,8 @@ export async function handler(event, context) {
     }
 
     // Get content
-    if (path === '/api/content' && method === 'GET') {
+    if ((apiPath === '/api/content' || path === '/api/content') && method === 'GET') {
+      console.log('Processing content get, page:', event.queryStringParameters.page);
       const db = await loadDb();
       const page = event.queryStringParameters.page;
       if (!page) return { statusCode: 400, headers, body: JSON.stringify({ error: 'Page required' }) };
@@ -120,6 +144,7 @@ export async function handler(event, context) {
           contentMap[c.field_name] = c.value;
         }
       });
+      console.log('Content loaded:', Object.keys(contentMap));
       return { statusCode: 200, headers, body: JSON.stringify(contentMap) };
     }
 

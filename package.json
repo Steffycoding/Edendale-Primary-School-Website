@@ -11,10 +11,12 @@
     "lint": "echo 'No lint step required'"
   },
   "dependencies": {
+    "@vercel/blob": "^2.8.0",
     "@vercel/node": "^3.2.24",
     "bcryptjs": "^3.0.3",
     "express": "^4.21.2",
     "express-session": "^1.19.0",
+    "jsonwebtoken": "^9.0.2",
     "multer": "^2.2.0"
   },
   "devDependencies": {}

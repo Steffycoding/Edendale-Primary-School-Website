@@ -57,10 +57,29 @@ body::before {
   z-index: -1;
   pointer-events: none;
   background:
-    radial-gradient(circle at 15% 20%, rgba(20, 0, 143, 0.14), transparent 35%),
+    radial-gradient(circle at 15% 20%, rgba(3, 55, 165, 0.14), transparent 35%),
     radial-gradient(circle at 80% 25%, rgba(217, 163, 0, 0.14), transparent 35%),
     radial-gradient(circle at 50% 80%, rgba(20, 0, 143, 0.08), transparent 40%);
   filter: blur(90px);
+}
+
+/* Hides the page's placeholder content while main.js fetches the real
+   content from /api/content, then fades it in once swapped — without
+   this, .content-loading (added/removed in main.js) does nothing, and
+   the placeholder text is visible until the fetch finishes and replaces it. */
+body.content-loading {
+  visibility: hidden;
+
+}
+
+body:not(.content-loading) {
+  animation: fadeInContent 0.01ms ease-in;
+
+}
+
+@keyframes fadeInContent {
+  from { opacity: 0; }
+  to   { opacity: 1; }
 }
 
 

@@ -2,14 +2,42 @@ import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import bcrypt from 'bcryptjs';
+import { put, get as getBlob } from '@vercel/blob';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, 'edendale.json');
 
-// Same detection server.js already uses: LAMBDA_TASK_ROOT is set by AWS
-// from "running locally via `node server.js`".
-const isServerless = !!process.env.LAMBDA_TASK_ROOT;
+// Must match the check in server.js exactly. LAMBDA_TASK_ROOT is not
+// reliably set on Vercel's current Node runtime, so relying on it here
+// (as this file previously did) could make Vercel silently take the local
+// file-write path below — which fails, because Vercel's filesystem is
+// read-only outside /tmp, and /tmp itself doesn't persist between requests.
+const isServerless = !!process.env.VERCEL;
+
+// Pathname under which the whole database is stored in the private Blob
+// store. Private (not public) because edendale.json contains admin
+// password hashes — a public Blob URL would expose them to anyone who
+// found or guessed it.
+const BLOB_PATHNAME = 'edendale-db.json';
+
+async function readJsonBlob(pathname) {
+  const result = await getBlob(pathname, { access: 'private', useCache: false });
+  if (!result || result.statusCode !== 200 || !result.stream) return null;
+  const text = await new Response(result.stream).text();
+  return JSON.parse(text);
+}
+
+async function writeJsonBlob(pathname, data) {
+  await put(pathname, JSON.stringify(data), {
+    access: 'private',
+    contentType: 'application/json',
+    // The database is one mutable file we overwrite on every save, unlike
+    // most Blob usage (uploaded images etc.) which treats blobs as
+    // immutable — this is the documented way to opt into that.
+    allowOverwrite: true
+  });
+}
 
 // Load seed data - hardcoded to avoid require/import issues in serverless
 const seedSnapshot = {
@@ -112,29 +140,26 @@ async function saveDbLocal() {
 async function loadDbServerless() {
   if (dbData) return dbData;
 
-  const store = getStore('edendale-db');
-
-  const existing = await store.get('db', { type: 'json' });
+  const existing = await readJsonBlob(BLOB_PATHNAME);
   if (existing) {
     dbData = existing;
   } else {
     // real content committed in edendale.json, so live admin edits build on
     // your actual data instead of the generic placeholder seed data.
     dbData = JSON.parse(JSON.stringify(seedSnapshot));
-    await store.setJSON('db', dbData);
+    await writeJsonBlob(BLOB_PATHNAME, dbData);
   }
 
   if (!Array.isArray(dbData.cards)) {
     dbData.cards = seedCards();
-    await store.setJSON('db', dbData);
+    await writeJsonBlob(BLOB_PATHNAME, dbData);
   }
 
   return dbData;
 }
 
 async function saveDbServerless() {
-  const store = getStore('edendale-db');
-  await store.setJSON('db', dbData);
+  await writeJsonBlob(BLOB_PATHNAME, dbData);
 }
 
 /* ══════════════════════════════════════════

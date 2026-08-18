@@ -571,6 +571,20 @@
       "field_name": "about_values_new_1787052471019_desc",
       "value": "Add your content here.rfgcb..",
       "type": "text"
+    },
+    {
+      "id": 99,
+      "page": "grade-detail",
+      "field_name": "gd_soc3",
+      "value": "Confidence buildin<span style=\"font-size: 0.9rem;\">g</span>",
+      "type": "text"
+    },
+    {
+      "id": 100,
+      "page": "extracurriculars",
+      "field_name": "extras_intro",
+      "value": "At Edendale Primary School, we believe a great education reaches beyond\n        reading, writing and numbers. Our activities give every child the chance to discover\n        new talents, make friends, and build the confidence, teamwork and discipline that help\n        them thrive both at school and in life.",
+      "type": "text"
     }
   ],
   "events": [

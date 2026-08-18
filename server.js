@@ -6,6 +6,7 @@ import { fileURLToPath } from 'url';
 import session from 'express-session';
 import multer from 'multer';
 import bcrypt from 'bcryptjs';
+import jwt from 'jsonwebtoken';
 import { loadDb, saveDb } from './db-json.js';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -36,29 +37,44 @@ if (!isServerless) {
 }
 
 
-// Token storage - simple in-memory for both local and serverless
-// Note: In serverless, tokens won't persist across function invocations
-// For production, consider using Vercel KV or similar
-const adminTokens = new Set();
+// Admin tokens are signed JWTs, not stored anywhere server-side.
+// A Vercel serverless function can spin up a brand-new instance for every
+// request, so anything kept in a plain in-memory Set (the old approach)
+// gets wiped between requests and every check after login fails with
+// "unauthorized". A JWT carries its own proof of validity in its signature,
+// so any instance can verify it without needing to remember having issued it.
+//
+// JWT_SECRET must be set as an environment variable in the Vercel project
+// (Project Settings -> Environment Variables -> JWT_SECRET). The random
+// fallback below only exists so local `node server.js` still works out of
+// the box; it must never be relied on in production, because a secret that
+// changes on every restart invalidates every previously-issued token.
+const JWT_SECRET = process.env.JWT_SECRET
+  || (isServerless
+        ? (() => { throw new Error('JWT_SECRET environment variable is required in production.'); })()
+        : 'local-dev-only-secret-do-not-use-in-production');
 
-async function addToken(token) {
-  adminTokens.add(token);
-}
+const TOKEN_EXPIRY = '7d';
 
-async function removeToken(token) {
-  adminTokens.delete(token);
+function issueToken() {
+  return jwt.sign({ admin: true }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
 }
 
 async function checkIsAdmin(req) {
   const auth = req.headers.authorization;
   if (auth && auth.startsWith('Bearer ')) {
     const token = auth.split(' ')[1];
-    if (adminTokens.has(token)) return true;
+    try {
+      const payload = jwt.verify(token, JWT_SECRET);
+      if (payload && payload.admin) return true;
+    } catch (err) {
+      // Expired or tampered token — fall through to session check / false.
+    }
   }
-  
+
   // Check session in local development
   if (!isServerless && req.session && req.session.admin) return true;
-  
+
   return false;
 }
 
@@ -73,10 +89,9 @@ app.post('/api/admin/login', async (req, res) => {
       if (!isServerless) {
         req.session.admin = true;
       }
-      
-      const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      await addToken(token);
-      
+
+      const token = issueToken();
+
       if (!isServerless) {
         req.session.save((err) => {
           res.json({ success: true, token });
@@ -126,10 +141,9 @@ app.post('/api/admin/change-password', async (req, res) => {
 });
 
 app.post('/api/admin/logout', async (req, res) => {
-  const auth = req.headers.authorization;
-  if (auth && auth.startsWith('Bearer ')) {
-    await removeToken(auth.split(' ')[1]);
-  }
+  // JWTs are stateless — there is nothing to remove server-side. The client
+  // (admin.js) deletes the token from localStorage, which is sufficient:
+  // without it, no future request can pass checkIsAdmin().
   if (!isServerless) {
     req.session.destroy();
   }

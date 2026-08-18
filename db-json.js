@@ -8,8 +8,6 @@ const __dirname = path.dirname(__filename);
 const DB_FILE = path.join(__dirname, 'edendale.json');
 
 // Same detection server.js already uses: LAMBDA_TASK_ROOT is set by AWS
-// Lambda (and therefore by Netlify Functions) in every serverless
-// invocation, so it reliably tells "running as a Netlify Function" apart
 // from "running locally via `node server.js`".
 const isServerless = !!process.env.LAMBDA_TASK_ROOT;
 
@@ -110,22 +108,16 @@ async function saveDbLocal() {
   await fs.writeFile(DB_FILE, JSON.stringify(dbData, null, 2), 'utf-8');
 }
 
-/* ══════════════════════════════════════════
-   NETLIFY — persistent storage via Netlify Blobs
-   (used whenever this runs as a Netlify Function)
-   ══════════════════════════════════════════ */
 
 async function loadDbServerless() {
   if (dbData) return dbData;
 
-  const { getStore } = await import('@netlify/blobs');
   const store = getStore('edendale-db');
 
   const existing = await store.get('db', { type: 'json' });
   if (existing) {
     dbData = existing;
   } else {
-    // First request ever on this Netlify site: seed the Blob store from the
     // real content committed in edendale.json, so live admin edits build on
     // your actual data instead of the generic placeholder seed data.
     dbData = JSON.parse(JSON.stringify(seedSnapshot));
@@ -141,7 +133,6 @@ async function loadDbServerless() {
 }
 
 async function saveDbServerless() {
-  const { getStore } = await import('@netlify/blobs');
   const store = getStore('edendale-db');
   await store.setJSON('db', dbData);
 }

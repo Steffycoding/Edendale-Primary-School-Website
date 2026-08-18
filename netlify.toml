@@ -6,50 +6,8 @@
   NODE_VERSION = "18"
 
 [[redirects]]
-  from = "/api/admin/login"
-  to = "/.netlify/functions/admin-login"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/admin/status"
-  to = "/.netlify/functions/admin-status"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/admin/logout"
-  to = "/.netlify/functions/admin-logout"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/content"
-  to = "/.netlify/functions/content"
-  status = 200
-  force = true
-
-[[redirects]]
   from = "/api/*"
   to = "/.netlify/functions/api/:splat"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/events"
-  to = "/.netlify/functions/events"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/cards"
-  to = "/.netlify/functions/cards"
-  status = 200
-  force = true
-
-[[redirects]]
-  from = "/api/events"
-  to = "/.netlify/functions/events"
   status = 200
   force = true
 

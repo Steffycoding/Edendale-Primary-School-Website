@@ -11,32 +11,72 @@ import { loadDb, saveDb } from './db-json.js';
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
 
+// Detect if running as Netlify Function
+const isServerless = !!process.env.LAMBDA_TASK_ROOT;
+
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
 app.set('trust proxy', 1);
-app.use(session({
-  secret: 'edendale-secret-key-xyz',
-  resave: false,
-  saveUninitialized: false,
-  cookie: {
-    secure: true,
-    sameSite: 'none',
-    partitioned: true
+
+// Only use session middleware in local development, not in Netlify Functions
+// Netlify Functions are stateless, so in-memory sessions won't work
+if (!isServerless) {
+  app.use(session({
+    secret: 'edendale-secret-key-xyz',
+    resave: false,
+    saveUninitialized: false,
+    cookie: {
+      secure: true,
+      sameSite: 'none',
+      partitioned: true
+    }
+  }));
+}
+
+
+// Token storage - works for both local and serverless
+const localAdminTokens = new Set();
+
+async function addToken(token) {
+  if (isServerless) {
+    const { getStore } = await import('@netlify/blobs');
+    const store = getStore('edendale-auth');
+    await store.set(`token_${token}`, Date.now().toString());
+  } else {
+    localAdminTokens.add(token);
   }
-}));
+}
 
+async function removeToken(token) {
+  if (isServerless) {
+    const { getStore } = await import('@netlify/blobs');
+    const store = getStore('edendale-auth');
+    await store.delete(`token_${token}`);
+  } else {
+    localAdminTokens.delete(token);
+  }
+}
 
-const adminTokens = new Set();
-
-function checkIsAdmin(req) {
+async function checkIsAdmin(req) {
   const auth = req.headers.authorization;
   if (auth && auth.startsWith('Bearer ')) {
     const token = auth.split(' ')[1];
-    if (adminTokens.has(token)) return true;
+    
+    if (isServerless) {
+      const { getStore } = await import('@netlify/blobs');
+      const store = getStore('edendale-auth');
+      const exists = await store.get(`token_${token}`);
+      return !!exists;
+    } else {
+      if (localAdminTokens.has(token)) return true;
+    }
   }
-  if (req.session && req.session.admin) return true;
+  
+  // Only check session in local development
+  if (!isServerless && req.session && req.session.admin) return true;
+  
   return false;
 }
 
@@ -47,12 +87,21 @@ app.post('/api/admin/login', async (req, res) => {
     const { username, password } = req.body;
     const user = db.admin_users.find(u => u.username === username);
     if (user && await bcrypt.compare(password, user.password_hash)) {
-      req.session.admin = true;
+      // Set session only in local development
+      if (!isServerless) {
+        req.session.admin = true;
+      }
+      
       const token = Math.random().toString(36).substring(2) + Date.now().toString(36);
-      adminTokens.add(token);
-      req.session.save((err) => {
+      await addToken(token);
+      
+      if (!isServerless) {
+        req.session.save((err) => {
+          res.json({ success: true, token });
+        });
+      } else {
         res.json({ success: true, token });
-      });
+      }
     } else {
       res.status(401).json({ error: 'Invalid credentials' });
     }
@@ -61,17 +110,17 @@ app.post('/api/admin/login', async (req, res) => {
   }
 });
 
-app.get('/api/admin/status', (req, res) => {
-  res.json({ admin: checkIsAdmin(req) });
+app.get('/api/admin/status', async (req, res) => {
+  res.json({ admin: await checkIsAdmin(req) });
 });
 
 
 app.post('/api/admin/change-password', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
+  if (!(await checkIsAdmin(req))) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const { newPassword } = req.body;
     if (!newPassword) return res.status(400).json({ error: 'Password required' });
-    if (newPassword.length < 12) return res.status(400).json({ error: 'Password must be at least 12 characters' });
+    if (newPassword.length < 10) return res.status(400).json({ error: 'Password must be at least 10 characters' });
     if (!/[A-Z]/.test(newPassword)) return res.status(400).json({ error: 'Password must contain at least one capital letter' });
     if (!/[0-9]/.test(newPassword)) return res.status(400).json({ error: 'Password must contain at least one digit' });
     if (!/[^A-Za-z0-9]/.test(newPassword)) return res.status(400).json({ error: 'Password must contain at least one special character' });
@@ -94,12 +143,14 @@ app.post('/api/admin/change-password', async (req, res) => {
   }
 });
 
-app.post('/api/admin/logout', (req, res) => {
+app.post('/api/admin/logout', async (req, res) => {
   const auth = req.headers.authorization;
   if (auth && auth.startsWith('Bearer ')) {
-    adminTokens.delete(auth.split(' ')[1]);
+    await removeToken(auth.split(' ')[1]);
   }
-  req.session.destroy();
+  if (!isServerless) {
+    req.session.destroy();
+  }
   res.json({ success: true });
 });
 
@@ -125,7 +176,7 @@ app.get('/api/content', async (req, res) => {
 });
 
 app.patch('/api/content', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
+  if (!(await checkIsAdmin(req))) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const { page, changes, cardData } = req.body;
@@ -200,7 +251,7 @@ app.get('/api/events', async (req, res) => {
 });
 
 app.post('/api/events', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
+  if (!(await checkIsAdmin(req))) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const { title, date, startTime, endTime, allDay, isHoliday, description } = req.body;
@@ -230,7 +281,7 @@ app.post('/api/events', async (req, res) => {
 });
 
 app.put('/api/events/:id', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
+  if (!(await checkIsAdmin(req))) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
@@ -260,7 +311,7 @@ app.put('/api/events/:id', async (req, res) => {
 });
 
 app.delete('/api/events/:id', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(403).json({ error: 'Unauthorized' });
+  if (!(await checkIsAdmin(req))) return res.status(403).json({ error: 'Unauthorized' });
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
@@ -337,7 +388,7 @@ app.get('/api/cards', async (req, res) => {
 });
 
 app.post('/api/cards', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+  if (!(await checkIsAdmin(req))) return res.status(401).json({ error: 'Unauthorised.' });
   try {
     const db = await loadDb();
     const page = cardString(req.body, 'page').toLowerCase();
@@ -381,7 +432,7 @@ app.post('/api/cards', async (req, res) => {
 });
 
 app.put('/api/cards/:id', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+  if (!(await checkIsAdmin(req))) return res.status(401).json({ error: 'Unauthorised.' });
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
@@ -425,7 +476,7 @@ app.put('/api/cards/:id', async (req, res) => {
 });
 
 app.delete('/api/cards/:id', async (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+  if (!(await checkIsAdmin(req))) return res.status(401).json({ error: 'Unauthorised.' });
   try {
     const db = await loadDb();
     const id = parseInt(req.params.id, 10);
@@ -479,8 +530,8 @@ const upload = multer({
   }
 });
 
-app.post('/api/upload', (req, res) => {
-  if (!checkIsAdmin(req)) return res.status(401).json({ error: 'Unauthorised.' });
+app.post('/api/upload', async (req, res) => {
+  if (!(await checkIsAdmin(req))) return res.status(401).json({ error: 'Unauthorised.' });
 
   upload.single('file')(req, res, err => {
     if (err instanceof UnsupportedImageError) {
@@ -509,7 +560,6 @@ app.post('/api/upload', (req, res) => {
 // therefore by Netlify Functions) in every serverless invocation, so it's a
 // reliable way to tell "running as a Netlify Function" apart from
 // "running locally via `node server.js`".
-const isServerless = !!process.env.LAMBDA_TASK_ROOT;
 
 if (!isServerless) {
   const staticPath = path.join(__dirname, 'public');

@@ -106,8 +106,8 @@ async function saveDb() {
 }
 
 async function seedDb() {
-  const hash1 = await bcrypt.hash('edendale2024', 10);
-  const hash2 = await bcrypt.hash('kennis2026', 10);
+  const hash1 = await bcrypt.hash('Edendale@2026', 10);
+  const hash2 = await bcrypt.hash('teacher123', 10);
   dbData.admin_users.push({ id: 1, username: 'admin', password_hash: hash1 });
   dbData.admin_users.push({ id: 2, username: 'teacher', password_hash: hash2 });
 

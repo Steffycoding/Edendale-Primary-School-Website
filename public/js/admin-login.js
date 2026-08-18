@@ -161,9 +161,9 @@ document.getElementById('save-password-btn').addEventListener('click', async () 
 
   
 
-  if (newPwd.length < 6 || newPwd.length > 12) {
+  if (newPwd.length < 10) {
 
-    errorEl.textContent = 'Password must be between 6-12 characters';
+    errorEl.textContent = 'Password must be at least 10 characters';
 
     return;
 
@@ -257,7 +257,7 @@ document.getElementById('new-password').addEventListener('input', (e) => {
 
   const rules = {
 
-    length: val.length >= 6 && val.length <= 12,
+    length: val.length >= 10,
 
     digit: /[0-9]/.test(val),
 

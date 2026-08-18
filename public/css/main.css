@@ -78,7 +78,7 @@ html.content-loading body {
 
 body {
   background: var(--navy-dark);
-  transition: opacity 0.4s ease-in;
+  transition: opacity 0.2s ease-out;
 }
 
 
@@ -1137,10 +1137,10 @@ address {
 ul{
   color: var(--navy);
   line-height: 1.6;
-  font-size:1.3rem;
+  font-size:1.2rem;
   font-weight:500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align:left;
+  text-align:center;
   align-items:center;
 
 }
@@ -1907,7 +1907,7 @@ body.admin-mode [data-editable]:hover::after {
 
 
 .grade-detail-content h3 {
-  font-size: 1.4rem;
+  font-size: 1.2rem;
   color: var(--navy);
   font-weight: bold;
   margin-top: 32px;
@@ -1921,7 +1921,7 @@ body.admin-mode [data-editable]:hover::after {
 
 
 .learn-category h4 {
-  font-size: 1.5rem;
+  font-size: 1.1rem;
   color: var(--navy);
   margin-bottom: 12px;
   font-weight: bold;

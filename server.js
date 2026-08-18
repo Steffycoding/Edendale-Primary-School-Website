@@ -8,6 +8,7 @@ import multer from 'multer';
 import bcrypt from 'bcryptjs';
 import jwt from 'jsonwebtoken';
 import { loadDb, saveDb } from './db-json.js';
+import { put } from '@vercel/blob';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -490,8 +491,15 @@ app.delete('/api/cards/:id', async (req, res) => {
 });
 
 // ── Image uploads ───────────────────────────────────────────────────────────
-// Files land in public/assets/images/uploads and are served by the static
-// middleware below, so an uploaded image needs no special route to display.
+// Local dev: files land in public/assets/images/uploads and are served by
+// the static middleware below.
+// Vercel: the filesystem is read-only outside /tmp (same reason db-json.js
+// uses Blob storage instead of writing edendale.json to disk), so
+// multer.diskStorage's mkdir/write fails there with an EROFS error. That
+// error isn't UnsupportedImageError or LIMIT_FILE_SIZE, so it used to fall
+// through to a misleading "Expected a multipart/form-data upload" message.
+// Fix: keep the upload in memory instead of writing to disk, and hand it to
+// Vercel Blob (public, since these are images meant to render on the site).
 const UPLOAD_DIR = path.join(__dirname, 'public', 'assets', 'images', 'uploads');
 const PUBLIC_UPLOAD_PREFIX = '/assets/images/uploads';
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
@@ -507,17 +515,19 @@ const EXTENSION_BY_MIME = {
 class UnsupportedImageError extends Error {}
 
 const upload = multer({
-  storage: multer.diskStorage({
-    destination: (req, file, cb) => {
-      fs.mkdir(UPLOAD_DIR, { recursive: true }, err => cb(err, UPLOAD_DIR));
-    },
-    // Never reuse the client's filename — it can contain path traversal
-    // ("../../") or collide with an existing upload.
-    filename: (req, file, cb) => {
-      const ext = EXTENSION_BY_MIME[file.mimetype.toLowerCase()];
-      cb(null, crypto.randomUUID().replace(/-/g, '') + '.' + ext);
-    }
-  }),
+  storage: isServerless
+    ? multer.memoryStorage()
+    : multer.diskStorage({
+        destination: (req, file, cb) => {
+          fs.mkdir(UPLOAD_DIR, { recursive: true }, err => cb(err, UPLOAD_DIR));
+        },
+        // Never reuse the client's filename — it can contain path traversal
+        // ("../../") or collide with an existing upload.
+        filename: (req, file, cb) => {
+          const ext = EXTENSION_BY_MIME[file.mimetype.toLowerCase()];
+          cb(null, crypto.randomUUID().replace(/-/g, '') + '.' + ext);
+        }
+      }),
   limits: { fileSize: MAX_UPLOAD_BYTES, files: 1 },
   // An allowlist, not a blocklist.
   fileFilter: (req, file, cb) => {
@@ -529,21 +539,42 @@ const upload = multer({
 app.post('/api/upload', async (req, res) => {
   if (!(await checkIsAdmin(req))) return res.status(401).json({ error: 'Unauthorised.' });
 
-  upload.single('file')(req, res, err => {
+  upload.single('file')(req, res, async err => {
     if (err instanceof UnsupportedImageError) {
       return res.status(415).json({ error: 'Unsupported image type. Use JPG, PNG, WEBP, GIF or SVG.' });
     }
     if (err && err.code === 'LIMIT_FILE_SIZE') {
       return res.status(413).json({ error: 'That image is too large. The limit is 5MB.' });
     }
-    if (err) return res.status(400).json({ error: 'Expected a multipart/form-data upload.' });
+    if (err) {
+      console.error('[Upload] multer error:', err);
+      return res.status(400).json({ error: 'Expected a multipart/form-data upload.' });
+    }
     if (!req.file) return res.status(400).json({ error: 'No file was uploaded.' });
 
-    res.status(201).json({
-      url: `${PUBLIC_UPLOAD_PREFIX}/${req.file.filename}`,
-      filename: req.file.filename,
-      size: req.file.size
-    });
+    if (!isServerless) {
+      return res.status(201).json({
+        url: `${PUBLIC_UPLOAD_PREFIX}/${req.file.filename}`,
+        filename: req.file.filename,
+        size: req.file.size
+      });
+    }
+
+    // Serverless: req.file.buffer holds the bytes (memoryStorage), nothing
+    // was written to disk. Upload that buffer to Blob instead.
+    try {
+      const ext = EXTENSION_BY_MIME[req.file.mimetype.toLowerCase()];
+      const filename = crypto.randomUUID().replace(/-/g, '') + '.' + ext;
+      const blob = await put(`uploads/${filename}`, req.file.buffer, {
+        access: 'public',
+        contentType: req.file.mimetype,
+        allowOverwrite: true
+      });
+      res.status(201).json({ url: blob.url, filename, size: req.file.size });
+    } catch (blobErr) {
+      console.error('[Upload] Blob upload failed:', blobErr);
+      res.status(500).json({ error: 'Upload failed: ' + blobErr.message });
+    }
   });
 });
 

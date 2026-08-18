@@ -195,15 +195,13 @@ function applyCardStructure(cardData) {
 let currentPage = window.location.pathname.split('/').pop().replace('.html', '');
 if (!currentPage || currentPage === 'index' || currentPage === 'home') currentPage = 'about';
 
-// Add loading state to prevent flash
-document.body.classList.add('content-loading');
+// The loading state is added synchronously in the inline <head> script
+// (before first paint) — this just removes it once content is ready.
 
 loadPageContent(currentPage).then(() => {
-  // Remove loading state after content is loaded
-  document.body.classList.remove('content-loading');
+  document.documentElement.classList.remove('content-loading');
 }).catch(() => {
-  // Remove loading state even if there's an error
-  document.body.classList.remove('content-loading');
+  document.documentElement.classList.remove('content-loading');
 });
 
 /* ══════════════════════════════════════════

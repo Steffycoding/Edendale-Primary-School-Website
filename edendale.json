@@ -107,7 +107,7 @@
       "id": 14,
       "page": "contact",
       "field_name": "contact_emis",
-      "value": "1054821000",
+      "value": "1054821000<div><br></div><div>8888888888888888</div>",
       "type": "text"
     },
     {
@@ -191,7 +191,7 @@
       "id": 89,
       "page": "contact",
       "field_name": "support_opt4",
-      "value": "Partner with the school",
+      "value": "Partner with the school<div><br></div><div>99999999999999</div>",
       "type": "text"
     },
     {
@@ -584,6 +584,20 @@
       "page": "extracurriculars",
       "field_name": "extras_intro",
       "value": "At Edendale Primary School, we believe a great education reaches beyond\n        reading, writing and numbers. Our activities give every child the chance to discover\n        new talents, make friends, and build the confidence, teamwork and discipline that help\n        them thrive both at school and in life.",
+      "type": "text"
+    },
+    {
+      "id": 101,
+      "page": "about",
+      "field_name": "about_community_desc",
+      "value": "Manenberg is a vibrant community on the Cape Flats with a rich history and a resilient spirit. Like many communities in the area, it faces real socioeconomic challenges — but the people here are defined by far more than their circumstances.<br><br>\n        Edendale Primary stands as a cornerstone of this community. We are more than a school — we are a gathering point, a support system, and a source of hope for hundreds of families.<br><br>\n        <b>We serve learners from households facing poverty and high unemployment, providing not just education but stability and structure.</b><br>\n        <b>In a community affected by gangsterism and substance abuse, our school offers a safe alternative — a place where children can simply be children and learn.</b><br>\n        <b>We recognise the challenges around parental involvement, and actively work to build bridges between the school and the families we serve.</b><br>\n        <b>We are committed to improving literacy and numeracy outcomes so our learners are prepared for high school and beyond.</b>",
+      "type": "text"
+    },
+    {
+      "id": 102,
+      "page": "grade-detail",
+      "field_name": "gd_quote",
+      "value": "\"A nurturing, play-based environment where young learners discover confidence,\n          curiosity, along with school readiness.\"",
       "type": "text"
     }
   ],

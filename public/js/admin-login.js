@@ -43,9 +43,24 @@ document.getElementById('admin-login-btn').addEventListener('click', async () =>
 
       document.getElementById('change-password-box').style.display = 'block';
 
-    } else {
+    } else if (res.status === 401) {
 
       errorEl.textContent = 'Invalid credentials';
+
+    } else {
+
+      // A non-401 failure means the server itself broke (missing env var,
+      // storage misconfigured, etc.) rather than a wrong password — show
+      // the real reason so it isn't mistaken for a typo'd password.
+      let detail = `Server error (${res.status})`;
+      try {
+        const json = await res.json();
+        if (json.error) detail = json.error;
+      } catch (_) { /* body wasn't JSON — keep the generic message */ }
+
+      errorEl.textContent = `Login failed: ${detail}`;
+
+      console.error('[Admin Login] Non-auth failure:', detail);
 
     }
 
@@ -278,4 +293,3 @@ document.getElementById('new-password').addEventListener('input', (e) => {
   document.getElementById('rule-character').style.color = rules.character ? 'green' : 'var(--text-muted)';
 
 });
-

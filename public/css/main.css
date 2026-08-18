@@ -63,23 +63,22 @@ body::before {
   filter: blur(90px);
 }
 
-/* Hides the page's placeholder content while main.js fetches the real
-   content from /api/content, then fades it in once swapped — without
-   this, .content-loading (added/removed in main.js) does nothing, and
-   the placeholder text is visible until the fetch finishes and replaces it. */
-body.content-loading {
-  visibility: hidden;
-
+/* Hides the page's placeholder content until main.js swaps in the real
+   content from /api/content, then fades it in smoothly.
+   The 'content-loading' class must be added to <html> — not <body> — by an
+   inline script in <head>, BEFORE the stylesheet link. Because that inline
+   script runs before the browser paints anything, the placeholder content
+   is never visible, even for a frame, on refresh. (main.js alone is too
+   late for this: it's an external <script src> at the bottom of <body>,
+   so the browser has already painted by the time it runs.) main.js removes
+   the class once the real content is fetched and applied. */
+html.content-loading body {
+  opacity: 0;
 }
 
-body:not(.content-loading) {
-  animation: fadeInContent 0.01ms ease-in;
-
-}
-
-@keyframes fadeInContent {
-  from { opacity: 0; }
-  to   { opacity: 1; }
+body {
+  background: var(--navy-dark);
+  transition: opacity 0.4s ease-in;
 }
 
 
@@ -1138,10 +1137,10 @@ address {
 ul{
   color: var(--navy);
   line-height: 1.6;
-  font-size:1.2rem;
+  font-size:1.3rem;
   font-weight:500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align:center;
+  text-align:left;
   align-items:center;
 
 }
@@ -1908,7 +1907,7 @@ body.admin-mode [data-editable]:hover::after {
 
 
 .grade-detail-content h3 {
-  font-size: 1.2rem;
+  font-size: 1.4rem;
   color: var(--navy);
   font-weight: bold;
   margin-top: 32px;
@@ -1922,7 +1921,7 @@ body.admin-mode [data-editable]:hover::after {
 
 
 .learn-category h4 {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   color: var(--navy);
   margin-bottom: 12px;
   font-weight: bold;

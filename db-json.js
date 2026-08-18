@@ -1,7 +1,6 @@
 import fs from 'fs/promises';
 import path from 'path';
 import { fileURLToPath } from 'url';
-import { createRequire } from 'module';
 import bcrypt from 'bcryptjs';
 
 const __filename = fileURLToPath(import.meta.url);
@@ -14,12 +13,66 @@ const DB_FILE = path.join(__dirname, 'edendale.json');
 // from "running locally via `node server.js`".
 const isServerless = !!process.env.LAMBDA_TASK_ROOT;
 
-// Bundled into the function at build time via require(), NOT read from disk
-// at runtime -- Netlify Functions can't write to the filesystem they were
-// deployed with, so this only ever serves as the one-time seed for the Blob
-// store below, the first time the function runs on a fresh site.
-const require = createRequire(import.meta.url);
-const seedSnapshot = require('./edendale.json');
+// Load seed data - hardcoded to avoid require/import issues in serverless
+const seedSnapshot = {
+  admin_users: [
+    {
+      id: 1,
+      username: 'admin',
+      password_hash: '$2b$10$usR4aXGduQt.YYYivDD36O/qMtTXrVlvTIKrvl6RwPr4e7pwSZQ2S'
+    },
+    {
+      id: 2,
+      username: 'teacher',
+      password_hash: '$2b$10$iDlNaMvyL.JzvfMxECLPDO4GBjJH/NVJj8EuXGEqPm6rGBzoy/nXS'
+    }
+  ],
+  content: [
+    { id: 1, page: 'home', field_name: 'hero_title', value: 'Edendale Primary School', type: 'text' },
+    { id: 2, page: 'home', field_name: 'hero_tagline', value: 'Kennis is lig', type: 'text' },
+    { id: 3, page: 'home', field_name: 'hero_description', value: 'Edendale Primary School has been serving the Manenberg community with dedication, compassion, and a commitment to excellence in education.', type: 'text' },
+    { id: 4, page: 'home', field_name: 'hero_cta', value: 'Admissions Enquiry', type: 'text' },
+    { id: 5, page: 'home', field_name: 'about_title', value: 'A Place of Learning, Growth & Community', type: 'text' },
+    { id: 6, page: 'home', field_name: 'stat_learners', value: '400+', type: 'text' },
+    { id: 7, page: 'home', field_name: 'stat_teachers', value: '70+', type: 'text' },
+    { id: 8, page: 'home', field_name: 'stat_grades', value: 'Gr R–7', type: 'text' },
+    { id: 9, page: 'contact', field_name: 'contact_school_name', value: 'Edendale Primary School<br>', type: 'text' },
+    { id: 10, page: 'contact', field_name: 'contact_address', value: '100 Philippi Ring Road &amp; Manenberg Ave<br>Manenberg, Cape Town, 7764<br>South Africa', type: 'text' },
+    { id: 11, page: 'contact', field_name: 'contact_phone', value: '021 800 0111', type: 'text' },
+    { id: 12, page: 'contact', field_name: 'contact_mobile', value: '082 829 1000', type: 'text' },
+    { id: 13, page: 'contact', field_name: 'contact_email', value: 'edendaleprimary@gmail.com', type: 'text' },
+    { id: 14, page: 'contact', field_name: 'contact_emis', value: '1054821000', type: 'text' },
+    { id: 15, page: 'home', field_name: 'hero_cta_link', value: 'pages/grades.html', type: 'link' },
+    { id: 16, page: 'grades', field_name: 'admissions_cta_link', value: 'https://wcedonline.westerncape.gov.za/admissions', type: 'link' },
+    { id: 17, page: 'home', field_name: 'about_description', value: '<!-- TODO: Replace with full about text -->\n        Edendale Primary School is a public primary school situated in Manenberg in Cape Town.\n        We offer Grades R through 7, providing a safe and nurturing learning environment for every child.', type: 'text' }
+  ],
+  events: [
+    { id: 1, title: 'Term 2 Begins', event_date: '2026-04-07', event_time: '07:30', description: 'Start of second school term.' },
+    { id: 2, title: 'Parent-Teacher Meetings', event_date: '2026-04-15', event_time: '14:00', description: 'Individual parent-teacher interviews. Please book a slot.' },
+    { id: 3, title: 'Sports Day', event_date: '2026-04-22', event_time: '09:00', description: 'Annual inter-grade sports day on the school grounds.' },
+    { id: 4, title: 'Winter Concert', event_date: '2026-06-10', event_time: '18:00', description: 'Annual cultural evening featuring choir, drama and dance.' },
+    { id: 5, title: 'Term 2 Ends', event_date: '2026-06-26', event_time: '12:00', description: 'Last day of second school term.' }
+  ],
+  cards: [
+    { id: 1, page: 'extras', section: 'extracurricular', icon: '🥁', title: 'Marching Band & Drumline', body: 'Learners join our band to play drums and percussion, rehearsing together and performing at school assemblies, sports days and community events. It teaches rhythm, focus and self-discipline, and gives children the pride and confidence that comes from performing as part of a team.', imageUrl: null, sortOrder: 1 },
+    { id: 2, page: 'extras', section: 'extracurricular', icon: '⚽', title: 'Soccer', body: 'Boys and girls train regularly and play friendly matches against other schools. Through soccer, children build fitness, coordination and stamina, learn to work together as a team, and develop the sportsmanship and resilience that come from both winning and losing gracefully.', imageUrl: null, sortOrder: 2 },
+    { id: 3, page: 'extras', section: 'extracurricular', icon: '🏐', title: 'Netball', body: 'One of our most popular activities, netball has learners practising passing, shooting and quick footwork on the court. It develops agility, balance and teamwork, while building the confidence and friendships that grow from working together toward a shared goal.', imageUrl: null, sortOrder: 3 },
+    { id: 4, page: 'extras', section: 'cocurricular', icon: '🔬', title: 'Science & Discovery Club', body: 'In Science Club, children carry out safe, hands-on experiments and simple projects that bring their classroom lessons to life. By exploring how and why things work, they build curiosity, observation skills and confidence, and discover just how exciting learning can be.', imageUrl: null, sortOrder: 1 },
+    { id: 5, page: 'extras', section: 'cocurricular', icon: '📚', title: 'Reading & Storytelling Club', body: 'Members gather to share stories, read together and talk about their favourite books. The club nurtures a genuine love of reading, strengthens vocabulary and comprehension, and sparks the imagination, giving children a foundation that supports every other subject they learn.', imageUrl: null, sortOrder: 2 },
+    { id: 6, page: 'grade_r', section: 'activities', icon: '📖', title: 'Story Time & Early Reading', body: 'Every day the class gathers for a read-aloud story, where children look at the pictures, guess what happens next and talk about the characters. This grows their vocabulary, strengthens listening and concentration, and builds an early love of books that prepares them for reading on their own.', imageUrl: null, sortOrder: 1 },
+    { id: 7, page: 'grade_r', section: 'activities', icon: '🧩', title: 'Building, Puzzles & Problem-Solving', body: 'Children work with blocks, puzzles and shape-sorting games, often side by side with friends. As they build towers and fit pieces together, they develop patience, logical thinking and the small hand muscles they will later need to hold a pencil and write.', imageUrl: null, sortOrder: 2 },
+    { id: 8, page: 'grade_r', section: 'activities', icon: '🎨', title: 'Arts, Crafts & Creative Expression', body: 'With paint, crayons, scissors and glue, children create their own artwork and proudly display it. These hands-on activities sharpen fine motor control and hand-eye coordination, while giving every child a safe, joyful way to express their ideas and feelings.', imageUrl: null, sortOrder: 3 },
+    { id: 9, page: 'grade_r', section: 'activities', icon: '🎵', title: 'Music, Song & Movement', body: 'Through singing, clapping games, dancing and simple instruments, children learn rhythm and new words while moving their whole bodies. It builds coordination, memory and the confidence to perform in front of others; and it is one of the happiest, most energetic parts of their day.', imageUrl: null, sortOrder: 4 },
+    { id: 10, page: 'grade_r', section: 'activities', icon: '⚽', title: 'Outdoor & Active Play', body: 'In a safe, supervised playground, children run, climb, jump and play group games. This strengthens their growing muscles, balance and coordination, teaches them to take turns and play fairly, and lays the foundation for a healthy, active lifestyle.', imageUrl: null, sortOrder: 5 },
+    { id: 11, page: 'grade_r', section: 'activities', icon: '🔤', title: 'First Numbers, Letters & Sounds', body: 'Playful games with letters, numbers, shapes and colours help children recognise and remember them without any pressure. These gentle first steps in reading and maths make learning feel like fun; and get little ones confidently ready for Grade 1.', imageUrl: null, sortOrder: 6 },
+    { id: 12, page: 'grade_r', section: 'gallery', icon: null, title: 'Story Time', body: null, imageUrl: '/assets/images/grade-r/story-time.svg', sortOrder: 1 },
+    { id: 13, page: 'grade_r', section: 'gallery', icon: null, title: 'Creative Play', body: null, imageUrl: '/assets/images/grade-r/creative-play.svg', sortOrder: 2 },
+    { id: 14, page: 'grade_r', section: 'gallery', icon: null, title: 'Arts & Crafts', body: null, imageUrl: '/assets/images/grade-r/arts-crafts.svg', sortOrder: 3 },
+    { id: 15, page: 'grade_r', section: 'gallery', icon: null, title: 'Music & Movement', body: null, imageUrl: '/assets/images/grade-r/music-movement.svg', sortOrder: 4 },
+    { id: 16, page: 'grade_r', section: 'gallery', icon: null, title: 'Outdoor Play', body: null, imageUrl: '/assets/images/grade-r/outdoor-play.svg', sortOrder: 5 },
+    { id: 17, page: 'grade_r', section: 'gallery', icon: null, title: 'Learning Games', body: null, imageUrl: '/assets/images/grade-r/learning-games.svg', sortOrder: 6 }
+  ]
+};
 
 let dbData = null;
 

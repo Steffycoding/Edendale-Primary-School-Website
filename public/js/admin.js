@@ -472,15 +472,6 @@ async function saveAllChanges() {
     saveBtn.textContent = 'Saving...';
   }
   
-  // Block all UI interactions during save
-  document.body.style.pointerEvents = 'none';
-  document.body.style.opacity = '0.7';
-  // Re-enable pointer events for the save button itself
-  if (saveBtn) {
-    saveBtn.style.pointerEvents = 'auto';
-    saveBtn.style.opacity = '1';
-  }
-  
   try {
     // Both index.html and about.html share the same data (about page)
     const pathname = window.location.pathname;
@@ -512,20 +503,10 @@ async function saveAllChanges() {
     
     if (!hasFieldChanges && !hasCardChanges) {
       alert('No changes to save.');
-      // Restore UI and exit
-      document.body.style.pointerEvents = '';
-      document.body.style.opacity = '';
-      if (saveBtn) {
-        saveBtn.disabled = false;
-        saveBtn.textContent = 'Save All Changes';
-        saveBtn.style.pointerEvents = '';
-        saveBtn.style.opacity = '';
-      }
-      isSaving = false;
       return;
     }
     
-    const token = sessionStorage.getItem('adminToken');
+    const token = localStorage.getItem('adminToken');
     const payload = { page, changes: pendingChanges, cardData };
     console.log('[Save] Sending payload:', payload);
     
@@ -555,14 +536,9 @@ async function saveAllChanges() {
     pendingChanges = {};
   } finally {
     isSaving = false;
-    // Restore UI interactions
-    document.body.style.pointerEvents = '';
-    document.body.style.opacity = '';
     if (saveBtn) {
       saveBtn.disabled = false;
       saveBtn.textContent = 'Save All Changes';
-      saveBtn.style.pointerEvents = '';
-      saveBtn.style.opacity = '';
     }
   }
 }
@@ -763,9 +739,6 @@ function initAboutPageCardManagement() {
       if (card && !card.classList.contains('add-card-btn')) {
         if (confirm('Are you sure you want to delete this card?')) {
           isRemovingCard_admin = true;
-          
-          // Close any open edit popup
-          hideEditPopup();
           
           // Add visual feedback
           card.style.opacity = '0.5';

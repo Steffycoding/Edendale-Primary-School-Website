@@ -457,14 +457,6 @@ document.addEventListener('click', e => {
   if (e.target.closest('#card-confirm-yes')) {
     const card = confirmTarget;
     closeRemoveConfirm();
-    closeCardEditor(); // Close the card editor when confirming removal
-    
-    // Also close any edit popup that might be open
-    const editPopup = document.getElementById('edit-popup');
-    if (editPopup && editPopup.classList.contains('active')) {
-      editPopup.classList.remove('active');
-    }
-    
     if (card) persistCardRemoval(card);
     return;
   }

@@ -808,6 +808,16 @@
       "body": null,
       "imageUrl": "/assets/images/grade-r/learning-games.svg",
       "sortOrder": 6
+    },
+    {
+      "id": 19,
+      "page": "grade_r",
+      "section": "gallery",
+      "icon": null,
+      "title": "s1",
+      "body": null,
+      "imageUrl": "/assets/images/uploads/d35a240bbe3d4ff691e1340c2cc0d2e1.jpg",
+      "sortOrder": 8
     }
   ]
 }

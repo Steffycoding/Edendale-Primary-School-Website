@@ -198,10 +198,40 @@ if (!currentPage || currentPage === 'index' || currentPage === 'home') currentPa
 // The loading state is added synchronously in the inline <head> script
 // (before first paint) — this just removes it once content is ready.
 
+// Ensure minimum loading screen display time
+const minLoadingTime = 1500; // 1.5 seconds minimum
+const loadingStartTime = Date.now();
+
 loadPageContent(currentPage).then(() => {
-  document.documentElement.classList.remove('content-loading');
+  const elapsedTime = Date.now() - loadingStartTime;
+  const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+  
+  setTimeout(() => {
+    document.documentElement.classList.remove('content-loading');
+    // Hide loading screen
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+      setTimeout(() => {
+        loadingScreen.remove();
+      }, 500);
+    }
+  }, remainingTime);
 }).catch(() => {
-  document.documentElement.classList.remove('content-loading');
+  const elapsedTime = Date.now() - loadingStartTime;
+  const remainingTime = Math.max(0, minLoadingTime - elapsedTime);
+  
+  setTimeout(() => {
+    document.documentElement.classList.remove('content-loading');
+    // Hide loading screen even on error
+    const loadingScreen = document.getElementById('loading-screen');
+    if (loadingScreen) {
+      loadingScreen.classList.add('hidden');
+      setTimeout(() => {
+        loadingScreen.remove();
+      }, 500);
+    }
+  }, remainingTime);
 });
 
 /* ══════════════════════════════════════════

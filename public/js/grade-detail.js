@@ -23,7 +23,210 @@
  * grids so cards.js does not harvest Grade R's cards for another grade.
  */
 
+console.log('[Grade-Detail] === SCRIPT STARTING ===');
+
 'use strict';
+
+console.log('[Grade-Detail] Strict mode enabled');
+
+/* ══════════════════════════════════════════
+   GALLERY VIEWER (immediate setup)
+   ══════════════════════════════════════════ */
+
+let currentGalleryImages = [];
+let currentGalleryIndex = 0;
+
+console.log('[Gallery] Setting up gallery viewer immediately');
+
+// Use event delegation for gallery clicks - this works even with dynamic content
+document.addEventListener('click', (e) => {
+  console.log('[Gallery] Document click detected, target:', e.target);
+  const galleryItem = e.target.closest('.gallery-item');
+  console.log('[Gallery] Closest gallery item:', galleryItem);
+  
+  if (galleryItem) {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    // Find the index of this item in the current gallery
+    const galleryGrid = document.querySelector('.gallery-grid');
+    console.log('[Gallery] Gallery grid:', galleryGrid);
+    if (!galleryGrid) {
+      console.log('[Gallery] No gallery grid found');
+      return;
+    }
+    
+    const galleryItems = Array.from(galleryGrid.querySelectorAll('.gallery-item'));
+    console.log('[Gallery] Gallery items:', galleryItems);
+    const index = galleryItems.indexOf(galleryItem);
+    console.log('[Gallery] Item index:', index);
+    
+    if (index !== -1) {
+      console.log('[Gallery] Clicked item via delegation', index);
+      
+      // Update current gallery images
+      currentGalleryImages = galleryItems.map(item => {
+        const img = item.querySelector('img');
+        const caption = item.querySelector('figcaption');
+        return {
+          src: img ? img.src : '',
+          alt: img ? img.alt : '',
+          title: caption ? caption.textContent : '',
+          date: ''
+        };
+      });
+      
+      openGalleryViewer(index);
+    }
+  }
+});
+
+// Setup close button
+const closeBtn = document.getElementById('gallery-close');
+console.log('[Gallery] Close button element:', closeBtn);
+if (closeBtn && !closeBtn.dataset.galleryHandler) {
+  closeBtn.dataset.galleryHandler = 'true';
+  closeBtn.addEventListener('click', closeGalleryViewer);
+  console.log('[Gallery] Close button handler attached');
+}
+
+// Setup navigation buttons
+const prevBtn = document.getElementById('gallery-prev');
+const nextBtn = document.getElementById('gallery-next');
+console.log('[Gallery] Prev button element:', prevBtn);
+console.log('[Gallery] Next button element:', nextBtn);
+
+if (prevBtn && !prevBtn.dataset.galleryHandler) {
+  prevBtn.dataset.galleryHandler = 'true';
+  prevBtn.addEventListener('click', () => navigateGallery(-1));
+  console.log('[Gallery] Prev button handler attached');
+}
+
+if (nextBtn && !nextBtn.dataset.galleryHandler) {
+  nextBtn.dataset.galleryHandler = 'true';
+  nextBtn.addEventListener('click', () => navigateGallery(1));
+  console.log('[Gallery] Next button handler attached');
+}
+
+// Keyboard navigation
+document.addEventListener('keydown', (e) => {
+  const viewer = document.getElementById('gallery-viewer');
+  if (!viewer || !viewer.classList.contains('active')) return;
+  
+  if (e.key === 'Escape') {
+    closeGalleryViewer();
+  } else if (e.key === 'ArrowLeft') {
+    navigateGallery(-1);
+  } else if (e.key === 'ArrowRight') {
+    navigateGallery(1);
+  }
+});
+
+function openGalleryViewer(index) {
+  console.log('[Gallery] Opening viewer for index', index);
+  const viewer = document.getElementById('gallery-viewer');
+  const imageEl = document.getElementById('gallery-viewer-image');
+  const titleEl = document.getElementById('gallery-viewer-title');
+  const dateEl = document.getElementById('gallery-viewer-date');
+
+  console.log('[Gallery] Viewer element:', viewer);
+  console.log('[Gallery] Image element:', imageEl);
+  console.log('[Gallery] Title element:', titleEl);
+  console.log('[Gallery] Date element:', dateEl);
+
+  if (!viewer || !imageEl || !titleEl || !dateEl) {
+    console.error('[Gallery] Missing required elements');
+    return;
+  }
+
+  currentGalleryIndex = index;
+  const imageData = currentGalleryImages[index];
+
+  console.log('[Gallery] Image data:', imageData);
+
+  imageEl.src = imageData.src;
+  imageEl.alt = imageData.alt;
+  titleEl.textContent = imageData.title;
+  dateEl.textContent = imageData.date || '';
+
+  // Attach admin edit handlers if in admin mode
+  if (document.body.classList.contains('admin-mode')) {
+    // Remove existing listeners to avoid duplicates
+    titleEl.removeEventListener('click', handleGalleryAdminEdit);
+    dateEl.removeEventListener('click', handleGalleryAdminEdit);
+    
+    // Add admin edit handlers
+    titleEl.addEventListener('click', handleGalleryAdminEdit);
+    dateEl.addEventListener('click', handleGalleryAdminEdit);
+  }
+
+  console.log('[Gallery] Showing viewer');
+  viewer.style.display = 'flex';
+  // Trigger reflow for transition
+  viewer.offsetHeight;
+  viewer.classList.add('active');
+
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+function handleGalleryAdminEdit(e) {
+  if (!document.body.classList.contains('admin-mode')) return;
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Trigger the admin edit popup
+  if (typeof handleEditClick === 'function') {
+    // Create a mock event object
+    const mockEvent = {
+      preventDefault: () => {},
+      currentTarget: e.currentTarget,
+      target: e.target
+    };
+    handleEditClick(mockEvent);
+  }
+}
+
+function closeGalleryViewer() {
+  const viewer = document.getElementById('gallery-viewer');
+  if (!viewer) return;
+
+  viewer.classList.remove('active');
+  setTimeout(() => {
+    viewer.style.display = 'none';
+  }, 300);
+
+  // Restore body scroll
+  document.body.style.overflow = '';
+}
+
+function navigateGallery(direction) {
+  const newIndex = currentGalleryIndex + direction;
+  console.log('[Gallery] Navigating from index', currentGalleryIndex, 'to', newIndex);
+  
+  if (newIndex >= 0 && newIndex < currentGalleryImages.length) {
+    currentGalleryIndex = newIndex;
+    const imageData = currentGalleryImages[currentGalleryIndex];
+    
+    console.log('[Gallery] New image data:', imageData);
+
+    const imageEl = document.getElementById('gallery-viewer-image');
+    const titleEl = document.getElementById('gallery-viewer-title');
+    const dateEl = document.getElementById('gallery-viewer-date');
+
+    if (imageEl) {
+      imageEl.src = imageData.src;
+      imageEl.alt = imageData.alt;
+    }
+    if (titleEl) titleEl.textContent = imageData.title;
+    if (dateEl) dateEl.textContent = imageData.date || '';
+  } else {
+    console.log('[Gallery] Navigation out of bounds');
+  }
+}
+
+console.log('[Gallery] Gallery viewer setup complete');
 
 /* ══════════════════════════════════════════
    GRADE IDENTITY
@@ -32,16 +235,21 @@
 /** The grades this school offers — anything else is not a real page. */
 const VALID_GRADES = ['R', '1', '2', '3', '4', '5', '6', '7'];
 
+console.log('[Grade-Detail] VALID_GRADES defined');
+
 /**
  * The grade in the URL, or "R" when absent (this page is authored as Grade R).
  * Returns null for anything not in VALID_GRADES, so arbitrary query values
  * are never echoed back into the page.
  */
 function currentGradeLabel() {
+  console.log('[Grade-Detail] Getting current grade label');
   const raw = new URLSearchParams(window.location.search).get('grade');
+  console.log('[Grade-Detail] Raw grade from URL:', raw);
   if (raw === null) return 'R';
 
   const label = raw.trim().toUpperCase();
+  console.log('[Grade-Detail] Processed label:', label);
   return VALID_GRADES.includes(label) ? label : null;
 }
 
@@ -213,4 +421,141 @@ async function loadGradeContent(label) {
 
   // Only a real grade can have content to fetch.
   if (label) loadGradeContent(label);
+
+  console.log('[Gallery] Grade detail page loaded, setting up gallery');
+
+  // Use event delegation for gallery clicks - this works even with dynamic content
+  document.addEventListener('click', (e) => {
+    console.log('[Gallery] Document click detected, target:', e.target);
+    const galleryItem = e.target.closest('.gallery-item');
+    console.log('[Gallery] Closest gallery item:', galleryItem);
+    
+    if (galleryItem) {
+      e.preventDefault();
+      e.stopPropagation();
+      
+      // Find the index of this item in the current gallery
+      const galleryGrid = document.querySelector('.gallery-grid');
+      console.log('[Gallery] Gallery grid:', galleryGrid);
+      if (!galleryGrid) {
+        console.log('[Gallery] No gallery grid found');
+        return;
+      }
+      
+      const galleryItems = Array.from(galleryGrid.querySelectorAll('.gallery-item'));
+      console.log('[Gallery] Gallery items:', galleryItems);
+      const index = galleryItems.indexOf(galleryItem);
+      console.log('[Gallery] Item index:', index);
+      
+      if (index !== -1) {
+        console.log('[Gallery] Clicked item via delegation', index);
+        
+        // Update current gallery images
+        currentGalleryImages = galleryItems.map(item => {
+          const img = item.querySelector('img');
+          const caption = item.querySelector('figcaption');
+          return {
+            src: img ? img.src : '',
+            alt: img ? img.alt : '',
+            title: caption ? caption.textContent : '',
+            date: ''
+          };
+        });
+        
+        openGalleryViewer(index);
+      }
+    }
+  });
+
+  // Setup close button
+  const closeBtn = document.getElementById('gallery-close');
+  console.log('[Gallery] Close button element:', closeBtn);
+  if (closeBtn && !closeBtn.dataset.galleryHandler) {
+    closeBtn.dataset.galleryHandler = 'true';
+    closeBtn.addEventListener('click', closeGalleryViewer);
+    console.log('[Gallery] Close button handler attached');
+  }
 })();
+
+/* ══════════════════════════════════════════
+   GALLERY VIEWER
+   ══════════════════════════════════════════ */
+
+function openGalleryViewer(index) {
+  console.log('[Gallery] Opening viewer for index', index);
+  const viewer = document.getElementById('gallery-viewer');
+  const imageEl = document.getElementById('gallery-viewer-image');
+  const titleEl = document.getElementById('gallery-viewer-title');
+  const dateEl = document.getElementById('gallery-viewer-date');
+
+  console.log('[Gallery] Viewer element:', viewer);
+  console.log('[Gallery] Image element:', imageEl);
+  console.log('[Gallery] Title element:', titleEl);
+  console.log('[Gallery] Date element:', dateEl);
+
+  if (!viewer || !imageEl || !titleEl || !dateEl) {
+    console.error('[Gallery] Missing required elements');
+    return;
+  }
+
+  currentGalleryIndex = index;
+  const imageData = currentGalleryImages[index];
+
+  console.log('[Gallery] Image data:', imageData);
+
+  imageEl.src = imageData.src;
+  imageEl.alt = imageData.alt;
+  titleEl.textContent = imageData.title;
+  dateEl.textContent = imageData.date || '';
+
+  // Attach admin edit handlers if in admin mode
+  if (document.body.classList.contains('admin-mode')) {
+    // Remove existing listeners to avoid duplicates
+    titleEl.removeEventListener('click', handleGalleryAdminEdit);
+    dateEl.removeEventListener('click', handleGalleryAdminEdit);
+    
+    // Add admin edit handlers
+    titleEl.addEventListener('click', handleGalleryAdminEdit);
+    dateEl.addEventListener('click', handleGalleryAdminEdit);
+  }
+
+  console.log('[Gallery] Showing viewer');
+  viewer.style.display = 'flex';
+  // Trigger reflow for transition
+  viewer.offsetHeight;
+  viewer.classList.add('active');
+
+  // Prevent body scroll
+  document.body.style.overflow = 'hidden';
+}
+
+function handleGalleryAdminEdit(e) {
+  if (!document.body.classList.contains('admin-mode')) return;
+  
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Trigger the admin edit popup
+  if (typeof handleEditClick === 'function') {
+    // Create a mock event object
+    const mockEvent = {
+      preventDefault: () => {},
+      currentTarget: e.currentTarget,
+      target: e.target
+    };
+    handleEditClick(mockEvent);
+  }
+}
+
+function closeGalleryViewer() {
+  const viewer = document.getElementById('gallery-viewer');
+  if (!viewer) return;
+
+  viewer.classList.remove('active');
+  setTimeout(() => {
+    viewer.style.display = 'none';
+  }, 300);
+
+  // Restore body scroll
+  document.body.style.overflow = '';
+}

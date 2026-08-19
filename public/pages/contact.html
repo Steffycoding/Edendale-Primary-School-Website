@@ -15,6 +15,11 @@
   <link rel="stylesheet" href="../css/main.css">
 </head>
 <body>
+  <!-- Loading Screen -->
+  <div class="loading-screen" id="loading-screen">
+    <h1>Loading Contact</h1>
+    <p>Please wait...</p>
+  </div>
 
   <!-- NAVIGATION -->
   <nav class="navbar">
@@ -190,10 +195,80 @@
 </div>
 <div id="edit-popup">
   <h4>Edit Content</h4>
-  <div id="edit-popup-toolbar" style="display:none; gap: 6px; margin-bottom: 8px;">
-      <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" data-cmd="bold" title="Bold"><b>B</b></button>
-      <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" data-cmd="italic" title="Italic"><i>I</i></button>
-      <button type="button" class="btn btn-outline" style="padding: 4px 8px; font-size: 0.8rem;" data-cmd="insertUnorderedList" title="Bullet List">• List</button>
+  <div id="edit-popup-toolbar" style="display:none; margin-bottom: 12px; background: var(--light-bg); padding: 10px; border-radius: 8px; border: 1px solid var(--border);">
+      <!-- Font Options -->
+      <div style="display:flex; gap:6px; margin-bottom:8px; flex-wrap:wrap; align-items:center;">
+        <select id="font-family-select" style="padding:4px 8px; border-radius:4px; border:1px solid var(--border); font-size:0.85rem;" title="Font Family">
+          <option value="">Font</option>
+          <option value="Arial, sans-serif">Arial</option>
+          <option value="Georgia, serif">Georgia</option>
+          <option value="'Times New Roman', serif">Times New Roman</option>
+          <option value="'Courier New', monospace">Courier New</option>
+          <option value="Verdana, sans-serif">Verdana</option>
+          <option value="'Segoe UI', sans-serif">Segoe UI</option>
+          <option value="'Fredoka', sans-serif">Fredoka</option>
+          <option value="'Poppins', sans-serif">Poppins</option>
+          <option value="'Open Sans', sans-serif">Open Sans</option>
+          <option value="'Roboto', sans-serif">Roboto</option>
+          <option value="'Lato', sans-serif">Lato</option>
+          <option value="'Montserrat', sans-serif">Montserrat</option>
+        </select>
+        <select id="font-size-select" style="padding:4px 8px; border-radius:4px; border:1px solid var(--border); font-size:0.85rem;" title="Font Size">
+          <option value="3">Size</option>
+          <option value="1">Small</option>
+          <option value="2">Normal</option>
+          <option value="3">Medium</option>
+          <option value="4">Large</option>
+          <option value="5">Extra Large</option>
+          <option value="6">Huge</option>
+          <option value="7">Massive</option>
+        </select>
+        <div style="display:flex; align-items:center; gap:2px;">
+          <input type="color" id="text-color-picker" value="#1d1d1d" style="width:32px; height:32px; border:none; cursor:pointer; border-radius:4px;" title="Text Color">
+          <button type="button" id="clear-text-color" class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" title="Clear Text Color">✕</button>
+        </div>
+        <div style="display:flex; align-items:center; gap:2px;">
+          <input type="color" id="bg-color-picker" value="#ffffff" style="width:32px; height:32px; border:none; cursor:pointer; border-radius:4px;" title="Background Color">
+          <button type="button" id="clear-bg-color" class="btn btn-outline" style="padding:4px 8px; font-size:0.75rem;" title="Clear Background Color">✕</button>
+        </div>
+      </div>
+      
+      <!-- Text Formatting -->
+      <div style="display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="bold" title="Bold"><b>B</b></button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="italic" title="Italic"><i>I</i></button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="underline" title="Underline"><u>U</u></button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="strikeThrough" title="Strikethrough"><s>S</s></button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="removeFormat" title="Clear Formatting">✕</button>
+      </div>
+      
+      <!-- Alignment -->
+      <div style="display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="justifyLeft" title="Align Left">←</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="justifyCenter" title="Align Center">↔</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="justifyRight" title="Align Right">→</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="justifyFull" title="Justify">≡</button>
+        <button type="button" id="clear-alignment" class="btn btn-outline" style="padding:6px 10px; font-size:0.75rem;" title="Clear Alignment">✕</button>
+      </div>
+      
+      <!-- Lists & Indentation -->
+      <div style="display:flex; gap:4px; margin-bottom:8px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="insertUnorderedList" title="Bullet List">•</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="insertOrderedList" title="Numbered List">1.</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="outdent" title="Decrease Indent">←</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="indent" title="Increase Indent">→</button>
+        <button type="button" id="clear-list" class="btn btn-outline" style="padding:6px 10px; font-size:0.75rem;" title="Clear List">✕</button>
+      </div>
+      
+      <!-- Headings -->
+      <div style="display:flex; gap:4px; flex-wrap:wrap;">
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="formatBlock" data-value="p" title="Paragraph">P</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="formatBlock" data-value="h1" title="Heading 1">H1</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="formatBlock" data-value="h2" title="Heading 2">H2</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="formatBlock" data-value="h3" title="Heading 3">H3</button>
+        <button type="button" class="btn btn-outline" style="padding:6px 10px; font-size:0.85rem;" data-cmd="formatBlock" data-value="h4" title="Heading 4">H4</button>
+        <button type="button" id="clear-heading" class="btn btn-outline" style="padding:6px 10px; font-size:0.75rem;" title="Clear Heading">✕</button>
+      </div>
     </div>
     <div id="edit-popup-text" contenteditable="true" style="border: 1px solid var(--border); border-radius: var(--radius); padding: 10px; min-height: 100px; font-size: 0.9rem; margin-bottom: 12px; overflow-y: auto; background: var(--white);"></div>
   <div id="edit-popup-image-row" style="display:none;">

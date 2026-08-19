@@ -656,8 +656,90 @@ document.addEventListener('DOMContentLoaded', () => {
     if (editPopupToolbarBtn) {
       e.preventDefault();
       const cmd = editPopupToolbarBtn.dataset.cmd;
-      document.execCommand(cmd, false, null);
+      const value = editPopupToolbarBtn.dataset.value || null;
+      document.execCommand(cmd, false, value);
       // Ensure the contenteditable div stays focused
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle font family select
+    const fontFamilySelect = e.target.closest('#font-family-select');
+    if (fontFamilySelect) {
+      // Don't prevent default for select interactions
+      const fontName = fontFamilySelect.value;
+      if (fontName) {
+        document.execCommand('fontName', false, fontName);
+      }
+      return;
+    }
+
+    // Handle font size select
+    const fontSizeSelect = e.target.closest('#font-size-select');
+    if (fontSizeSelect) {
+      // Don't prevent default for select interactions
+      const fontSize = fontSizeSelect.value;
+      if (fontSize) {
+        document.execCommand('fontSize', false, fontSize);
+      }
+      return;
+    }
+
+    // Handle text color picker
+    const textColorPicker = e.target.closest('#text-color-picker');
+    if (textColorPicker) {
+      const color = textColorPicker.value;
+      document.execCommand('foreColor', false, color);
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle background color picker
+    const bgColorPicker = e.target.closest('#bg-color-picker');
+    if (bgColorPicker) {
+      const color = bgColorPicker.value;
+      document.execCommand('hiliteColor', false, color);
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle clear text color button
+    const clearTextColorBtn = e.target.closest('#clear-text-color');
+    if (clearTextColorBtn) {
+      document.execCommand('foreColor', false, '#1d1d1d');
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle clear background color button
+    const clearBgColorBtn = e.target.closest('#clear-bg-color');
+    if (clearBgColorBtn) {
+      document.execCommand('hiliteColor', false, '#ffffff');
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle clear alignment button
+    const clearAlignmentBtn = e.target.closest('#clear-alignment');
+    if (clearAlignmentBtn) {
+      document.execCommand('justifyLeft', false, null);
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle clear list button
+    const clearListBtn = e.target.closest('#clear-list');
+    if (clearListBtn) {
+      document.execCommand('insertUnorderedList', false, null);
+      document.execCommand('insertUnorderedList', false, null);
+      document.getElementById('edit-popup-text').focus();
+      return;
+    }
+
+    // Handle clear heading button
+    const clearHeadingBtn = e.target.closest('#clear-heading');
+    if (clearHeadingBtn) {
+      document.execCommand('formatBlock', false, 'p');
       document.getElementById('edit-popup-text').focus();
       return;
     }

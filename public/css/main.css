@@ -63,17 +63,203 @@ body::before {
   filter: blur(90px);
 }
 
-/* Hides the page's placeholder content until main.js swaps in the real
-   content from /api/content, then fades it in smoothly.
+/* Prevent dragging of images and content to protect site content */
+img {
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+  user-drag: none;
+}
+
+.gallery-item, 
+.gallery-media, 
+.card, 
+.activity-card, 
+.stat-box {
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  -ms-user-drag: none;
+  user-drag: none;
+  pointer-events: auto;
+}
+
+.gallery-item {
+  cursor: pointer;
+}
+
+/* Allow text selection for editable content in admin mode */
+.admin-mode [data-editable],
+.admin-mode [contenteditable="true"] {
+  -webkit-user-select: text;
+  -moz-user-select: text;
+  -ms-user-select: text;
+  user-select: text;
+}
+
+/* Fullscreen Gallery Viewer */
+.gallery-viewer {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.95);
+  z-index: 10000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.3s ease;
+}
+
+.gallery-viewer.active {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+.gallery-close {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 50px;
+  height: 50px;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.gallery-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.gallery-nav {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  background: rgba(255, 255, 255, 0.2);
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 45px;
+  height: 45px;
+  border-radius: 8px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: background 0.3s ease;
+}
+
+.gallery-nav:hover {
+  background: rgba(255, 255, 255, 0.3);
+}
+
+.gallery-prev {
+  left: 80px;
+}
+
+.gallery-next {
+  right: 80px;
+}
+
+.gallery-viewer-content {
+  max-width: 90vw;
+  max-height: 90vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.gallery-viewer-content img {
+  max-width: 100%;
+  max-height: 80vh;
+  object-fit: contain;
+  border-radius: 8px;
+}
+
+.gallery-viewer-info {
+  margin-top: 20px;
+  text-align: center;
+  color: white;
+}
+
+.gallery-viewer-info h3 {
+  margin: 0 0 8px 0;
+  font-size: 1.5rem;
+}
+
+.gallery-viewer-info p {
+  margin: 0;
+  font-size: 1rem;
+  opacity: 0.8;
+}
+
+/* Admin mode gallery viewer info editing */
+.admin-mode .gallery-viewer-info h3,
+.admin-mode .gallery-viewer-info p {
+  border: 1px dashed rgba(255, 255, 255, 0.5);
+  padding: 4px 8px;
+  border-radius: 4px;
+  cursor: text;
+}
+
+.admin-mode .gallery-viewer-info h3:hover,
+.admin-mode .gallery-viewer-info p:hover {
+  background: rgba(255, 255, 255, 0.1);
+  border-color: rgba(255, 255, 255, 0.8);
+}
+
+/* Loading screen - shows while content being loaded
    The 'content-loading' class must be added to <html> — not <body> — by an
    inline script in <head>, BEFORE the stylesheet link. Because that inline
-   script runs before the browser paints anything, the placeholder content
-   is never visible, even for a frame, on refresh. (main.js alone is too
-   late for this: it's an external <script src> at the bottom of <body>,
-   so the browser has already painted by the time it runs.) main.js removes
-   the class once the real content is fetched and applied. */
-html.content-loading body {
+   script runs before the browser paints anything, the loading screen is
+   immediately visible. main.js removes the class once the real content is
+   fetched and applied. */
+.loading-screen {
+  position: fixed;
+  inset: 0;
+  background: linear-gradient(135deg, var(--navy) 0%, var(--navy-dark) 100%);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+  transition: opacity 0.5s ease-out;
+}
+
+html.content-loading .loading-screen {
+  display: flex;
+}
+
+.loading-screen.hidden {
   opacity: 0;
+}
+
+.loading-screen h1 {
+  color: var(--gold);
+  font-size: 2.5rem;
+  margin-bottom: 1rem;
+  animation: pulse 1.5s ease-in-out infinite;
+}
+
+.loading-screen p {
+  color: white;
+  font-size: 1.2rem;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
 }
 
 body {

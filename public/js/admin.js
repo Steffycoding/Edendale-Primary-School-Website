@@ -716,7 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
    ══════════════════════════════════════════ */
 
 let aboutPageCardManagementInitialized = false;
-let isRemovingCard = false;
+let isRemovingCard_admin = false;
 
 function initAboutPageCardManagement() {
   if (aboutPageCardManagementInitialized) return;
@@ -730,7 +730,7 @@ function initAboutPageCardManagement() {
       e.stopPropagation();
       
       // Prevent multiple rapid removals
-      if (isRemovingCard) {
+      if (isRemovingCard_admin) {
         console.log('[Card Removal] Already removing a card, ignoring duplicate click');
         return;
       }
@@ -738,7 +738,7 @@ function initAboutPageCardManagement() {
       const card = e.target.closest('.card, .stat-box');
       if (card && !card.classList.contains('add-card-btn')) {
         if (confirm('Are you sure you want to delete this card?')) {
-          isRemovingCard = true;
+          isRemovingCard_admin = true;
           
           // Add visual feedback
           card.style.opacity = '0.5';
@@ -760,7 +760,7 @@ function initAboutPageCardManagement() {
             // Update initial state to reflect the removal
             updateInitialContentState();
             
-            isRemovingCard = false;
+            isRemovingCard_admin = false;
           });
         }
       }

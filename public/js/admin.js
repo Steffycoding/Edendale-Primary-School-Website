@@ -32,9 +32,15 @@ async function checkAdminStatus() {
     return;
   }
 
-  // Don't auto-enable admin mode - user must explicitly login
-  // This prevents automatic admin login on page load
-  console.log('[Admin] Valid token found but not auto-enabling admin mode');
+  isAdminMode = true;
+  document.body.classList.add('admin-mode');
+  document.documentElement.classList.add('admin-mode');
+  const adminBar = document.getElementById('admin-bar');
+  if (adminBar) adminBar.classList.add('active');
+  notifyModeChange();
+
+  // Save initial content state for undo functionality
+  saveInitialContentState();
 }
 
 function saveInitialContentState() {

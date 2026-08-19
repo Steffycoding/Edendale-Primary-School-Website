@@ -138,8 +138,14 @@ async function saveDbLocal() {
 
 
 async function loadDbServerless() {
-  if (dbData) return dbData;
-
+  // No `if (dbData) return dbData` here on purpose: Vercel runs multiple
+  // separate warm instances of this function at once, and each one has
+  // its own independent copy of the `dbData` module variable. Caching it
+  // meant a save made through one instance was invisible to every other
+  // instance for as long as they stayed warm — which page/request you hit
+  // was effectively random, hence edits "sometimes" appearing. Blob reads
+  // are cheap enough for this site's traffic that always fetching fresh
+  // is the simple, correct choice here.
   const existing = await readJsonBlob(BLOB_PATHNAME);
   if (existing) {
     dbData = existing;

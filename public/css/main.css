@@ -2838,6 +2838,7 @@ body.admin-mode .card-ghost {
   z-index: 10002;
   align-items: center;
   justify-content: center;
+  padding: 20px;
 }
 
 #card-confirm.active {

@@ -90,7 +90,7 @@ function resolveCardPage() {
  */
 function cardAuthHeaders(extra) {
   return Object.assign(
-    { 'Authorization': 'Bearer ' + (localStorage.getItem('adminToken') || '') },
+    { 'Authorization': 'Bearer ' + (sessionStorage.getItem('adminToken') || '') },
     extra || {}
   );
 }
@@ -678,6 +678,23 @@ async function persistCardRemoval(card) {
   }
 
   cardState.cards = cardState.cards.filter(c => c.id !== card.id);
+  
+  // Close any open modals when deleting a card
+  const cardEditor = document.getElementById('card-editor');
+  if (cardEditor && cardEditor.classList.contains('active')) {
+    if (typeof closeCardEditor === 'function') {
+      closeCardEditor();
+    } else {
+      cardEditor.classList.remove('active');
+    }
+  }
+  
+  // Close edit popup if open
+  const editPopup = document.getElementById('edit-popup');
+  if (editPopup && editPopup.classList.contains('active')) {
+    editPopup.classList.remove('active');
+  }
+  
   renderAllSections();
   showToast(cardState.backendAvailable
       ? 'Card removed.'

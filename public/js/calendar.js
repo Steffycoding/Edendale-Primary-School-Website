@@ -705,7 +705,7 @@ async function saveEvent() {
   const payload = { title, description, date, startTime, endTime, allDay, isHoliday };
 
   try {
-    const token = localStorage.getItem('adminToken');
+    const token = sessionStorage.getItem('adminToken');
     const method = id ? 'PUT' : 'POST';
     const url = id ? `/api/events/${id}` : '/api/events';
     const response = await fetch(url, {
@@ -726,6 +726,7 @@ async function saveEvent() {
 
   saveLocal();
   closeEventModal();
+  closeDayModal(); // Close day modal if open
   selectedDate = date;
   currentMonth = new Date(date + 'T00:00:00').getMonth();
   currentYear = new Date(date + 'T00:00:00').getFullYear();
@@ -764,7 +765,7 @@ function handleDeleteEvent(id, isProtected) {
 
 async function deleteEvent(id) {
   try {
-    const token = localStorage.getItem('adminToken');
+    const token = sessionStorage.getItem('adminToken');
     const response = await fetch(`/api/events/${id}`, {
       method: 'DELETE',
       headers: { 'Authorization': 'Bearer ' + token }
@@ -775,6 +776,8 @@ async function deleteEvent(id) {
   }
   events = events.filter(e => String(e.id) !== String(id));
   saveLocal();
+  closeDayModal(); // Close the viewing modal when deleting an event
+  closeEventModal(); // Close the edit modal if open
   renderAll();
   showToast('Event deleted successfully');
 }

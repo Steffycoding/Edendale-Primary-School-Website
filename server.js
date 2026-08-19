@@ -569,11 +569,11 @@ app.post('/api/upload', async (req, res) => {
     // per store and can't be mixed. So uploads go to a SEPARATE public
     // store, connected with a custom env var prefix so it doesn't collide
     // with the private store's token. See Vercel Storage tab setup notes.
-    if (!process.env.PUBLIC_BLOB_READ_WRITE_TOKEN) {
-      console.error('[Upload] PUBLIC_BLOB_READ_WRITE_TOKEN is not set.');
+    if (!process.env.PUBLIC_BLOB_EDENDALE_READ_WRITE_TOKEN) {
+      console.error('[Upload] PUBLIC_BLOB_EDENDALE_READ_WRITE_TOKEN is not set.');
       return res.status(500).json({
         error: 'Image uploads are not configured yet. A public Blob store '
-             + 'needs to be connected with the env var prefix PUBLIC_BLOB.'
+             + 'needs PUBLIC_BLOB_EDENDALE_READ_WRITE_TOKEN set in Vercel env vars.'
       });
     }
 
@@ -584,7 +584,7 @@ app.post('/api/upload', async (req, res) => {
         access: 'public',
         contentType: req.file.mimetype,
         allowOverwrite: true,
-        token: process.env.PUBLIC_BLOB_READ_WRITE_TOKEN
+        token: process.env.PUBLIC_BLOB_EDENDALE_READ_WRITE_TOKEN
       });
       res.status(201).json({ url: blob.url, filename, size: req.file.size });
     } catch (blobErr) {

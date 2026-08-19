@@ -1109,6 +1109,7 @@ a {
   font-weight: 700;
   font-size: 1.6rem;
   text-align:center;
+  justify-content:center;
   border-bottom: 3px dashed var(--gold);
 }
 
@@ -1140,7 +1141,7 @@ ul{
   font-size:1.2rem;
   font-weight:500;
   font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-  text-align:left;
+  text-align:center;
   align-items:center;
 
 }

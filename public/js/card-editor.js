@@ -28,6 +28,8 @@ let editorCard    = null;   // the card being edited, or null when adding
 let editorSection = null;
 let editorImageUrl = null;  // pending image for gallery items
 let confirmTarget = null;
+let isEditorUploading = false;
+let isEditorSaving = false;
 
 /* ══════════════════════════════════════════
    CHROME INJECTION
@@ -344,10 +346,18 @@ function wireEditorDropzone() {
   }
 
   async function handleEditorFile(file) {
+    // Prevent multiple simultaneous uploads
+    if (isEditorUploading) {
+      setStatus('Please wait for the current upload to finish.', 'error');
+      return;
+    }
+    
     const problem = validateImageFile(file);
     if (problem) { setStatus(problem, 'error'); return; }
 
+    isEditorUploading = true;
     setStatus('Uploading…');
+    
     try {
       editorImageUrl = await uploadImage(file);
       zone.classList.add('has-image');
@@ -371,6 +381,8 @@ function wireEditorDropzone() {
       }
     } catch (err) {
       setStatus(err.message, 'error');
+    } finally {
+      isEditorUploading = false;
     }
   }
 }
@@ -380,6 +392,14 @@ function wireEditorDropzone() {
    ══════════════════════════════════════════ */
 
 async function saveCardEditor() {
+  // Prevent multiple simultaneous saves
+  if (isEditorSaving) {
+    console.log('[Card Editor] Already saving, ignoring duplicate click');
+    return;
+  }
+  
+  isEditorSaving = true;
+  
   const titleField = document.getElementById('ce-title');
   const title = titleField ? titleField.value.trim() : '';
 
@@ -389,11 +409,13 @@ async function saveCardEditor() {
         : editorSection === 'stats'
         ? 'Enter a number or value.'
         : 'Give the card a name.');
+    isEditorSaving = false;
     return;
   }
 
   if (editorSection === 'gallery' && !editorImageUrl) {
     setEditorError('Choose an image first.');
+    isEditorSaving = false;
     return;
   }
 
@@ -410,18 +432,28 @@ async function saveCardEditor() {
   };
 
   const saveBtn = document.getElementById('card-editor-save');
-  if (saveBtn) saveBtn.disabled = true;
-
-  let ok;
-  if (editorCard) {
-    payload.id        = editorCard.id;
-    payload.sortOrder = editorCard.sortOrder;
-    ok = await persistCardUpdate(payload);
-  } else {
-    ok = !!(await persistNewCard(payload));
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
   }
 
-  if (saveBtn) saveBtn.disabled = false;
+  let ok;
+  try {
+    if (editorCard) {
+      payload.id        = editorCard.id;
+      payload.sortOrder = editorCard.sortOrder;
+      ok = await persistCardUpdate(payload);
+    } else {
+      ok = !!(await persistNewCard(payload));
+    }
+  } finally {
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save';
+    }
+    isEditorSaving = false;
+  }
+  
   if (ok) closeCardEditor();
 }
 

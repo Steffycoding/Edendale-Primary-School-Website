@@ -456,41 +456,56 @@ function hideEditPopup() {
   }
 }
 
+let isSaving = false;
+
 async function saveAllChanges() {
-  // Both index.html and about.html share the same data (about page)
-  const pathname = window.location.pathname;
-  let page = pathname.split('/').pop().replace('.html', '');
-  
-  // Default to 'about' for index/home pages, otherwise use actual page name
-  if (!page || page === 'index' || page === 'home') {
-    page = 'about';
-  }
-  
-  console.log('[Save] Pathname:', pathname);
-  console.log('[Save] Using page:', page);
-  
-  // Collect all current card data including new cards
-  const cardData = collectAboutPageCardData();
-  console.log('[Save] Card Data:', cardData);
-  console.log('[Save] Pending Changes:', pendingChanges);
-  
-  // Check if there are any changes (field changes or card structure changes)
-  const hasFieldChanges = Object.keys(pendingChanges).length > 0;
-  const hasCardChanges = cardData && (
-    (cardData.stats && cardData.stats.length > 0) ||
-    (cardData.mission && cardData.mission.length > 0) ||
-    (cardData.values && cardData.values.length > 0)
-  );
-  
-  console.log('[Save] Has field changes:', hasFieldChanges);
-  console.log('[Save] Has card changes:', hasCardChanges);
-  
-  if (!hasFieldChanges && !hasCardChanges) {
-    alert('No changes to save.');
+  // Prevent multiple simultaneous saves
+  if (isSaving) {
+    console.log('[Save] Already saving, ignoring duplicate click');
     return;
   }
   
+  isSaving = true;
+  const saveBtn = document.getElementById('admin-save-btn');
+  if (saveBtn) {
+    saveBtn.disabled = true;
+    saveBtn.textContent = 'Saving...';
+  }
+  
   try {
+    // Both index.html and about.html share the same data (about page)
+    const pathname = window.location.pathname;
+    let page = pathname.split('/').pop().replace('.html', '');
+    
+    // Default to 'about' for index/home pages, otherwise use actual page name
+    if (!page || page === 'index' || page === 'home') {
+      page = 'about';
+    }
+    
+    console.log('[Save] Pathname:', pathname);
+    console.log('[Save] Using page:', page);
+    
+    // Collect all current card data including new cards
+    const cardData = collectAboutPageCardData();
+    console.log('[Save] Card Data:', cardData);
+    console.log('[Save] Pending Changes:', pendingChanges);
+    
+    // Check if there are any changes (field changes or card structure changes)
+    const hasFieldChanges = Object.keys(pendingChanges).length > 0;
+    const hasCardChanges = cardData && (
+      (cardData.stats && cardData.stats.length > 0) ||
+      (cardData.mission && cardData.mission.length > 0) ||
+      (cardData.values && cardData.values.length > 0)
+    );
+    
+    console.log('[Save] Has field changes:', hasFieldChanges);
+    console.log('[Save] Has card changes:', hasCardChanges);
+    
+    if (!hasFieldChanges && !hasCardChanges) {
+      alert('No changes to save.');
+      return;
+    }
+    
     const token = localStorage.getItem('adminToken');
     const payload = { page, changes: pendingChanges, cardData };
     console.log('[Save] Sending payload:', payload);
@@ -508,6 +523,8 @@ async function saveAllChanges() {
     if (response.ok) {
       alert('Changes saved successfully!');
       pendingChanges = {};
+      // Update initial state after successful save
+      updateInitialContentState();
     } else {
       alert('Failed to save changes. Please try again.');
     }
@@ -517,6 +534,12 @@ async function saveAllChanges() {
     console.log('Card Data:', cardData);
     alert('(Dev mode) Changes logged to console. Connect backend to persist.');
     pendingChanges = {};
+  } finally {
+    isSaving = false;
+    if (saveBtn) {
+      saveBtn.disabled = false;
+      saveBtn.textContent = 'Save All Changes';
+    }
   }
 }
 
@@ -693,6 +716,7 @@ document.addEventListener('DOMContentLoaded', () => {
    ══════════════════════════════════════════ */
 
 let aboutPageCardManagementInitialized = false;
+let isRemovingCard = false;
 
 function initAboutPageCardManagement() {
   if (aboutPageCardManagementInitialized) return;
@@ -704,20 +728,40 @@ function initAboutPageCardManagement() {
     if (e.target.classList.contains('remove-card-btn')) {
       e.preventDefault();
       e.stopPropagation();
+      
+      // Prevent multiple rapid removals
+      if (isRemovingCard) {
+        console.log('[Card Removal] Already removing a card, ignoring duplicate click');
+        return;
+      }
+      
       const card = e.target.closest('.card, .stat-box');
       if (card && !card.classList.contains('add-card-btn')) {
         if (confirm('Are you sure you want to delete this card?')) {
-          // Remove the editable fields from pending changes
-          card.querySelectorAll('[data-editable]').forEach(el => {
-            const fieldName = el.dataset.field;
-            if (fieldName && pendingChanges[fieldName]) {
-              delete pendingChanges[fieldName];
-            }
-          });
-          card.remove();
+          isRemovingCard = true;
           
-          // Update initial state to reflect the removal
-          updateInitialContentState();
+          // Add visual feedback
+          card.style.opacity = '0.5';
+          card.style.pointerEvents = 'none';
+          
+          // Use requestAnimationFrame for smoother performance
+          requestAnimationFrame(() => {
+            // Remove the editable fields from pending changes
+            card.querySelectorAll('[data-editable]').forEach(el => {
+              const fieldName = el.dataset.field;
+              if (fieldName && pendingChanges[fieldName]) {
+                delete pendingChanges[fieldName];
+              }
+            });
+            
+            // Remove card from DOM
+            card.remove();
+            
+            // Update initial state to reflect the removal
+            updateInitialContentState();
+            
+            isRemovingCard = false;
+          });
         }
       }
       return;

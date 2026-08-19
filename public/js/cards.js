@@ -45,6 +45,7 @@ const ICON_SUGGESTIONS = [
 ];
 
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;   // mirrors the server's 5MB cap
+let isUploading = false;
 
 /* ══════════════════════════════════════════
    STATE
@@ -559,12 +560,20 @@ function hasFiles(e) {
 
 /** Uploads a dropped file and creates a gallery card for it. */
 async function addGalleryImage(file, section) {
+  // Prevent multiple simultaneous uploads
+  if (isUploading) {
+    console.log('[Image Upload] Already uploading, ignoring duplicate request');
+    showToast('Please wait for the current upload to finish.', 'error');
+    return;
+  }
+  
   const validationError = validateImageFile(file);
   if (validationError) {
     showToast(validationError, 'error');
     return;
   }
 
+  isUploading = true;
   showToast(`Uploading ${file.name}…`);
 
   let url;
@@ -573,6 +582,8 @@ async function addGalleryImage(file, section) {
   } catch (err) {
     showToast(err.message, 'error');
     return;
+  } finally {
+    isUploading = false;
   }
 
   const caption = file.name.replace(/\.[^.]+$/, '').replace(/[-_]+/g, ' ').slice(0, CARD_LIMITS.caption);
@@ -601,7 +612,20 @@ function validateImageFile(file) {
  */
 async function uploadImage(file) {
   try {
-    return await cardApi.upload(file);
+    // Add timeout to prevent hanging uploads
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 30000); // 30 second timeout
+    
+    const uploadPromise = cardApi.upload(file);
+    const result = await Promise.race([
+      uploadPromise,
+      new Promise((_, reject) => 
+        setTimeout(() => reject(new Error('Upload timeout')), 30000)
+      )
+    ]);
+    
+    clearTimeout(timeoutId);
+    return result;
   } catch (err) {
     if (cardState.backendAvailable) throw err;   // real failure, surface it
     return await readAsDataUrl(file);
@@ -667,23 +691,41 @@ async function persistCardUpdate(card) {
   return true;
 }
 
-async function persistCardRemoval(card) {
-  if (cardState.backendAvailable) {
-    try {
-      await cardApi.remove(card.id);
-    } catch (err) {
-      showToast(err.message, 'error');
-      return false;
-    }
-  }
+let isRemovingCard = false;
 
-  cardState.cards = cardState.cards.filter(c => c.id !== card.id);
-  renderAllSections();
-  showToast(cardState.backendAvailable
-      ? 'Card removed.'
-      : 'Card removed (not saved — backend offline).',
-      cardState.backendAvailable ? 'success' : null);
-  return true;
+async function persistCardRemoval(card) {
+  // Prevent multiple simultaneous removals
+  if (isRemovingCard) {
+    console.log('[Card Removal] Already removing a card, ignoring duplicate request');
+    return false;
+  }
+  
+  isRemovingCard = true;
+  
+  try {
+    if (cardState.backendAvailable) {
+      try {
+        await cardApi.remove(card.id);
+      } catch (err) {
+        showToast(err.message, 'error');
+        return false;
+      }
+    }
+
+    // Use requestAnimationFrame for smoother DOM updates
+    requestAnimationFrame(() => {
+      cardState.cards = cardState.cards.filter(c => c.id !== card.id);
+      renderAllSections();
+    });
+    
+    showToast(cardState.backendAvailable
+        ? 'Card removed.'
+        : 'Card removed (not saved — backend offline).',
+        cardState.backendAvailable ? 'success' : null);
+    return true;
+  } finally {
+    isRemovingCard = false;
+  }
 }
 
 /* ══════════════════════════════════════════

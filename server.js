@@ -55,7 +55,7 @@ const JWT_SECRET = process.env.JWT_SECRET
         ? (() => { throw new Error('JWT_SECRET environment variable is required in production.'); })()
         : 'local-dev-only-secret-do-not-use-in-production');
 
-const TOKEN_EXPIRY = '7d';
+const TOKEN_EXPIRY = '30d';
 
 function issueToken() {
   return jwt.sign({ admin: true }, JWT_SECRET, { expiresIn: TOKEN_EXPIRY });
